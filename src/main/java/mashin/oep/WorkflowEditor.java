@@ -2,7 +2,7 @@ package mashin.oep;
 
 import java.util.EventObject;
 
-import mashin.oep.model.workflow.Workflow;
+import mashin.oep.model.Workflow;
 import mashin.oep.parts.WorkflowEditPartFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -145,6 +145,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   protected void setInput(IEditorInput input) {
     super.setInput(input);
     workflow = new Workflow();
+    workflow.init();
     workflow.setName(input.getName());
     setPartName(input.getName());
   }

@@ -1,7 +1,5 @@
-package mashin.oep.model.workflow;
+package mashin.oep.model.property;
 
-import mashin.oep.model.property.PropertyElementGroup;
-import mashin.oep.model.property.TextPropertyElement;
 
 public class Property extends PropertyElementGroup {
 

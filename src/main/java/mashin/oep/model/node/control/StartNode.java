@@ -1,7 +1,7 @@
 package mashin.oep.model.node.control;
 
+import mashin.oep.model.Workflow;
 import mashin.oep.model.node.Node;
-import mashin.oep.model.workflow.Workflow;
 
 public class StartNode extends ControlNode {
 

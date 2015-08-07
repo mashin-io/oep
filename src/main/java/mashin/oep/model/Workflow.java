@@ -1,12 +1,13 @@
-package mashin.oep.model.workflow;
+package mashin.oep.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import mashin.oep.Utils;
-import mashin.oep.model.HPDLSerializable;
-import mashin.oep.model.ModelElementWithSchema;
-import mashin.oep.model.SchemaVersion;
+import mashin.oep.model.node.Node;
+import mashin.oep.model.node.control.StartNode;
+import mashin.oep.model.property.Property;
 import mashin.oep.model.property.PropertyElementCollection;
 import mashin.oep.model.property.TextPropertyElement;
 
@@ -24,13 +25,16 @@ public class Workflow extends ModelElementWithSchema implements
   private static final SchemaVersion WORKFLOW_DEFAULT_SCHEMA_VERSION  = SchemaVersion.V_0_5;
   private static final SchemaVersion WORKFLOW_LATEST_SCHEMA_VERSION   = SchemaVersion.V_0_5;
 
-  private static final String PROP_NAME           = "prop.workflow.name";
-  private static final String PROP_PROPERTY       = "prop.workflow.property";
-  private static final String PROP_JOBTRACKER     = "prop.workflow.global.job-tracker";
-  private static final String PROP_NAMENDOE       = "prop.workflow.global.name-node";
-  private static final String PROP_JOB_XML        = "prop.workflow.global.job-xml";
-  private static final String PROP_CONFIGURATION  = "prop.workflow.global.configuration";
-  private static final String PROP_CREDENTIALS    = "prop.workflow.credentials";
+  public static final String PROP_NAME           = "prop.workflow.name";
+  public static final String PROP_PROPERTY       = "prop.workflow.property";
+  public static final String PROP_JOBTRACKER     = "prop.workflow.global.job-tracker";
+  public static final String PROP_NAMENDOE       = "prop.workflow.global.name-node";
+  public static final String PROP_JOB_XML        = "prop.workflow.global.job-xml";
+  public static final String PROP_CONFIGURATION  = "prop.workflow.global.configuration";
+  public static final String PROP_CREDENTIALS    = "prop.workflow.credentials";
+  
+  public static final String PROP_NODE_ADDED     = "prop.workflow.node.added";
+  public static final String PROP_NODE_REMOVED   = "prop.workflow.node.removed";
 
   private static final String CATEGORY_GLOBAL       = "Global";
   private static final String CATEGORY_CREDENTIALS  = "Credentials";
@@ -45,6 +49,9 @@ public class Workflow extends ModelElementWithSchema implements
   private PropertyElementCollection configuration;
   private PropertyElementCollection credentials;
 
+  private StartNode   startNode;
+  private List<Node>  nodes;
+  
   public Workflow() {
     name          = new TextPropertyElement(PROP_NAME, "Name");
     parameters    = new PropertyElementCollection("Parameters", new Property(
@@ -59,6 +66,12 @@ public class Workflow extends ModelElementWithSchema implements
                         new Property(PROP_CREDENTIALS, "Credential"));
   }
 
+  public void init() {
+    startNode = new StartNode(this);
+    nodes = new ArrayList<Node>();
+    nodes.add(startNode);
+  }
+  
   @Override
   public IPropertyDescriptor[] getPropertyDescriptors() {
     if (WORKFLOW_PROPERTY_DESCRIPTORS == null) {
@@ -188,6 +201,24 @@ public class Workflow extends ModelElementWithSchema implements
     return WORKFLOW_LATEST_SCHEMA_VERSION;
   }
 
+  public boolean canAddNode(Node node) {
+    return true;
+  }
+  
+  public void addNode(Node node) {
+    nodes.add(node);
+    firePropertyChange(PROP_NODE_ADDED, null, node);
+  }
+  
+  public void removeNode(Node node) {
+    nodes.remove(node);
+    firePropertyChange(PROP_NODE_REMOVED, node, null);
+  }
+  
+  public List<Node> getNodes() {
+    return nodes;
+  }
+  
   @Override
   public String toHPDL() {
     return "";

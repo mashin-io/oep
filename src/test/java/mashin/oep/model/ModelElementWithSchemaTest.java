@@ -1,7 +1,5 @@
 package mashin.oep.model;
 
-import mashin.oep.model.workflow.Workflow;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -6,17 +6,17 @@ import java.util.List;
 import mashin.oep.Utils;
 import mashin.oep.model.HPDLSerializable;
 import mashin.oep.model.ModelElementWithSchema;
+import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PointPropertyElement;
-import mashin.oep.model.workflow.Workflow;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 public abstract class Node extends ModelElementWithSchema implements HPDLSerializable {
   
-  private static final String PROP_CONNECTION_SOURCE  = "prop.node.connection.source";
-  private static final String PROP_CONNECTION_TARGET  = "prop.node.connection.target";
-  private static final String PROP_POS                = "prop.node.pos";
+  public static final String PROP_CONNECTION_SOURCE  = "prop.node.connection.source";
+  public static final String PROP_CONNECTION_TARGET  = "prop.node.connection.target";
+  public static final String PROP_POS                = "prop.node.pos";
   
   private static IPropertyDescriptor[] NODE_PROPERTY_DESCRIPTORS;
   

@@ -2,9 +2,11 @@ package mashin.oep.parts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import mashin.oep.model.ModelElement;
-import mashin.oep.model.workflow.Workflow;
+import mashin.oep.model.Workflow;
+import mashin.oep.model.node.Node;
 
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.Figure;
@@ -20,6 +22,7 @@ import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 
 public class WorkflowEditPart extends AbstractGraphicalEditPart implements
     PropertyChangeListener {
+  
   /**
    * Upon activation, attach to the model element as a property change
    * listener.
@@ -60,8 +63,20 @@ public class WorkflowEditPart extends AbstractGraphicalEditPart implements
   }
   
   @Override
+  public List<Node> getModelChildren() {
+    return getCastedModel().getNodes();
+  }
+  
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
-    
+    String prop = evt.getPropertyName();
+    // these properties are fired when Nodes are added into or removed from
+    // the Workflow instance and must cause a call of refreshChildren()
+    // to update the diagram's contents.
+    if (Workflow.PROP_NODE_ADDED.equals(prop)
+        || Workflow.PROP_NODE_REMOVED.equals(prop)) {
+      refreshChildren();
+    }
   }
 
   @Override
