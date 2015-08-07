@@ -1,0 +1,35 @@
+package mashin.oep.model;
+
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+
+public abstract class PropertyElement {
+
+  private static final AtomicLong ID_SEQ = new AtomicLong(0);
+  
+  protected String idPrefix;
+  
+  public PropertyElement() {
+    this.idPrefix = (this.getIDPrefixPrefix() == null ? "" : (this
+        .getIDPrefixPrefix() + ".")) + ID_SEQ.incrementAndGet();
+  }
+  
+  public abstract boolean isEmpty();
+  
+  public abstract String getIDPrefixPrefix();
+  
+  public String getIdPrefix() {
+    return this.idPrefix;
+  }
+  
+  public boolean hasPropertyId(String propertyId) {
+    return propertyId.equals(idPrefix)
+        || propertyId.startsWith(idPrefix + ".");
+  }
+  
+  public abstract void setPropertyValue(String propertyName, Object propertyValue);
+  public abstract Object getPropertyValue(String propertyName);
+  public abstract IPropertyDescriptor[] getPropertyDescriptors();
+  
+}
