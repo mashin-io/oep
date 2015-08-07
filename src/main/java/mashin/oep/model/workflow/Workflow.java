@@ -95,21 +95,21 @@ public class Workflow extends ModelElementWithSchema implements
       setNamenode((String) propertyValue);
       break;
     default:
-      if (parameters.hasProperty(propertyNameStr)) {
-        Object oldValue = parameters.getPropertyValue(propertyNameStr);
-        parameters.setPropertyValue(propertyNameStr, propertyValue);
+      if (parameters.hasId(propertyNameStr)) {
+        Object oldValue = parameters.getValue(propertyNameStr);
+        parameters.setValue(propertyNameStr, propertyValue);
         firePropertyChange(propertyNameStr, oldValue, propertyValue);
-      } else if (jobxml.hasProperty(propertyNameStr)) {
-        Object oldValue = jobxml.getPropertyValue(propertyNameStr);
-        jobxml.setPropertyValue(propertyNameStr, propertyValue);
+      } else if (jobxml.hasId(propertyNameStr)) {
+        Object oldValue = jobxml.getValue(propertyNameStr);
+        jobxml.setValue(propertyNameStr, propertyValue);
         firePropertyChange(propertyNameStr, oldValue, propertyValue);
-      } else if (configuration.hasProperty(propertyNameStr)) {
-        Object oldValue = configuration.getPropertyValue(propertyNameStr);
-        configuration.setPropertyValue(propertyNameStr, propertyValue);
+      } else if (configuration.hasId(propertyNameStr)) {
+        Object oldValue = configuration.getValue(propertyNameStr);
+        configuration.setValue(propertyNameStr, propertyValue);
         firePropertyChange(propertyNameStr, oldValue, propertyValue);
-      } else if (credentials.hasProperty(propertyNameStr)) {
-        Object oldValue = credentials.getPropertyValue(propertyNameStr);
-        credentials.setPropertyValue(propertyNameStr, propertyValue);
+      } else if (credentials.hasId(propertyNameStr)) {
+        Object oldValue = credentials.getValue(propertyNameStr);
+        credentials.setValue(propertyNameStr, propertyValue);
         firePropertyChange(propertyNameStr, oldValue, propertyValue);
       } else {
         super.setPropertyValue(propertyName, propertyValue);
@@ -129,14 +129,14 @@ public class Workflow extends ModelElementWithSchema implements
     case PROP_NAMENDOE:
       return getNamenode();
     default:
-      if (parameters.hasProperty(propertyNameStr)) {
-        return parameters.getPropertyValue(propertyNameStr);
-      } else if (jobxml.hasProperty(propertyNameStr)) {
-        return jobxml.getPropertyValue(propertyNameStr);
-      } else if (configuration.hasProperty(propertyNameStr)) {
-        return configuration.getPropertyValue(propertyNameStr);
-      } else if (credentials.hasProperty(propertyNameStr)) {
-        return credentials.getPropertyValue(propertyNameStr);
+      if (parameters.hasId(propertyNameStr)) {
+        return parameters.getValue(propertyNameStr);
+      } else if (jobxml.hasId(propertyNameStr)) {
+        return jobxml.getValue(propertyNameStr);
+      } else if (configuration.hasId(propertyNameStr)) {
+        return configuration.getValue(propertyNameStr);
+      } else if (credentials.hasId(propertyNameStr)) {
+        return credentials.getValue(propertyNameStr);
       } else {
         return super.getPropertyValue(propertyName);
       }

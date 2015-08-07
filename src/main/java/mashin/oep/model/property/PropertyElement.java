@@ -25,15 +25,20 @@ public abstract class PropertyElement {
   }
   
   public abstract void setValue(Object value);
+  public abstract void setValue(String id, Object value);
   public abstract void resetValue();
+  public abstract void resetValue(String id);
   public abstract boolean isSet();
+  public abstract boolean isSet(String id);
   public abstract Object getValue();
+  public abstract Object getValue(String id);
   public abstract Object getEditableValue();
-  public abstract IPropertyDescriptor getPropertyDescriptor();
+  public abstract Object getEditableValue(String id);
+  public abstract IPropertyDescriptor[] getPropertyDescriptors();
   
   @Override
   public String toString() {
-    return name + ": " + getValue();
+    return name + ": " + getValue(getId());
   }
   
 }

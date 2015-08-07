@@ -1,17 +1,20 @@
 package mashin.oep.model.node.control;
 
+import java.util.List;
+
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.workflow.Workflow;
 
 public abstract class ControlNode extends Node {
+  
   public ControlNode(Workflow workflow) {
     super(workflow);
     this.setSchemaVersion(workflow.getSchemaVersion()); 
   }
   
   @Override
-  public SchemaVersion[] getPossibleSchemaVersions() {
+  public List<SchemaVersion> getPossibleSchemaVersions() {
     return this.workflow.getPossibleSchemaVersions();
   }
 
@@ -27,4 +30,5 @@ public abstract class ControlNode extends Node {
   
   @Override
   protected boolean isSchemaVersionEditable() { return false; }
+  
 }

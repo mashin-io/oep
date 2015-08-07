@@ -3,7 +3,7 @@ package mashin.oep.model.property;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
-public class TextPropertyElement extends PropertyElement {
+public class TextPropertyElement extends SingularPropertyElement {
 
   private IPropertyDescriptor propertyDescriptor;
   
@@ -17,7 +17,7 @@ public class TextPropertyElement extends PropertyElement {
   public void setValue(Object value) {
     text = value.toString();
   }
-
+  
   @Override
   public void resetValue() {
     text = "";
@@ -40,7 +40,7 @@ public class TextPropertyElement extends PropertyElement {
 
   @Override
   public IPropertyDescriptor getPropertyDescriptor() {
-    if(null == propertyDescriptor) {
+    if (propertyDescriptor == null) {
       propertyDescriptor = new TextPropertyDescriptor(getId(), getName());
     }
     return propertyDescriptor;

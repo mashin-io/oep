@@ -27,4 +27,5 @@ public class StartNode extends ControlNode {
   public boolean canConnectFrom(Node source) {
     return false;
   }
+  
 }

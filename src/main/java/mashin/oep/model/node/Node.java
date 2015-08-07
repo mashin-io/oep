@@ -3,48 +3,24 @@ package mashin.oep.model.node;
 import java.util.ArrayList;
 import java.util.List;
 
+import mashin.oep.Utils;
 import mashin.oep.model.HPDLSerializable;
 import mashin.oep.model.ModelElementWithSchema;
+import mashin.oep.model.property.PointPropertyElement;
 import mashin.oep.model.workflow.Workflow;
 
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 public abstract class Node extends ModelElementWithSchema implements HPDLSerializable {
-  private static final String PROP_CONNECTION_SOURCE = "prop.node.connection.source";
-  private static final String PROP_CONNECTION_TARGET = "prop.node.connection.target";
-  private static final String PROP_POS = "prop.node.pos";
-  private static final String PROP_POS_X = "prop.node.pos.x";
-  private static final String PROP_POS_Y = "prop.node.pos.y";
   
-  private static final IPropertyDescriptor[] NODE_PROPERTY_DESCRIPTORS = new IPropertyDescriptor[] {
-    new TextPropertyDescriptor(PROP_POS_X, "X"),
-    new TextPropertyDescriptor(PROP_POS_Y, "Y")
-  };
+  private static final String PROP_CONNECTION_SOURCE  = "prop.node.connection.source";
+  private static final String PROP_CONNECTION_TARGET  = "prop.node.connection.target";
+  private static final String PROP_POS                = "prop.node.pos";
   
-  static {
-    for(IPropertyDescriptor descriptor: NODE_PROPERTY_DESCRIPTORS) {
-      ((PropertyDescriptor) descriptor)
-      .setValidator(new ICellEditorValidator() {
-        @Override
-        public String isValid(Object value) {
-          int intValue = -1;
-          try {
-            intValue = Integer.parseInt((String) value);
-          } catch (NumberFormatException exc) {
-            return "Not a number";
-          }
-          return (intValue >= 0) ? null
-              : "Value must be >=  0";
-        }
-      });
-    }
-  }
+  private static IPropertyDescriptor[] NODE_PROPERTY_DESCRIPTORS;
   
-  private Point position;
+  private PointPropertyElement position;
   
   protected Workflow workflow;
   
@@ -59,51 +35,55 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   
   public Node(Workflow workflow) {
     this.workflow = workflow;
-    this.position = new Point();
+    this.position = new PointPropertyElement(PROP_POS, "Position");
     this.sourceConnections = new ArrayList<Connection>();
     this.targetConnections = new ArrayList<Connection>();
   }
   
   @Override
   public IPropertyDescriptor[] getPropertyDescriptors() {
-    return combine(super.getPropertyDescriptors(), NODE_PROPERTY_DESCRIPTORS);
+    if(NODE_PROPERTY_DESCRIPTORS == null) {
+      NODE_PROPERTY_DESCRIPTORS = Utils.combine(position.getPropertyDescriptors());
+    }
+    return Utils.combine(super.getPropertyDescriptors(), NODE_PROPERTY_DESCRIPTORS);
   }
   
   @Override
   public void setPropertyValue(Object propertyName, Object propertyValue) {
-    switch((String) propertyName) {
-    case PROP_POS_X:
-      setPosition(new Point(Integer.parseInt((String) propertyValue), position.y));
-      break;
-    case PROP_POS_Y:
-      setPosition(new Point(position.x, Integer.parseInt((String) propertyValue)));
-      break;
+    String propertyNameStr = (String) propertyName;
+    switch(propertyNameStr) {
     default:
-      super.setPropertyValue(propertyName, propertyValue);
+      if (position.hasId(propertyNameStr)) {
+        Object oldValue = position.getValue(propertyNameStr);
+        position.setValue(propertyNameStr, propertyValue);
+        firePropertyChange(propertyNameStr, oldValue, propertyValue);
+      } else {
+        super.setPropertyValue(propertyName, propertyValue);
+      }
     }
   }
   
   @Override
   public Object getPropertyValue(Object propertyName) {
-    switch((String) propertyName) {
-    case PROP_POS_X:
-      return getPosition().x;
-    case PROP_POS_Y:
-      return getPosition().y;
+    String propertyNameStr = (String) propertyName;
+    switch(propertyNameStr) {
     default:
-      return super.getPropertyValue(propertyName);
+      if (position.hasId(propertyNameStr)) {
+        return position.getValue(propertyNameStr);
+      } else {
+        return super.getPropertyValue(propertyName);
+      }
     }
   }
   
   public Point getPosition() {
-    return this.position;
+    return this.position.getAsPoint();
   }
   
   public void setPosition(Point point) {
-    Point oldPosition = this.position.getCopy();
-    this.position.x = point.x;
-    this.position.y = point.y;
-    firePropertyChange(PROP_POS, oldPosition, point);
+    Object oldPosition = this.position.getValue();
+    this.position.setFromPoint(point);
+    firePropertyChange(PROP_POS, oldPosition, this.position.getValue());
   }
   
   public List<Connection> getSourceConnections() {
@@ -138,4 +118,5 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   
   public abstract boolean canConnectTo(Node target);
   public abstract boolean canConnectFrom(Node source);
+  
 }
