@@ -1,8 +1,16 @@
 package mashin.oep;
 
+import mashin.oep.model.node.control.DecisionNode;
+import mashin.oep.model.node.control.EndNode;
+import mashin.oep.model.node.control.ForkNode;
+import mashin.oep.model.node.control.JoinNode;
+import mashin.oep.model.node.control.KillNode;
+
+import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
 import org.eclipse.gef.palette.PaletteContainer;
+import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteToolbar;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
@@ -32,14 +40,56 @@ public class WorkflowEditorPalleteFactory {
     return toolbar;
   }
   
+  private static PaletteContainer createControlNodesGroup(WorkflowEditor workflowEditor) {
+    PaletteDrawer controlNodesDrawer = new PaletteDrawer("Control Nodes");
+
+    CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry(
+        "End", "Create an End node",
+        EndNode.class, new NodeCreationFactory<EndNode>(workflowEditor, EndNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    controlNodesDrawer.add(component);
+
+    component = new CombinedTemplateCreationEntry(
+        "Kill", "Create a Kill node",
+        KillNode.class, new NodeCreationFactory<KillNode>(workflowEditor, KillNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    controlNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
+        "Decision", "Create a Decision node",
+        DecisionNode.class, new NodeCreationFactory<DecisionNode>(workflowEditor, DecisionNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    controlNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
+        "Fork", "Create a Fork node",
+        ForkNode.class, new NodeCreationFactory<ForkNode>(workflowEditor, ForkNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    controlNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
+        "Join", "Create a Join node",
+        JoinNode.class, new NodeCreationFactory<JoinNode>(workflowEditor, JoinNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    controlNodesDrawer.add(component);
+
+    return controlNodesDrawer;
+  }
+  
   /**
    * Creates the PaletteRoot and adds all Palette elements.
    * 
    * @return the root
    */
-  public static PaletteRoot createPalette() {
+  public static PaletteRoot createPalette(WorkflowEditor workflowEditor) {
     PaletteRoot workflowPalette = new PaletteRoot();
     workflowPalette.add(createToolsGroup(workflowPalette));
+    workflowPalette.add(createControlNodesGroup(workflowEditor));
     return workflowPalette;
   }
   

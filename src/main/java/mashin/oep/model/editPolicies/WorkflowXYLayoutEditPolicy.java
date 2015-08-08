@@ -4,6 +4,11 @@ import mashin.oep.model.Workflow;
 import mashin.oep.model.commands.NodeCreateCommand;
 import mashin.oep.model.commands.NodeMoveCommand;
 import mashin.oep.model.node.Node;
+import mashin.oep.model.node.control.DecisionNode;
+import mashin.oep.model.node.control.EndNode;
+import mashin.oep.model.node.control.ForkNode;
+import mashin.oep.model.node.control.JoinNode;
+import mashin.oep.model.node.control.KillNode;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
@@ -20,7 +25,12 @@ public class WorkflowXYLayoutEditPolicy extends XYLayoutEditPolicy {
   @Override
   protected Command getCreateCommand(CreateRequest request) {
     Object childClass = request.getNewObjectType();
-    if (childClass == Node.class) {
+    if (childClass == Node.class
+        || childClass == EndNode.class
+        || childClass == KillNode.class
+        || childClass == DecisionNode.class
+        || childClass == ForkNode.class
+        || childClass == JoinNode.class) {
       return new NodeCreateCommand((Node) request.getNewObject(),
           (Workflow) getHost().getModel(),
           ((Rectangle) getConstraintFor(request)).getLocation());

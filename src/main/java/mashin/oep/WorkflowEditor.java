@@ -118,8 +118,9 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   
   @Override
   protected PaletteRoot getPaletteRoot() {
-    if (PALETTE_MODEL == null)
-      PALETTE_MODEL = WorkflowEditorPalleteFactory.createPalette();
+    if (PALETTE_MODEL == null) {
+      PALETTE_MODEL = WorkflowEditorPalleteFactory.createPalette(this);
+    }
     return PALETTE_MODEL;
   }
 
