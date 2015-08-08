@@ -46,5 +46,13 @@ public class TextPropertyElement extends SingularPropertyElement {
     }
     return propertyDescriptor;
   }
+  
+  public void setStringValue(String value) {
+    text = value;
+  }
+  
+  public String getStringValue() {
+    return text;
+  }
 
 }

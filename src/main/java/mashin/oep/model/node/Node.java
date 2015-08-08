@@ -2,12 +2,14 @@ package mashin.oep.model.node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import mashin.oep.Utils;
 import mashin.oep.model.HPDLSerializable;
 import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PointPropertyElement;
+import mashin.oep.model.property.TextPropertyElement;
 import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.draw2d.geometry.Point;
@@ -15,12 +17,16 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 public abstract class Node extends ModelElementWithSchema implements HPDLSerializable {
   
+  public static final AtomicLong ID_SEQ = new AtomicLong(0);
+  
   public static final String PROP_CONNECTION_SOURCE  = "prop.node.connection.source";
   public static final String PROP_CONNECTION_TARGET  = "prop.node.connection.target";
   public static final String PROP_POS                = "prop.node.pos";
+  public static final String PROP_NODE_NAME          = "prop.node.name";
   
   private static IPropertyDescriptor[] NODE_PROPERTY_DESCRIPTORS;
-  
+
+  protected TextPropertyElement  name;
   protected PointPropertyElement position;
   
   protected Workflow workflow;
@@ -30,14 +36,16 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   /**
    * List of connections at which this node is a source
    */
-  private List<Connection> sourceConnections;
+  protected List<Connection> sourceConnections;
+  
   /**
    * List of connections at which this node is a target
    */
-  private List<Connection> targetConnections;
+  protected List<Connection> targetConnections;
   
   public Node(Workflow workflow) {
     this.workflow = workflow;
+    this.name = new TextPropertyElement(PROP_NODE_NAME, "Name");
     this.position = new PointPropertyElement(PROP_POS, "Position");
     this.terminals = new ArrayList<Terminal>();
     this.sourceConnections = new ArrayList<Connection>();
@@ -47,7 +55,9 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   @Override
   public IPropertyDescriptor[] getPropertyDescriptors() {
     if(NODE_PROPERTY_DESCRIPTORS == null) {
-      NODE_PROPERTY_DESCRIPTORS = Utils.combine(position.getPropertyDescriptors());
+      NODE_PROPERTY_DESCRIPTORS = Utils.combine(
+          name.getPropertyDescriptors(),
+          position.getPropertyDescriptors());
     }
     return Utils.combine(super.getPropertyDescriptors(), NODE_PROPERTY_DESCRIPTORS);
   }
@@ -56,6 +66,9 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   public void setPropertyValue(Object propertyName, Object propertyValue) {
     String propertyNameStr = (String) propertyName;
     switch(propertyNameStr) {
+    case PROP_NODE_NAME:
+      setName((String) propertyValue);
+      break;
     default:
       if (position.hasId(propertyNameStr)) {
         Object oldValue = position.getValue(propertyNameStr);
@@ -71,6 +84,8 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   public Object getPropertyValue(Object propertyName) {
     String propertyNameStr = (String) propertyName;
     switch(propertyNameStr) {
+    case PROP_NODE_NAME:
+      return getName();
     default:
       if (position.hasId(propertyNameStr)) {
         return position.getValue(propertyNameStr);
@@ -88,6 +103,16 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
     Point oldPosition = this.position.getAsPoint();
     this.position.setFromPoint(point);
     firePropertyChange(PROP_POS, oldPosition, point);
+  }
+  
+  public String getName() {
+    return name.getStringValue();
+  }
+  
+  public void setName(String name) {
+    String oldName = this.name.getStringValue();
+    this.name.setStringValue(name);
+    firePropertyChange(PROP_NODE_NAME, oldName, name);
   }
   
   public List<Connection> getSourceConnections() {

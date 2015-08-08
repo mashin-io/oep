@@ -2,35 +2,33 @@ package mashin.oep.model.node.control;
 
 import mashin.oep.model.Workflow;
 import mashin.oep.model.node.Node;
-import mashin.oep.model.terminal.NoInputTerminal;
+import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.SingleOutputTerminal;
 
-public class StartNode extends ControlNode {
+public class JoinNode extends ControlNode {
 
-  protected NoInputTerminal noInputTerminal;
+  protected FanInTerminal fanInTerminal;
   protected SingleOutputTerminal singleOutputTerminal;
   
-  public StartNode(Workflow workflow) {
+  public JoinNode(Workflow workflow) {
     super(workflow);
-    noInputTerminal       = new NoInputTerminal("", this);
-    singleOutputTerminal  = new SingleOutputTerminal("to", this);
-    terminals.add(noInputTerminal);
+    fanInTerminal        = new FanInTerminal("fan-in", this);
+    singleOutputTerminal = new SingleOutputTerminal("out", this);
+    terminals.add(fanInTerminal);
     terminals.add(singleOutputTerminal);
-    setName(null);
+    setName("join-" + ID_SEQ.incrementAndGet());
   }
 
   @Override
-  public void setName(String name) {
-    super.setName("start");
-  }
-  
-  @Override
   public String toHPDL() {
+    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public void fromHPDL(String hpdl) {
+    // TODO Auto-generated method stub
+
   }
 
   @Override
@@ -40,7 +38,7 @@ public class StartNode extends ControlNode {
 
   @Override
   public boolean canConnectFrom(Node source) {
-    return false;
+    return true;
   }
-  
+
 }
