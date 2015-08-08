@@ -1,0 +1,41 @@
+package mashin.oep.model.editPolicies;
+
+import mashin.oep.model.Workflow;
+import mashin.oep.model.commands.NodeCreateCommand;
+import mashin.oep.model.commands.NodeMoveCommand;
+import mashin.oep.model.node.Node;
+
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.NodeEditPart;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
+import org.eclipse.gef.requests.ChangeBoundsRequest;
+import org.eclipse.gef.requests.CreateRequest;
+
+public class WorkflowXYLayoutEditPolicy extends XYLayoutEditPolicy {
+
+  @Override
+  protected Command getCreateCommand(CreateRequest request) {
+    Object childClass = request.getNewObjectType();
+    if (childClass == Node.class) {
+      return new NodeCreateCommand((Node) request.getNewObject(),
+          (Workflow) getHost().getModel(),
+          ((Rectangle) getConstraintFor(request)).getLocation());
+    }
+    return null;
+  }
+  
+  protected Command createChangeConstraintCommand(
+      ChangeBoundsRequest request, EditPart child, Object constraint) {
+    if (child instanceof NodeEditPart
+        && constraint instanceof Rectangle) {
+      // return a command that can move and/or resize a Shape
+      return new NodeMoveCommand((Node) child.getModel(),
+          request, ((Rectangle) constraint).getLocation());
+    }
+    return super.createChangeConstraintCommand(request, child,
+        constraint);
+  }
+
+}

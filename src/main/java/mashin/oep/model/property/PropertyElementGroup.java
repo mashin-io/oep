@@ -39,13 +39,18 @@ public abstract class PropertyElementGroup extends PropertyElement {
     PropertyElementGroup peg = null;
     if (value instanceof IPropertySource) {
       peg = (PropertyElementGroup) ((IPropertySource) value).getEditableValue();
-    } else {
+    } else if (value instanceof PropertyElementGroup){
       peg = (PropertyElementGroup) value;
+    } else {
+      setComplexValue(value);
+      return;
     }
     for (int i = 0; i < propertyElements.size(); i++) {
       propertyElements.get(i).setValue(peg.propertyElements.get(i).getValue());
     }
   }
+  
+  public abstract void setComplexValue(Object value);
   
   @Override
   public void setValue(String id, Object value) {

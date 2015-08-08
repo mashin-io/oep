@@ -7,10 +7,11 @@ public class TextPropertyElement extends SingularPropertyElement {
 
   private IPropertyDescriptor propertyDescriptor;
   
-  private String text = "";
+  private String text;
   
   public TextPropertyElement(String id, String name) {
     super(id, name);
+    text = "";
   }
   
   @Override

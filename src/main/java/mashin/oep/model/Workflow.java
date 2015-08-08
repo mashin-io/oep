@@ -7,7 +7,7 @@ import java.util.List;
 import mashin.oep.Utils;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.node.control.StartNode;
-import mashin.oep.model.property.Property;
+import mashin.oep.model.property.PropertyPropertyElement;
 import mashin.oep.model.property.PropertyElementCollection;
 import mashin.oep.model.property.TextPropertyElement;
 
@@ -54,16 +54,16 @@ public class Workflow extends ModelElementWithSchema implements
   
   public Workflow() {
     name          = new TextPropertyElement(PROP_NAME, "Name");
-    parameters    = new PropertyElementCollection("Parameters", new Property(
+    parameters    = new PropertyElementCollection("Parameters", new PropertyPropertyElement(
                         PROP_PROPERTY, "Property"));
     jobtracker    = new TextPropertyElement(PROP_JOBTRACKER, "Jobtracker");
     namenode      = new TextPropertyElement(PROP_NAMENDOE, "Namenode");
     jobxml        = new PropertyElementCollection(CATEGORY_GLOBAL,
                         new TextPropertyElement(PROP_JOB_XML, "Job XML"));
     configuration = new PropertyElementCollection(CATEGORY_GLOBAL,
-                        new Property(PROP_CONFIGURATION, "Configuration"));
+                        new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
     credentials   = new PropertyElementCollection(CATEGORY_CREDENTIALS,
-                        new Property(PROP_CREDENTIALS, "Credential"));
+                        new PropertyPropertyElement(PROP_CREDENTIALS, "Credential"));
   }
 
   public void init() {

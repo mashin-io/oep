@@ -33,9 +33,17 @@ public class PointCoordinatePropertyElement extends SingularPropertyElement {
 
   @Override
   public Object getValue() {
-    return coordinate;
+    return coordinate + "";
   }
-
+  
+  public void setFromInteger(Integer value) {
+    coordinate = new Integer(value);
+  }
+  
+  public Integer getAsInteger() {
+    return new Integer(coordinate);
+  }
+  
   @Override
   public Object getEditableValue() {
     return this;
@@ -49,14 +57,12 @@ public class PointCoordinatePropertyElement extends SingularPropertyElement {
         .setValidator(new ICellEditorValidator() {
           @Override
           public String isValid(Object value) {
-            int intValue = -1;
             try {
-              intValue = Integer.parseInt((String) value);
+              Integer.parseInt((String) value);
             } catch (NumberFormatException exc) {
               return "Not a number";
             }
-            return (intValue >= 0) ? null
-                : "Value must be >=  0";
+            return null;
           }
         });
     }

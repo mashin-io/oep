@@ -36,6 +36,7 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   public Node(Workflow workflow) {
     this.workflow = workflow;
     this.position = new PointPropertyElement(PROP_POS, "Position");
+    this.position.setFromPoint(new Point(50, 50));
     this.sourceConnections = new ArrayList<Connection>();
     this.targetConnections = new ArrayList<Connection>();
   }
@@ -81,9 +82,9 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   }
   
   public void setPosition(Point point) {
-    Object oldPosition = this.position.getValue();
+    Point oldPosition = this.position.getAsPoint();
     this.position.setFromPoint(point);
-    firePropertyChange(PROP_POS, oldPosition, this.position.getValue());
+    firePropertyChange(PROP_POS, oldPosition, point);
   }
   
   public List<Connection> getSourceConnections() {

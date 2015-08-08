@@ -17,8 +17,10 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
@@ -112,6 +114,8 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
    */
   private IFigure createFigureForModel() {
     RectangleFigure rectangleFigure = new RectangleFigure();
+    rectangleFigure.setPreferredSize(50, 50);
+    rectangleFigure.setLocation(getCastedModel().getPosition());
     rectangleFigure.setSize(50, 50);
     return rectangleFigure;
   }
@@ -175,17 +179,15 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     }
   }
 
-//  protected void refreshVisuals() {
-//    // notify parent container of changed position & location
-//    // if this line is removed, the XYLayoutManager used by the parent
-//    // container
-//    // (the Figure of the ShapesDiagramEditPart), will not know the bounds
-//    // of this figure
-//    // and will not draw it correctly.
-//    Rectangle bounds = new Rectangle(getCastedModel().getPosition(),
-//        getCastedModel().getSize());
-//    ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(),
-//        bounds);
-//  }
+  protected void refreshVisuals() {
+    // notify parent container of changed position & location
+    // if this line is removed, the XYLayoutManager used by the parent
+    // container
+    // (the Figure of the WorkflowEditPart), will not know the bounds
+    // of this figure
+    // and will not draw it correctly.
+    Rectangle bounds = new Rectangle(getCastedModel().getPosition(), getFigure().getSize());
+    ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), bounds);
+  }
   
 }

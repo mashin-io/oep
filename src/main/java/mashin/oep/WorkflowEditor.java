@@ -27,6 +27,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
+  
   private Workflow workflow;
   
   private static PaletteRoot PALETTE_MODEL;
@@ -87,6 +88,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     };
   }
   
+  @SuppressWarnings("unchecked")
   @Override
   protected void createActions() {
     super.createActions();
@@ -107,6 +109,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
    */
   private TransferDropTargetListener createTransferDropTargetListener() {
     return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
+      @SuppressWarnings("rawtypes")
       protected CreationFactory getFactory(Object template) {
         return new SimpleFactory((Class) template);
       }
@@ -149,4 +152,5 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     workflow.setName(input.getName());
     setPartName(input.getName());
   }
+  
 }

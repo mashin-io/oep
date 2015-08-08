@@ -2,6 +2,8 @@ package mashin.oep.model;
 
 import java.util.List;
 
+import mashin.oep.Utils;
+
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
@@ -28,8 +30,10 @@ public abstract class ModelElementWithSchema extends ModelElement implements Com
           labelsArray[i] = possibleSchemaVersions.get(i).version;
         }
         
-        this.modelElementWithSchemaDescriptors = new IPropertyDescriptor[] { new ComboBoxPropertyDescriptor(
-            PROP_SCHEMA_VERSION, "Schema Version", labelsArray) };
+        this.modelElementWithSchemaDescriptors = Utils.combine(
+            super.getPropertyDescriptors(),
+            new IPropertyDescriptor[] { new ComboBoxPropertyDescriptor(
+                PROP_SCHEMA_VERSION, "Schema Version", labelsArray) });
       }
       return this.modelElementWithSchemaDescriptors;
     } else {

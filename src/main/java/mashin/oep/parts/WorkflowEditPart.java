@@ -6,6 +6,7 @@ import java.util.List;
 
 import mashin.oep.model.ModelElement;
 import mashin.oep.model.Workflow;
+import mashin.oep.model.editPolicies.WorkflowXYLayoutEditPolicy;
 import mashin.oep.model.node.Node;
 
 import org.eclipse.draw2d.ConnectionLayer;
@@ -85,5 +86,8 @@ public class WorkflowEditPart extends AbstractGraphicalEditPart implements
     installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, null);
     installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, null);
     installEditPolicy(EditPolicy.COMPONENT_ROLE, new RootComponentEditPolicy());
+    // handles constraint changes (e.g. moving) of model elements
+    // and creation of new model elements
+    installEditPolicy(EditPolicy.LAYOUT_ROLE, new WorkflowXYLayoutEditPolicy());
   }
 }

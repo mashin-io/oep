@@ -7,14 +7,14 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 
-public class ShapeSetConstraintCommand extends Command {
+public class NodeMoveCommand extends Command {
   
 	private final Point newPosition;
 	private Point oldPosition;
 	private final ChangeBoundsRequest request;
 	private final Node node;
 
-	public ShapeSetConstraintCommand(Node node, ChangeBoundsRequest req,
+	public NodeMoveCommand(Node node, ChangeBoundsRequest req,
 			Point newPosition) {
 		if (node == null || req == null || newPosition == null) {
 			throw new IllegalArgumentException();
