@@ -8,6 +8,7 @@ import mashin.oep.model.HPDLSerializable;
 import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PointPropertyElement;
+import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -20,9 +21,11 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   
   private static IPropertyDescriptor[] NODE_PROPERTY_DESCRIPTORS;
   
-  private PointPropertyElement position;
+  protected PointPropertyElement position;
   
   protected Workflow workflow;
+  
+  protected List<Terminal> terminals;
   
   /**
    * List of connections at which this node is a source
@@ -36,7 +39,7 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   public Node(Workflow workflow) {
     this.workflow = workflow;
     this.position = new PointPropertyElement(PROP_POS, "Position");
-    this.position.setFromPoint(new Point(50, 50));
+    this.terminals = new ArrayList<Terminal>();
     this.sourceConnections = new ArrayList<Connection>();
     this.targetConnections = new ArrayList<Connection>();
   }
@@ -95,26 +98,90 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
     return this.targetConnections;
   }
   
-  public void addConnection(Connection connection) {
+  public boolean addConnectionInitiate(Connection connection) {
     if (connection.getSource() == connection.getTarget()) {
-      return;
+      
+      return false;
+      
     } else if (connection.getSource() == this) {
-      sourceConnections.add(connection);
-      firePropertyChange(PROP_CONNECTION_SOURCE, null, connection);
+      
+      if (!canConnectTo(connection.getTarget())
+          || !connection.getSourceTerminal().canAddConnection(connection)) {
+        return false;
+      }
+      
+      boolean success = sourceConnections.add(connection);
+      if (success) {
+        connection.getSourceTerminal().addConnectionUpdate(connection);
+        firePropertyChange(PROP_CONNECTION_SOURCE, null, connection);
+      }
+      return success;
+      
     } else if (connection.getTarget() == this) {
-      targetConnections.add(connection);
-      firePropertyChange(PROP_CONNECTION_TARGET, null, connection);
+      
+      if (!canConnectFrom(connection.getSource())
+          || !connection.getTargetTerminal().canAddConnection(connection)) {
+        return false;
+      }
+      
+      boolean success = targetConnections.add(connection);
+      if (success) {
+        connection.getTargetTerminal().addConnectionUpdate(connection);
+        firePropertyChange(PROP_CONNECTION_TARGET, null, connection);
+      }
+      return success;
+      
+    }
+    
+    return false;
+  }
+  
+  public void addConnectionUpdate(Connection connection) {
+    if (connection.getSource() == this) {
+      boolean success = sourceConnections.add(connection);
+      if (success) {
+        firePropertyChange(PROP_CONNECTION_SOURCE, null, connection);
+      }
+    } else if (connection.getTarget() == this) {
+      boolean success = targetConnections.add(connection);
+      if (success) {
+        firePropertyChange(PROP_CONNECTION_TARGET, null, connection);
+      }
     }
   }
   
-  public void removeConnection(Connection connection) {
+  public void removeConnectionInitiate(Connection connection) {
     if (connection.getSource() == this) {
-      sourceConnections.remove(connection);
-      firePropertyChange(PROP_CONNECTION_SOURCE, connection, null);
+      boolean success = sourceConnections.remove(connection);
+      if (success) {
+        connection.getSourceTerminal().removeConnectionUpdate(connection);
+        firePropertyChange(PROP_CONNECTION_SOURCE, connection, null);
+      }
     } else if (connection.getTarget() == this) {
-      targetConnections.remove(connection);
-      firePropertyChange(PROP_CONNECTION_TARGET, connection, null);
+      boolean success = targetConnections.remove(connection);
+      if (success) {
+        connection.getTargetTerminal().removeConnectionUpdate(connection);
+        firePropertyChange(PROP_CONNECTION_TARGET, connection, null);
+      }
     }
+  }
+  
+  public void removeConnectionUpdate(Connection connection) {
+    if (connection.getSource() == this) {
+      boolean success = sourceConnections.remove(connection);
+      if (success) {
+        firePropertyChange(PROP_CONNECTION_SOURCE, connection, null);
+      }
+    } else if (connection.getTarget() == this) {
+      boolean success = targetConnections.remove(connection);
+      if (success) {
+        firePropertyChange(PROP_CONNECTION_TARGET, connection, null);
+      }
+    }
+  }
+  
+  public List<Terminal> getTerminals() {
+    return new ArrayList<Terminal>(terminals);
   }
   
   public abstract boolean canConnectTo(Node target);
