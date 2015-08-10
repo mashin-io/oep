@@ -5,12 +5,22 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import mashin.oep.figures.NodeFigure;
+import mashin.oep.figures.TerminalConnectionAnchor;
 import mashin.oep.model.ModelElement;
 import mashin.oep.model.editPolicies.NodeComponentEditPolicy;
 import mashin.oep.model.editPolicies.NodeGraphicalNodeEditPolicy;
 import mashin.oep.model.editPolicies.NodeLabelDirectEditPolicy;
 import mashin.oep.model.node.Connection;
 import mashin.oep.model.node.Node;
+import mashin.oep.model.node.control.DecisionNode;
+import mashin.oep.model.node.control.ForkNode;
+import mashin.oep.model.node.control.JoinNode;
+import mashin.oep.model.node.control.StartNode;
+import mashin.oep.model.terminal.FanInTerminal;
+import mashin.oep.model.terminal.FanOutTerminal;
+import mashin.oep.model.terminal.InputTerminal;
+import mashin.oep.model.terminal.SingleOutputTerminal;
+import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
@@ -72,11 +82,50 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
   }
   
   protected IFigure createFigure() {
-    IFigure f = new NodeFigure();
-    f.setLocation(getCastedModel().getPosition());
-    return f;
+    NodeFigure nodeFigure = new NodeFigure();
+    nodeFigure.setLocation(getCastedModel().getPosition());
+    
+    List<Terminal> terminals = getCastedModel().getTerminals();
+    for (Terminal terminal : terminals) {
+      if (terminal instanceof FanInTerminal) {
+        nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
+            nodeFigure,
+            TerminalConnectionAnchor.TYPE_FANIN,
+            getConnectionAnchorVerticalOffset(terminal),
+            terminal.getLabel()));
+      } else if (terminal instanceof SingleOutputTerminal) {
+        nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
+            nodeFigure,
+            TerminalConnectionAnchor.TYPE_OUT,
+            getConnectionAnchorVerticalOffset(terminal),
+            terminal.getLabel()));
+      } else if (terminal instanceof FanOutTerminal) {
+        nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
+            nodeFigure,
+            TerminalConnectionAnchor.TYPE_FANOUT,
+            getConnectionAnchorVerticalOffset(terminal),
+            terminal.getLabel()));
+      }
+    }
+    
+    return nodeFigure;
   }
 
+  private int getConnectionAnchorVerticalOffset(Terminal terminal) {
+    switch (terminal.getLabel()) {
+    case Node.TERMINAL_FANIN:
+    case Node.TERMINAL_CASE:
+    case Node.TERMINAL_FANOUT:
+    case Node.TERMINAL_OUT:
+    case Node.TERMINAL_OK:
+      return 50;
+    case Node.TERMINAL_DEFAULT:
+    case Node.TERMINAL_ERROR:
+      return 90;
+    default: return 50;
+    }
+  }
+  
   /**
    * Return a IFigure depending on the instance of the current model element.
    * This allows this EditPart to be used for all sublasses of Node.

@@ -12,8 +12,8 @@ public class EndNode extends ControlNode {
   
   public EndNode(Workflow workflow) {
     super(workflow);
-    fanInTerminal     = new FanInTerminal("fan-in", this);
-    noOutputTerminal  = new NoOutputTerminal("", this);
+    fanInTerminal     = new FanInTerminal(TERMINAL_FANIN, this);
+    noOutputTerminal  = new NoOutputTerminal(TERMINAL_NONE, this);
     terminals.add(fanInTerminal);
     terminals.add(noOutputTerminal);
     setName("end-" + ID_SEQ.incrementAndGet());

@@ -14,9 +14,9 @@ public class DecisionNode extends ControlNode {
   
   public DecisionNode(Workflow workflow) {
     super(workflow);
-    fanInTerminal               = new FanInTerminal("fan-in", this);
-    caseFanOutTerminal          = new FanOutTerminal("case", this);
-    defaultSingleOutputTerminal = new SingleOutputTerminal("default", this);
+    fanInTerminal               = new FanInTerminal(TERMINAL_FANIN, this);
+    caseFanOutTerminal          = new FanOutTerminal(TERMINAL_CASE, this);
+    defaultSingleOutputTerminal = new SingleOutputTerminal(TERMINAL_DEFAULT, this);
     terminals.add(fanInTerminal);
     terminals.add(caseFanOutTerminal);
     terminals.add(defaultSingleOutputTerminal);

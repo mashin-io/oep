@@ -12,8 +12,8 @@ public class JoinNode extends ControlNode {
   
   public JoinNode(Workflow workflow) {
     super(workflow);
-    fanInTerminal        = new FanInTerminal("fan-in", this);
-    singleOutputTerminal = new SingleOutputTerminal("out", this);
+    fanInTerminal        = new FanInTerminal(TERMINAL_FANIN, this);
+    singleOutputTerminal = new SingleOutputTerminal(TERMINAL_OUT, this);
     terminals.add(fanInTerminal);
     terminals.add(singleOutputTerminal);
     setName("join-" + ID_SEQ.incrementAndGet());

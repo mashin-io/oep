@@ -12,8 +12,8 @@ public class StartNode extends ControlNode {
   
   public StartNode(Workflow workflow) {
     super(workflow);
-    noInputTerminal       = new NoInputTerminal("", this);
-    singleOutputTerminal  = new SingleOutputTerminal("to", this);
+    noInputTerminal       = new NoInputTerminal(TERMINAL_NONE, this);
+    singleOutputTerminal  = new SingleOutputTerminal(TERMINAL_OUT, this);
     terminals.add(noInputTerminal);
     terminals.add(singleOutputTerminal);
     setName(null);

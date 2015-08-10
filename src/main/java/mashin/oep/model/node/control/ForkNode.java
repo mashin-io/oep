@@ -12,8 +12,8 @@ public class ForkNode extends ControlNode {
   
   public ForkNode(Workflow workflow) {
     super(workflow);
-    fanInTerminal  = new FanInTerminal("fan-in", this);
-    fanOutTerminal = new FanOutTerminal("fan-out", this);
+    fanInTerminal  = new FanInTerminal(TERMINAL_FANIN, this);
+    fanOutTerminal = new FanOutTerminal(TERMINAL_FANOUT, this);
     terminals.add(fanInTerminal);
     terminals.add(fanOutTerminal);
     setName("fork-" + ID_SEQ.incrementAndGet());

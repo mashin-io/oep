@@ -22,8 +22,8 @@ public class KillNode extends ControlNode {
   
   public KillNode(Workflow workflow) {
     super(workflow);
-    fanInTerminal     = new FanInTerminal("fan-in", this);
-    noOutputTerminal  = new NoOutputTerminal("", this);
+    fanInTerminal     = new FanInTerminal(TERMINAL_FANIN, this);
+    noOutputTerminal  = new NoOutputTerminal(TERMINAL_NONE, this);
     terminals.add(fanInTerminal);
     terminals.add(noOutputTerminal);
     setName("kill-" + ID_SEQ.incrementAndGet());

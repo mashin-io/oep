@@ -22,6 +22,15 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   
   public static final AtomicLong ID_SEQ = new AtomicLong(0);
   
+  public static final String TERMINAL_NONE    = "";
+  public static final String TERMINAL_FANIN   = "fan-in";
+  public static final String TERMINAL_FANOUT  = "fan-out";
+  public static final String TERMINAL_CASE    = "case";
+  public static final String TERMINAL_DEFAULT = "default";
+  public static final String TERMINAL_OUT     = "out";
+  public static final String TERMINAL_OK      = "ok";
+  public static final String TERMINAL_ERROR   = "error";
+  
   public static final String PROP_CONNECTION_SOURCE  = "prop.node.connection.source";
   public static final String PROP_CONNECTION_TARGET  = "prop.node.connection.target";
   public static final String PROP_POS                = "prop.node.pos";
