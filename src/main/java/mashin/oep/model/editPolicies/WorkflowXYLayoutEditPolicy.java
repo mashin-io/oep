@@ -1,8 +1,8 @@
 package mashin.oep.model.editPolicies;
 
 import mashin.oep.model.Workflow;
-import mashin.oep.model.commands.NodeCreateCommand;
-import mashin.oep.model.commands.NodeMoveCommand;
+import mashin.oep.model.commands.node.NodeCreateCommand;
+import mashin.oep.model.commands.node.NodeMoveCommand;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.node.control.DecisionNode;
 import mashin.oep.model.node.control.EndNode;

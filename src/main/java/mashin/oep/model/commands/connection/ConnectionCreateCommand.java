@@ -1,4 +1,4 @@
-package mashin.oep.model.commands;
+package mashin.oep.model.commands.connection;
 
 import java.util.Iterator;
 

@@ -1,4 +1,4 @@
-package mashin.oep.model.commands;
+package mashin.oep.model.commands.node;
 
 import mashin.oep.model.node.Node;
 

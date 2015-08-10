@@ -4,11 +4,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import mashin.oep.figures.NodeFigure;
 import mashin.oep.model.ModelElement;
-import mashin.oep.model.Workflow;
-import mashin.oep.model.commands.ConnectionCreateCommand;
-import mashin.oep.model.commands.ConnectionReconnectCommand;
-import mashin.oep.model.commands.NodeDeleteCommand;
+import mashin.oep.model.editPolicies.NodeComponentEditPolicy;
+import mashin.oep.model.editPolicies.NodeGraphicalNodeEditPolicy;
+import mashin.oep.model.editPolicies.NodeLabelDirectEditPolicy;
 import mashin.oep.model.node.Connection;
 import mashin.oep.model.node.Node;
 
@@ -16,6 +16,7 @@ import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
@@ -23,13 +24,9 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
-import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.gef.editpolicies.ComponentEditPolicy;
-import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
-import org.eclipse.gef.requests.CreateConnectionRequest;
-import org.eclipse.gef.requests.GroupRequest;
-import org.eclipse.gef.requests.ReconnectRequest;
+import org.eclipse.jface.viewers.TextCellEditor;
 
 class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     PropertyChangeListener, NodeEditPart {
@@ -47,76 +44,50 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
   }
 
   protected void createEditPolicies() {
+    // allow direct edit of node label
+    installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new NodeLabelDirectEditPolicy());
+    
     // allow removal of the associated model element
-    installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy() {
-      protected Command createDeleteCommand(GroupRequest deleteRequest) {
-        Object parent = getHost().getParent().getModel();
-        Object child = getHost().getModel();
-        if (parent instanceof Workflow && child instanceof Node) {
-          return new NodeDeleteCommand((Workflow) parent, (Node) child);
-        }
-        return super.createDeleteCommand(deleteRequest);
-      }
-    });
+    installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeComponentEditPolicy());
     
     // allow the creation of connections and
     // and the reconnection of connections between Shape instances
-    installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
-        new GraphicalNodeEditPolicy() {
-          protected Command getConnectionCompleteCommand(
-              CreateConnectionRequest request) {
-            ConnectionCreateCommand cmd = (ConnectionCreateCommand) request
-                .getStartCommand();
-            cmd.setTarget((Node) getHost().getModel());
-            return cmd;
-          }
-
-          protected Command getConnectionCreateCommand(
-              CreateConnectionRequest request) {
-            Node source = (Node) getHost().getModel();
-            ConnectionCreateCommand cmd = new ConnectionCreateCommand(source);
-            request.setStartCommand(cmd);
-            return cmd;
-          }
-
-          protected Command getReconnectSourceCommand(ReconnectRequest request) {
-            Connection conn = (Connection) request.getConnectionEditPart()
-                .getModel();
-            Node newSource = (Node) getHost().getModel();
-            ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(
-                conn);
-            cmd.setNewSource(newSource);
-            return cmd;
-          }
-
-          protected Command getReconnectTargetCommand(ReconnectRequest request) {
-            Connection conn = (Connection) request.getConnectionEditPart()
-                .getModel();
-            Node newTarget = (Node) getHost().getModel();
-            ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(
-                conn);
-            cmd.setNewTarget(newTarget);
-            return cmd;
-          }
-        });
+    installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new NodeGraphicalNodeEditPolicy());
   }
 
+  @Override
+  public void performRequest(Request req) {
+    if (req.getType() == RequestConstants.REQ_DIRECT_EDIT) {
+      performDirectEditing();
+    } else {
+      super.performRequest(req);
+    }
+  }
+  
+  private void performDirectEditing() {
+    Label label = ((NodeFigure) getFigure()).getLabelFigure();
+    NodeLabelDirectEditManager manager = new NodeLabelDirectEditManager(this,
+        TextCellEditor.class, new NodeLabelCellEditorLocator(label), label);
+    manager.show();
+  }
+  
   protected IFigure createFigure() {
-    IFigure f = createFigureForModel();
-    f.setOpaque(true); // non-transparent figure
-    f.setBackgroundColor(ColorConstants.lightGray);
+    IFigure f = new NodeFigure();
+    f.setLocation(getCastedModel().getPosition());
     return f;
   }
 
   /**
    * Return a IFigure depending on the instance of the current model element.
-   * This allows this EditPart to be used for both sublasses of Node.
+   * This allows this EditPart to be used for all sublasses of Node.
    */
   private IFigure createFigureForModel() {
     RectangleFigure rectangleFigure = new RectangleFigure();
-    rectangleFigure.setPreferredSize(50, 50);
+    rectangleFigure.setPreferredSize(30, 40);
     rectangleFigure.setLocation(getCastedModel().getPosition());
-    rectangleFigure.setSize(50, 50);
+    rectangleFigure.setSize(rectangleFigure.getPreferredSize());
+    rectangleFigure.setOpaque(true);
+    rectangleFigure.setBackgroundColor(ColorConstants.lightGray);
     return rectangleFigure;
   }
   
@@ -133,6 +104,10 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
 
   private Node getCastedModel() {
     return (Node) getModel();
+  }
+  
+  private NodeFigure getCastedFigure() {
+    return (NodeFigure) getFigure();
   }
 
   protected ConnectionAnchor getConnectionAnchor() {
@@ -170,24 +145,34 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
 
   public void propertyChange(PropertyChangeEvent evt) {
     String prop = evt.getPropertyName();
-    if (Node.PROP_POS.equals(prop)) {
+    switch(prop) {
+    case Node.PROP_POS:
+    case Node.PROP_NODE_NAME:
       refreshVisuals();
-    } else if (Node.PROP_CONNECTION_SOURCE.equals(prop)) {
+      break;
+    case Node.PROP_CONNECTION_SOURCE:
       refreshSourceConnections();
-    } else if (Node.PROP_CONNECTION_TARGET.equals(prop)) {
+      break;
+    case Node.PROP_CONNECTION_TARGET:
       refreshTargetConnections();
+      break;
     }
   }
 
   protected void refreshVisuals() {
+    NodeFigure nodeFigure = getCastedFigure();
+    Node nodeModel = getCastedModel();
+    
+    nodeFigure.setLabel(nodeModel.getName());
+    
     // notify parent container of changed position & location
     // if this line is removed, the XYLayoutManager used by the parent
     // container
     // (the Figure of the WorkflowEditPart), will not know the bounds
     // of this figure
     // and will not draw it correctly.
-    Rectangle bounds = new Rectangle(getCastedModel().getPosition(), getFigure().getSize());
-    ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), bounds);
+    Rectangle bounds = new Rectangle(nodeModel.getPosition(), nodeFigure.getSize());
+    ((GraphicalEditPart) getParent()).setLayoutConstraint(this, nodeFigure, bounds);
   }
   
 }

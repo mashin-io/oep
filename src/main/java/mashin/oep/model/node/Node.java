@@ -3,6 +3,7 @@ package mashin.oep.model.node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import mashin.oep.Utils;
 import mashin.oep.model.HPDLSerializable;
@@ -10,6 +11,8 @@ import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PointPropertyElement;
 import mashin.oep.model.property.TextPropertyElement;
+import mashin.oep.model.terminal.InputTerminal;
+import mashin.oep.model.terminal.OutputTerminal;
 import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.draw2d.geometry.Point;
@@ -205,11 +208,23 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
     }
   }
   
+  public abstract boolean canConnectTo(Node target);
+  public abstract boolean canConnectFrom(Node source);
+  
   public List<Terminal> getTerminals() {
     return new ArrayList<Terminal>(terminals);
   }
   
-  public abstract boolean canConnectTo(Node target);
-  public abstract boolean canConnectFrom(Node source);
+  public List<Terminal> getInputTerminals() {
+    return terminals.stream()
+        .filter(t -> t instanceof InputTerminal)
+        .collect(Collectors.toList());
+  }
+  
+  public List<Terminal> getOutputTerminals() {
+    return terminals.stream()
+        .filter(t -> t instanceof OutputTerminal)
+        .collect(Collectors.toList());
+  }
   
 }
