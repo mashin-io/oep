@@ -1,6 +1,7 @@
 package mashin.oep.parts;
 
 import mashin.oep.model.Workflow;
+import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.node.Node;
 
 import org.eclipse.gef.EditPart;
@@ -22,6 +23,8 @@ public class WorkflowEditPartFactory implements EditPartFactory {
       return new WorkflowEditPart();
     } else if (model instanceof Node) {
       return new WorkflowNodeEditPart();
+    } else if (model instanceof WorkflowConnection) {
+      return new WorkflowConnectionEditPart();
     }
     throw new RuntimeException("Can't create part for model element: "
         + ((model != null) ? model.getClass().getName()

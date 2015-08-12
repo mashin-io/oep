@@ -1,5 +1,7 @@
 package mashin.oep.figures;
 
+import mashin.oep.model.node.Node;
+
 import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RectangleFigure;
@@ -17,7 +19,7 @@ public class TerminalConnectionAnchor extends AbstractConnectionAnchor {
   private int verticalOffsetPercentage;
   private String label;
   
-  public TerminalConnectionAnchor(IFigure owner, int type, int verticalOffsetPercentage, String label) {
+  public TerminalConnectionAnchor(IFigure owner, int type, String label) {
     super(owner);
     
     switch (type) {
@@ -30,14 +32,23 @@ public class TerminalConnectionAnchor extends AbstractConnectionAnchor {
       throw new IllegalArgumentException("Type " + type + " is not supported!");
     }
     
-    if (verticalOffsetPercentage >= 0 && verticalOffsetPercentage <= 100) {
-      this.verticalOffsetPercentage = verticalOffsetPercentage;
-    } else {
-      throw new IllegalArgumentException(
-          "Vertical Offset Percentage should be an integer between 0 and 100 inclusive!");
-    }
-    
     this.label = label;
+    this.verticalOffsetPercentage = getConnectionAnchorVerticalOffset();
+  }
+  
+  private int getConnectionAnchorVerticalOffset() {
+    switch (getLabel()) {
+    case Node.TERMINAL_FANIN:
+    case Node.TERMINAL_CASE:
+    case Node.TERMINAL_FANOUT:
+    case Node.TERMINAL_OUT:
+    case Node.TERMINAL_OK:
+      return 50;
+    case Node.TERMINAL_DEFAULT:
+    case Node.TERMINAL_ERROR:
+      return 90;
+    default: return 50;
+    }
   }
   
   public NodeFigure getCastedOwner() {
@@ -67,10 +78,26 @@ public class TerminalConnectionAnchor extends AbstractConnectionAnchor {
     RectangleFigure body = getCastedOwner().getBodyFigure();
     Rectangle r = body.getBounds();
     
-    int x = type == TYPE_FANIN ? r.x : r.right();
+    int x = type == TYPE_FANIN ? r.x - 5 : r.right() + 5;
     int y = (int) (r.y + verticalOffsetPercentage * r.height / 100.0);
 
     return new Point(x, y);
+  }
+  
+  @Override
+  public Point getReferencePoint() {
+    return getLocation(null);
+  }
+  
+  public boolean isSource() {
+    switch (type) {
+    case TYPE_FANOUT:
+    case TYPE_OUT:
+      return true;
+    case TYPE_FANIN:
+      return false;
+    }
+    return false;
   }
 
 }

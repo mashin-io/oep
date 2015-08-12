@@ -2,7 +2,7 @@ package mashin.oep.model.commands.connection;
 
 import java.util.Iterator;
 
-import mashin.oep.model.node.Connection;
+import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.node.Node;
 
 import org.eclipse.gef.commands.Command;
@@ -37,13 +37,13 @@ import org.eclipse.gef.commands.Command;
  */
 public class ConnectionReconnectCommand extends Command {
 
-	private Connection connection;
+	private WorkflowConnection connection;
 	private Node newSource;
 	private Node newTarget;
 	private final Node oldSource;
 	private final Node oldTarget;
 
-	public ConnectionReconnectCommand(Connection conn) {
+	public ConnectionReconnectCommand(WorkflowConnection conn) {
 		if (conn == null) {
 			throw new IllegalArgumentException();
 		}
@@ -71,9 +71,9 @@ public class ConnectionReconnectCommand extends Command {
 			return false;
 		}
 		// return false, if the connection exists already
-		for (Iterator<Connection> iter = newSource.getSourceConnections().iterator(); iter
+		for (Iterator<WorkflowConnection> iter = newSource.getSourceConnections().iterator(); iter
 				.hasNext();) {
-			Connection conn = (Connection) iter.next();
+			WorkflowConnection conn = (WorkflowConnection) iter.next();
 			// return false if a newSource -> oldTarget connection exists
 			// already
 			// and it is a different instance than the connection-field
@@ -94,9 +94,9 @@ public class ConnectionReconnectCommand extends Command {
 			return false;
 		}
 		// return false, if the connection exists already
-		for (Iterator<Connection> iter = newTarget.getTargetConnections().iterator(); iter
+		for (Iterator<WorkflowConnection> iter = newTarget.getTargetConnections().iterator(); iter
 				.hasNext();) {
-			Connection conn = (Connection) iter.next();
+			WorkflowConnection conn = (WorkflowConnection) iter.next();
 			// return false if a oldSource -> newTarget connection exists
 			// already
 			// and it is a differenct instance that the connection-field

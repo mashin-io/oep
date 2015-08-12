@@ -3,7 +3,7 @@ package mashin.oep.model.commands.node;
 import java.util.List;
 
 import mashin.oep.model.Workflow;
-import mashin.oep.model.node.Connection;
+import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.node.Node;
 
 import org.eclipse.gef.commands.Command;
@@ -15,10 +15,10 @@ public class NodeDeleteCommand extends Command {
 	private final Workflow workflow;
 	
 	/** Holds a copy of the outgoing connections of node. */
-	private List<Connection> sourceConnections;
+	private List<WorkflowConnection> sourceConnections;
 	
 	/** Holds a copy of the incoming connections of node. */
-	private List<Connection> targetConnections;
+	private List<WorkflowConnection> targetConnections;
 	
 	private boolean wasRemoved;
 
@@ -37,8 +37,8 @@ public class NodeDeleteCommand extends Command {
 	 * @param connections
 	 *            a non-null List of connections
 	 */
-	private void addConnections(List<Connection> connections) {
-	  for (Connection conn : connections) {
+	private void addConnections(List<WorkflowConnection> connections) {
+	  for (WorkflowConnection conn : connections) {
 			conn.reconnect();
 		}
 	}
@@ -68,8 +68,8 @@ public class NodeDeleteCommand extends Command {
 	 * @param connections
 	 *            a non-null List of connections
 	 */
-	private void removeConnections(List<Connection> connections) {
-		for (Connection conn : connections) {
+	private void removeConnections(List<WorkflowConnection> connections) {
+		for (WorkflowConnection conn : connections) {
 			conn.disconnect();
 		}
 	}

@@ -10,6 +10,7 @@ import mashin.oep.model.editPolicies.WorkflowXYLayoutEditPolicy;
 import mashin.oep.model.node.Node;
 
 import org.eclipse.draw2d.ConnectionLayer;
+import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -43,7 +44,9 @@ public class WorkflowEditPart extends AbstractGraphicalEditPart implements
 
     // Create the static router for the connection layer
     ConnectionLayer connLayer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
-    connLayer.setConnectionRouter(new ShortestPathConnectionRouter(f));
+    FanRouter router = new FanRouter();
+    router.setNextRouter(new ShortestPathConnectionRouter(f));
+    connLayer.setConnectionRouter(router);
 
     return f;
   }

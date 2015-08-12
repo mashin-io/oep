@@ -9,6 +9,7 @@ import mashin.oep.Utils;
 import mashin.oep.model.HPDLSerializable;
 import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.Workflow;
+import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.property.PointPropertyElement;
 import mashin.oep.model.property.TextPropertyElement;
 import mashin.oep.model.terminal.InputTerminal;
@@ -48,20 +49,20 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   /**
    * List of connections at which this node is a source
    */
-  protected List<Connection> sourceConnections;
+  protected List<WorkflowConnection> sourceConnections;
   
   /**
    * List of connections at which this node is a target
    */
-  protected List<Connection> targetConnections;
+  protected List<WorkflowConnection> targetConnections;
   
   public Node(Workflow workflow) {
     this.workflow = workflow;
     this.name = new TextPropertyElement(PROP_NODE_NAME, "Name");
     this.position = new PointPropertyElement(PROP_POS, "Position");
     this.terminals = new ArrayList<Terminal>();
-    this.sourceConnections = new ArrayList<Connection>();
-    this.targetConnections = new ArrayList<Connection>();
+    this.sourceConnections = new ArrayList<WorkflowConnection>();
+    this.targetConnections = new ArrayList<WorkflowConnection>();
   }
   
   @Override
@@ -127,15 +128,15 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
     firePropertyChange(PROP_NODE_NAME, oldName, name);
   }
   
-  public List<Connection> getSourceConnections() {
+  public List<WorkflowConnection> getSourceConnections() {
     return this.sourceConnections;
   }
   
-  public List<Connection> getTargetConnections() {
+  public List<WorkflowConnection> getTargetConnections() {
     return this.targetConnections;
   }
   
-  public boolean addConnectionInitiate(Connection connection) {
+  public boolean addConnectionInitiate(WorkflowConnection connection) {
     if (connection.getSource() == connection.getTarget()) {
       
       return false;
@@ -173,7 +174,7 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
     return false;
   }
   
-  public void addConnectionUpdate(Connection connection) {
+  public void addConnectionUpdate(WorkflowConnection connection) {
     if (connection.getSource() == this) {
       boolean success = sourceConnections.add(connection);
       if (success) {
@@ -187,7 +188,7 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
     }
   }
   
-  public void removeConnectionInitiate(Connection connection) {
+  public void removeConnectionInitiate(WorkflowConnection connection) {
     if (connection.getSource() == this) {
       boolean success = sourceConnections.remove(connection);
       if (success) {
@@ -203,7 +204,7 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
     }
   }
   
-  public void removeConnectionUpdate(Connection connection) {
+  public void removeConnectionUpdate(WorkflowConnection connection) {
     if (connection.getSource() == this) {
       boolean success = sourceConnections.remove(connection);
       if (success) {
@@ -234,6 +235,15 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
     return terminals.stream()
         .filter(t -> t instanceof OutputTerminal)
         .collect(Collectors.toList());
+  }
+  
+  public Terminal getTerminal(String label) {
+    for (Terminal terminal : terminals) {
+      if (terminal.getLabel().equals(label)) {
+        return terminal;
+      }
+    }
+    return null;
   }
   
 }

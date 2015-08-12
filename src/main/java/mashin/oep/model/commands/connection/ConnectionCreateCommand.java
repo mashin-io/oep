@@ -1,56 +1,69 @@
 package mashin.oep.model.commands.connection;
 
-import java.util.Iterator;
-
-import mashin.oep.model.node.Connection;
+import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.node.Node;
+import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.gef.commands.Command;
 
 public class ConnectionCreateCommand extends Command {
 
-  private Connection connection;
-  private Node source;
-  private Node target;
+  private WorkflowConnection connection;
+  private Node sourceNode;
+  private Node targetNode;
+  private Terminal sourceTerminal;
+  private Terminal targetTerminal;
 
-  public ConnectionCreateCommand(Node source) {
-    if (source == null) {
+  public ConnectionCreateCommand(Node sourceNode, Terminal sourceTerminal) {
+    if (sourceNode == null) {
       throw new IllegalArgumentException();
     }
     setLabel("connection creation");
-    this.source = source;
+    this.sourceNode = sourceNode;
+    this.sourceTerminal = sourceTerminal;
   }
 
   public boolean canExecute() {
-    // disallow source -> source connections
-    if (source.equals(target)) {
+    if (sourceNode == null || targetNode == null
+        || sourceTerminal == null || targetTerminal == null) {
       return false;
     }
-    // return false, if the source -> target connection exists already
-    for (Iterator<Connection> iter = source.getSourceConnections().iterator(); iter
-        .hasNext();) {
-      Connection conn = (Connection) iter.next();
-      if (conn.getTarget().equals(target)) {
-        return false;
-      }
+    
+    connection = new WorkflowConnection(sourceNode, targetNode,
+                                        sourceTerminal, targetTerminal);
+    
+    if (sourceNode.equals(targetNode)
+        || !sourceNode.canConnectTo(targetNode)
+        || !sourceTerminal.canAddConnection(connection)
+        || !targetNode.canConnectFrom(connection.getSource())
+        || !targetTerminal.canAddConnection(connection)) {
+      return false;
     }
+      
     return true;
   }
 
   public void execute() {
     // create a new connection between source and target
-    connection = new Connection(source, target);
+    connection.reconnect();
   }
 
   public void redo() {
     connection.reconnect();
   }
 
-  public void setTarget(Node target) {
-    if (target == null) {
+  public void setTargetNode(Node targetNode) {
+    if (targetNode == null) {
       throw new IllegalArgumentException();
     }
-    this.target = target;
+    this.targetNode = targetNode;
+  }
+  
+  public void setTargetTerminal(Terminal targetTerminal) {
+    if (targetTerminal == null) {
+      throw new IllegalArgumentException();
+    }
+    this.targetTerminal = targetTerminal;
   }
 
   public void undo() {

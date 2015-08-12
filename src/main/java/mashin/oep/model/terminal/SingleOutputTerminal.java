@@ -1,6 +1,6 @@
 package mashin.oep.model.terminal;
 
-import mashin.oep.model.node.Connection;
+import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.node.Node;
 
 public class SingleOutputTerminal extends OutputTerminal {
@@ -10,7 +10,7 @@ public class SingleOutputTerminal extends OutputTerminal {
   }
 
   @Override
-  public boolean canAddConnection(Connection connection) {
+  public boolean canAddConnection(WorkflowConnection connection) {
     if (connections.isEmpty()
         && connection.getSource().equals(holderNode)) {
       return true;

@@ -1,14 +1,14 @@
 package mashin.oep.model.commands.connection;
 
-import mashin.oep.model.node.Connection;
+import mashin.oep.model.WorkflowConnection;
 
 import org.eclipse.gef.commands.Command;
 
 public class ConnectionDeleteCommand extends Command {
 
-  private final Connection connection;
+  private final WorkflowConnection connection;
 
-  public ConnectionDeleteCommand(Connection conn) {
+  public ConnectionDeleteCommand(WorkflowConnection conn) {
     if (conn == null) {
       throw new IllegalArgumentException();
     }

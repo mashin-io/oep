@@ -7,45 +7,39 @@ import java.util.List;
 import mashin.oep.figures.NodeFigure;
 import mashin.oep.figures.TerminalConnectionAnchor;
 import mashin.oep.model.ModelElement;
+import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.editPolicies.NodeComponentEditPolicy;
 import mashin.oep.model.editPolicies.NodeGraphicalNodeEditPolicy;
 import mashin.oep.model.editPolicies.NodeLabelDirectEditPolicy;
-import mashin.oep.model.node.Connection;
 import mashin.oep.model.node.Node;
-import mashin.oep.model.node.control.DecisionNode;
-import mashin.oep.model.node.control.ForkNode;
-import mashin.oep.model.node.control.JoinNode;
-import mashin.oep.model.node.control.StartNode;
 import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.FanOutTerminal;
-import mashin.oep.model.terminal.InputTerminal;
 import mashin.oep.model.terminal.SingleOutputTerminal;
 import mashin.oep.model.terminal.Terminal;
 
-import org.eclipse.draw2d.ChopboxAnchor;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.requests.DropRequest;
 import org.eclipse.jface.viewers.TextCellEditor;
 
-class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
+public class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     PropertyChangeListener, NodeEditPart {
-
-  private ConnectionAnchor anchor;
 
   /**
    * Upon activation, attach to the model element as a property change listener.
    */
+  @Override
   public void activate() {
     if (!isActive()) {
       super.activate();
@@ -53,6 +47,7 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     }
   }
 
+  @Override
   protected void createEditPolicies() {
     // allow direct edit of node label
     installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new NodeLabelDirectEditPolicy());
@@ -81,6 +76,7 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     manager.show();
   }
   
+  @Override
   protected IFigure createFigure() {
     NodeFigure nodeFigure = new NodeFigure();
     nodeFigure.setLocation(getCastedModel().getPosition());
@@ -91,19 +87,16 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
         nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
             nodeFigure,
             TerminalConnectionAnchor.TYPE_FANIN,
-            getConnectionAnchorVerticalOffset(terminal),
             terminal.getLabel()));
       } else if (terminal instanceof SingleOutputTerminal) {
         nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
             nodeFigure,
             TerminalConnectionAnchor.TYPE_OUT,
-            getConnectionAnchorVerticalOffset(terminal),
             terminal.getLabel()));
       } else if (terminal instanceof FanOutTerminal) {
         nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
             nodeFigure,
             TerminalConnectionAnchor.TYPE_FANOUT,
-            getConnectionAnchorVerticalOffset(terminal),
             terminal.getLabel()));
       }
     }
@@ -111,39 +104,25 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     return nodeFigure;
   }
 
-  private int getConnectionAnchorVerticalOffset(Terminal terminal) {
-    switch (terminal.getLabel()) {
-    case Node.TERMINAL_FANIN:
-    case Node.TERMINAL_CASE:
-    case Node.TERMINAL_FANOUT:
-    case Node.TERMINAL_OUT:
-    case Node.TERMINAL_OK:
-      return 50;
-    case Node.TERMINAL_DEFAULT:
-    case Node.TERMINAL_ERROR:
-      return 90;
-    default: return 50;
-    }
-  }
-  
-  /**
-   * Return a IFigure depending on the instance of the current model element.
-   * This allows this EditPart to be used for all sublasses of Node.
-   */
-  private IFigure createFigureForModel() {
-    RectangleFigure rectangleFigure = new RectangleFigure();
-    rectangleFigure.setPreferredSize(30, 40);
-    rectangleFigure.setLocation(getCastedModel().getPosition());
-    rectangleFigure.setSize(rectangleFigure.getPreferredSize());
-    rectangleFigure.setOpaque(true);
-    rectangleFigure.setBackgroundColor(ColorConstants.lightGray);
-    return rectangleFigure;
-  }
+//  /**
+//   * Return a IFigure depending on the instance of the current model element.
+//   * This allows this EditPart to be used for all sublasses of Node.
+//   */
+//  private IFigure createFigureForModel() {
+//    RectangleFigure rectangleFigure = new RectangleFigure();
+//    rectangleFigure.setPreferredSize(30, 40);
+//    rectangleFigure.setLocation(getCastedModel().getPosition());
+//    rectangleFigure.setSize(rectangleFigure.getPreferredSize());
+//    rectangleFigure.setOpaque(true);
+//    rectangleFigure.setBackgroundColor(ColorConstants.lightGray);
+//    return rectangleFigure;
+//  }
   
   /**
    * Upon deactivation, detach from the model element as a property change
    * listener.
    */
+  @Override
   public void deactivate() {
     if (isActive()) {
       super.deactivate();
@@ -159,39 +138,50 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     return (NodeFigure) getFigure();
   }
 
-  protected ConnectionAnchor getConnectionAnchor() {
-    if (anchor == null) {
-      anchor = new ChopboxAnchor(getFigure());
-    }
-    return anchor;
-  }
-
-  protected List<Connection> getModelSourceConnections() {
+  @Override
+  protected List<WorkflowConnection> getModelSourceConnections() {
     return getCastedModel().getSourceConnections();
   }
-
-  protected List<Connection> getModelTargetConnections() {
+  
+  @Override
+  protected List<WorkflowConnection> getModelTargetConnections() {
     return getCastedModel().getTargetConnections();
   }
 
+  @Override
   public ConnectionAnchor getSourceConnectionAnchor(
       ConnectionEditPart connection) {
-    return getConnectionAnchor();
+    return getCastedFigure().getConnectionAnchor(
+        ((WorkflowConnection) connection.getModel())
+        .getSourceTerminal().getLabel());
   }
 
+  @Override
   public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-    return getConnectionAnchor();
+    Point pt = new Point(((DropRequest) request).getLocation());
+    return getCastedFigure().getSourceConnectionAnchorAt(pt);
   }
 
+  @Override
   public ConnectionAnchor getTargetConnectionAnchor(
       ConnectionEditPart connection) {
-    return getConnectionAnchor();
+    return getCastedFigure().getConnectionAnchor(
+        ((WorkflowConnection) connection.getModel())
+        .getTargetTerminal().getLabel());
   }
 
+  @Override
   public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-    return getConnectionAnchor();
+    Point pt = new Point(((DropRequest) request).getLocation());
+    return getCastedFigure().getTargetConnectionAnchorAt(pt);
   }
 
+  @Override
+  public EditPart getTargetEditPart(Request request) {
+    return super.getTargetEditPart(request);
+  }
+  
+  @Override
   public void propertyChange(PropertyChangeEvent evt) {
     String prop = evt.getPropertyName();
     switch(prop) {
@@ -208,6 +198,7 @@ class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     }
   }
 
+  @Override
   protected void refreshVisuals() {
     NodeFigure nodeFigure = getCastedFigure();
     Node nodeModel = getCastedModel();

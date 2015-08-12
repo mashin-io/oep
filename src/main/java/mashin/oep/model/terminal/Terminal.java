@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mashin.oep.model.ModelElement;
-import mashin.oep.model.node.Connection;
+import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.node.Node;
 
 public abstract class Terminal extends ModelElement {
@@ -13,23 +13,23 @@ public abstract class Terminal extends ModelElement {
   public static final String PROP_CONNECTION_REMOVE = "prop.terminal.connection.remove";
   
   protected String label;
-  protected List<Connection> connections;
+  protected List<WorkflowConnection> connections;
   protected Node holderNode;
   
   public Terminal(String label, Node holderNode) {
     this.label = label;
     this.holderNode = holderNode;
-    connections = new ArrayList<Connection>();
+    connections = new ArrayList<WorkflowConnection>();
   }
   
   @Override
   public void setPropertyValue(Object propertyName, Object propertyValue) {
     switch ((String) propertyName) {
     case PROP_CONNECTION_ADD:
-      addConnectionInitiate((Connection) propertyValue);
+      addConnectionInitiate((WorkflowConnection) propertyValue);
       break;
     case PROP_CONNECTION_REMOVE:
-      removeConnectionInitiate((Connection) propertyValue);
+      removeConnectionInitiate((WorkflowConnection) propertyValue);
       break;
     default:
       super.setPropertyValue(propertyName, propertyValue);
@@ -40,15 +40,15 @@ public abstract class Terminal extends ModelElement {
     return label;
   }
   
-  public List<Connection> getConnections() {
-    return new ArrayList<Connection>(connections);
+  public List<WorkflowConnection> getConnections() {
+    return new ArrayList<WorkflowConnection>(connections);
   }
   
-  public boolean hasConnection(Connection connection) {
+  public boolean hasConnection(WorkflowConnection connection) {
     if (connections.contains(connection)) {
       return true;
     }
-    for (Connection myConnection : connections) {
+    for (WorkflowConnection myConnection : connections) {
       if (connection.getSource().equals(myConnection.getSource())
           && connection.getTarget().equals(myConnection.getTarget())) {
         return true;
@@ -57,9 +57,9 @@ public abstract class Terminal extends ModelElement {
     return false;
   }
   
-  public abstract boolean canAddConnection(Connection connection);
+  public abstract boolean canAddConnection(WorkflowConnection connection);
   
-  public boolean addConnectionInitiate(Connection connection) {
+  public boolean addConnectionInitiate(WorkflowConnection connection) {
     if (!canAddConnection(connection)
         || !(holderNode == connection.getSource() 
             && holderNode.canConnectTo(connection.getTarget()))
@@ -75,14 +75,14 @@ public abstract class Terminal extends ModelElement {
     return success;
   }
   
-  public void addConnectionUpdate(Connection connection) {
+  public void addConnectionUpdate(WorkflowConnection connection) {
     boolean success = connections.add(connection);
     if (success) {
       firePropertyChange(PROP_CONNECTION_ADD, null, connection);
     }
   }
   
-  public boolean removeConnectionInitiate(Connection connection) {
+  public boolean removeConnectionInitiate(WorkflowConnection connection) {
     boolean success = connections.remove(connection);
     if (success) {
       holderNode.removeConnectionUpdate(connection);
@@ -91,7 +91,7 @@ public abstract class Terminal extends ModelElement {
     return success;
   }
   
-  public void removeConnectionUpdate(Connection connection) {
+  public void removeConnectionUpdate(WorkflowConnection connection) {
     boolean success = connections.remove(connection);
     if (success) {
       firePropertyChange(PROP_CONNECTION_REMOVE, connection, null);
