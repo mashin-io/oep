@@ -1,9 +1,8 @@
 package mashin.oep.model.commands.connection;
 
-import java.util.Iterator;
-
 import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.node.Node;
+import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.gef.commands.Command;
 
@@ -28,34 +27,34 @@ import org.eclipse.gef.commands.Command;
  * and return the command instance.</li>
  * </ol>
  * 
- * @see org.eclipse.gef.examples.shapes.parts.ShapeEditPart#createEditPolicies()
- *      for an example of the above procedure.
- * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
- * @see #setNewSource(Node)
- * @see #setNewTarget(Node)
- * @author Elias Volanakis
  */
 public class ConnectionReconnectCommand extends Command {
 
 	private WorkflowConnection connection;
-	private Node newSource;
-	private Node newTarget;
-	private final Node oldSource;
-	private final Node oldTarget;
+	private Node newSourceNode;
+	private Node newTargetNode;
+	private Terminal newSourceTerminal;
+	private Terminal newTargetTerminal;
+	private final Node oldSourceNode;
+	private final Node oldTargetNode;
+	private final Terminal oldSourceTerminal;
+  private final Terminal oldTargetTerminal;
 
-	public ConnectionReconnectCommand(WorkflowConnection conn) {
-		if (conn == null) {
+	public ConnectionReconnectCommand(WorkflowConnection connection) {
+		if (connection == null) {
 			throw new IllegalArgumentException();
 		}
-		this.connection = conn;
-		this.oldSource = conn.getSource();
-		this.oldTarget = conn.getTarget();
+		this.connection = connection;
+		this.oldSourceNode = connection.getSource();
+		this.oldTargetNode = connection.getTarget();
+		this.oldSourceTerminal = connection.getSourceTerminal();
+		this.oldTargetTerminal = connection.getTargetTerminal();
 	}
 
 	public boolean canExecute() {
-		if (newSource != null) {
+		if (newSourceNode != null) {
 			return checkSourceReconnection();
-		} else if (newTarget != null) {
+		} else if (newTargetNode != null) {
 			return checkTargetReconnection();
 		}
 		return false;
@@ -66,21 +65,34 @@ public class ConnectionReconnectCommand extends Command {
 	 * allowed.
 	 */
 	private boolean checkSourceReconnection() {
-		// connection endpoints must be different nodes
-		if (newSource.equals(oldTarget)) {
-			return false;
-		}
-		// return false, if the connection exists already
-		for (Iterator<WorkflowConnection> iter = newSource.getSourceConnections().iterator(); iter
-				.hasNext();) {
-			WorkflowConnection conn = (WorkflowConnection) iter.next();
-			// return false if a newSource -> oldTarget connection exists
-			// already
-			// and it is a different instance than the connection-field
-			if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
-				return false;
-			}
-		}
+	  WorkflowConnection conn = new WorkflowConnection(newSourceNode, oldTargetNode,
+        newSourceTerminal, oldTargetTerminal);
+
+    if (newSourceNode.equals(oldTargetNode)
+        || !newSourceNode.canConnectTo(oldTargetNode)
+        || !newSourceTerminal.canAddConnection(conn)
+        || !oldTargetNode.canConnectFrom(newSourceNode)) {
+      return false;
+    }
+    
+//		// connection endpoints must be different nodes
+//		if (newSourceNode.equals(oldTargetNode)) {
+//			return false;
+//		}
+//		// return false, if the connection exists already
+//		for (Iterator<WorkflowConnection> iter = newSourceNode.getSourceConnections().iterator(); iter
+//				.hasNext();) {
+//			WorkflowConnection conn = (WorkflowConnection) iter.next();
+//			// return false if a newSource -> oldTarget connection exists
+//			// already
+//			// and it is a different instance than the connection-field
+//			if (conn.getTarget().equals(oldTargetNode)
+//			    && conn.getTargetTerminal().equals(oldTargetTerminal)
+//			    && conn.getSourceTerminal().equals(newSourceTerminal)
+//			    && !conn.equals(connection)) {
+//				return false;
+//			}
+//		}
 		return true;
 	}
 
@@ -89,21 +101,31 @@ public class ConnectionReconnectCommand extends Command {
 	 * allowed.
 	 */
 	private boolean checkTargetReconnection() {
-		// connection endpoints must be different Shapes
-		if (newTarget.equals(oldSource)) {
-			return false;
-		}
-		// return false, if the connection exists already
-		for (Iterator<WorkflowConnection> iter = newTarget.getTargetConnections().iterator(); iter
-				.hasNext();) {
-			WorkflowConnection conn = (WorkflowConnection) iter.next();
-			// return false if a oldSource -> newTarget connection exists
-			// already
-			// and it is a differenct instance that the connection-field
-			if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
-				return false;
-			}
-		}
+	  WorkflowConnection conn = new WorkflowConnection(oldSourceNode, newTargetNode,
+        oldSourceTerminal, newTargetTerminal);
+
+    if (oldSourceNode.equals(newTargetNode)
+        || !oldSourceNode.canConnectTo(newTargetNode)
+        || !newTargetNode.canConnectFrom(oldSourceNode)
+        || !newTargetTerminal.canAddConnection(conn)) {
+      return false;
+    }
+    
+//		// connection endpoints must be different Shapes
+//		if (newTargetNode.equals(oldSourceNode)) {
+//			return false;
+//		}
+//		// return false, if the connection exists already
+//		for (Iterator<WorkflowConnection> iter = newTargetNode.getTargetConnections().iterator(); iter
+//				.hasNext();) {
+//			WorkflowConnection conn = (WorkflowConnection) iter.next();
+//			// return false if a oldSource -> newTarget connection exists
+//			// already
+//			// and it is a differenct instance that the connection-field
+//			if (conn.getSource().equals(oldSourceNode) && !conn.equals(connection)) {
+//				return false;
+//			}
+//		}
 		return true;
 	}
 
@@ -112,10 +134,10 @@ public class ConnectionReconnectCommand extends Command {
 	 * before) or newTarget (if setNewTarget(...) was invoked before).
 	 */
 	public void execute() {
-		if (newSource != null) {
-			connection.reconnect(newSource, oldTarget);
-		} else if (newTarget != null) {
-			connection.reconnect(oldSource, newTarget);
+		if (newSourceNode != null) {
+			connection.reconnect(newSourceNode, oldTargetNode, newSourceTerminal, oldTargetTerminal);
+		} else if (newTargetNode != null) {
+			connection.reconnect(oldSourceNode, newTargetNode, oldSourceTerminal, newTargetTerminal);
 		} else {
 			throw new IllegalStateException("Should not happen");
 		}
@@ -136,13 +158,15 @@ public class ConnectionReconnectCommand extends Command {
 	 * @throws IllegalArgumentException
 	 *             if connectionSource is null
 	 */
-	public void setNewSource(Node connectionSource) {
-		if (connectionSource == null) {
+	public void setNewSource(Node newSourceNode, Terminal newSourceTerminal) {
+		if (newSourceNode == null || newSourceTerminal == null) {
 			throw new IllegalArgumentException();
 		}
 		setLabel("move connection startpoint");
-		newSource = connectionSource;
-		newTarget = null;
+		this.newSourceNode = newSourceNode;
+		this.newTargetNode = null;
+		this.newSourceTerminal = newSourceTerminal;
+		this.newTargetTerminal = null;
 	}
 
 	/**
@@ -160,20 +184,22 @@ public class ConnectionReconnectCommand extends Command {
 	 * @throws IllegalArgumentException
 	 *             if connectionTarget is null
 	 */
-	public void setNewTarget(Node connectionTarget) {
-		if (connectionTarget == null) {
+	public void setNewTarget(Node newTargetNode, Terminal newTargetTerminal) {
+		if (newTargetNode == null || newTargetTerminal == null) {
 			throw new IllegalArgumentException();
 		}
 		setLabel("move connection endpoint");
-		newSource = null;
-		newTarget = connectionTarget;
+		this.newSourceNode = null;
+		this.newTargetNode = newTargetNode;
+		this.newSourceTerminal = null;
+		this.newTargetTerminal = newTargetTerminal;
 	}
 
 	/**
 	 * Reconnect the connection to its original source and target endpoints.
 	 */
 	public void undo() {
-		connection.reconnect(oldSource, oldTarget);
+		connection.reconnect(oldSourceNode, oldTargetNode, oldSourceTerminal, oldTargetTerminal);
 	}
 
 }

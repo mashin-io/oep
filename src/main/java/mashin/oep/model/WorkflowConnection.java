@@ -73,4 +73,21 @@ public class WorkflowConnection extends ModelElement {
     return targetTerminal;
   }
   
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null || !(obj instanceof WorkflowConnection)) {
+      return false;
+    }
+    
+    if (this == obj) {
+      return true;
+    }
+    
+    WorkflowConnection other = (WorkflowConnection) obj;
+    return this.sourceNode.equals(other.sourceNode)
+        && this.sourceTerminal.equals(other.sourceTerminal)
+        && this.targetNode.equals(other.targetNode)
+        && this.targetTerminal.equals(other.targetTerminal);
+  }
+  
 }

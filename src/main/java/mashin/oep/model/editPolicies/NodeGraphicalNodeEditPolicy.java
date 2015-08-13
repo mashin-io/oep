@@ -8,6 +8,7 @@ import mashin.oep.model.node.Node;
 import mashin.oep.model.terminal.Terminal;
 import mashin.oep.parts.WorkflowNodeEditPart;
 
+import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
@@ -23,7 +24,7 @@ public class NodeGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
     return (WorkflowNodeEditPart) getHost();
   }
   
-  private Terminal getSourceTerminal(CreateConnectionRequest request) {
+  private Terminal getSourceTerminal(Request request) {
     Node node = getNode();
     WorkflowNodeEditPart nodeEditPart = getNodeEditPart();
     TerminalConnectionAnchor terminalConnectionAnchor = (TerminalConnectionAnchor) nodeEditPart
@@ -35,7 +36,7 @@ public class NodeGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
     return node.getTerminal(terminalLabel);
   }
   
-  private Terminal getTargetTerminal(CreateConnectionRequest request) {
+  private Terminal getTargetTerminal(Request request) {
     Node node = getNode();
     WorkflowNodeEditPart nodeEditPart = getNodeEditPart();
     TerminalConnectionAnchor terminalConnectionAnchor = (TerminalConnectionAnchor) nodeEditPart
@@ -76,23 +77,17 @@ public class NodeGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
 
   @Override
   protected Command getReconnectSourceCommand(ReconnectRequest request) {
-    WorkflowConnection conn = (WorkflowConnection) request.getConnectionEditPart()
-        .getModel();
-    Node newSource = getNode();
-    ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(
-        conn);
-    cmd.setNewSource(newSource);
+    WorkflowConnection conn = (WorkflowConnection) request.getConnectionEditPart().getModel();
+    ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn);
+    cmd.setNewSource(getNode(), getSourceTerminal(request));
     return cmd;
   }
 
   @Override
   protected Command getReconnectTargetCommand(ReconnectRequest request) {
-    WorkflowConnection conn = (WorkflowConnection) request.getConnectionEditPart()
-        .getModel();
-    Node newTarget = getNode();
-    ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(
-        conn);
-    cmd.setNewTarget(newTarget);
+    WorkflowConnection conn = (WorkflowConnection) request.getConnectionEditPart().getModel();
+    ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn);
+    cmd.setNewTarget(getNode(), getTargetTerminal(request));
     return cmd;
   }
   

@@ -48,12 +48,6 @@ public abstract class Terminal extends ModelElement {
     if (connections.contains(connection)) {
       return true;
     }
-    for (WorkflowConnection myConnection : connections) {
-      if (connection.getSource().equals(myConnection.getSource())
-          && connection.getTarget().equals(myConnection.getTarget())) {
-        return true;
-      }
-    }
     return false;
   }
   
