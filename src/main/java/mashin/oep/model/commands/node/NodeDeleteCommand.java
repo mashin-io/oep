@@ -1,10 +1,12 @@
 package mashin.oep.model.commands.node;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mashin.oep.model.Workflow;
 import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.node.Node;
+import mashin.oep.model.node.control.StartNode;
 
 import org.eclipse.gef.commands.Command;
 
@@ -47,19 +49,27 @@ public class NodeDeleteCommand extends Command {
 		return wasRemoved;
 	}
 
+	@Override
+	public boolean canExecute() {
+	  if (node instanceof StartNode) {
+	    return false;
+	  }
+	  return true;
+	}
+	
 	public void execute() {
 		// store a copy of incoming & outgoing connections before proceeding
-		sourceConnections = node.getSourceConnections();
-		targetConnections = node.getTargetConnections();
+		sourceConnections = new ArrayList<WorkflowConnection>(node.getSourceConnections());
+		targetConnections = new ArrayList<WorkflowConnection>(node.getTargetConnections());
 		redo();
 	}
 
 	public void redo() {
 		// remove the node and disconnect its connections
-		workflow.removeNode(node);
-		wasRemoved = true;
 		removeConnections(sourceConnections);
 		removeConnections(targetConnections);
+		workflow.removeNode(node);
+    wasRemoved = true;
 	}
 
 	/**
