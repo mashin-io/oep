@@ -1,7 +1,7 @@
 package mashin.oep.model.editPolicies;
 
-import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.commands.connection.ConnectionDeleteCommand;
+import mashin.oep.model.connection.WorkflowConnection;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;

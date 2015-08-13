@@ -1,7 +1,7 @@
 package mashin.oep.parts;
 
 import mashin.oep.model.Workflow;
-import mashin.oep.model.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.node.Node;
 
 import org.eclipse.gef.EditPart;

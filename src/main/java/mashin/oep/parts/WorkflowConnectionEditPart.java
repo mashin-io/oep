@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import mashin.oep.model.ModelElement;
-import mashin.oep.model.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.editPolicies.WorkflowConnectionEditPolicy;
 import mashin.oep.model.editPolicies.WorkflowConnectionEndpointEditPolicy;
 

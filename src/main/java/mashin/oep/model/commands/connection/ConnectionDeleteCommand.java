@@ -1,6 +1,6 @@
 package mashin.oep.model.commands.connection;
 
-import mashin.oep.model.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnection;
 
 import org.eclipse.gef.commands.Command;
 

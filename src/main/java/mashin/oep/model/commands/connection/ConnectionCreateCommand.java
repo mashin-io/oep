@@ -1,7 +1,9 @@
 package mashin.oep.model.commands.connection;
 
-import mashin.oep.model.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowCaseConnection;
+import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.node.Node;
+import mashin.oep.model.node.control.DecisionNode;
 import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.gef.commands.Command;
@@ -29,8 +31,13 @@ public class ConnectionCreateCommand extends Command {
       return false;
     }
     
-    connection = new WorkflowConnection(sourceNode, targetNode,
-                                        sourceTerminal, targetTerminal);
+    if (sourceNode instanceof DecisionNode) {
+      connection = new WorkflowCaseConnection(sourceNode, targetNode,
+                                              sourceTerminal, targetTerminal);
+    } else {
+      connection = new WorkflowConnection(sourceNode, targetNode,
+                                          sourceTerminal, targetTerminal);
+    }
     
     if (sourceNode.equals(targetNode)
         || !sourceNode.canConnectTo(targetNode)

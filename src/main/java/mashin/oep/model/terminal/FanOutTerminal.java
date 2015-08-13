@@ -1,6 +1,6 @@
 package mashin.oep.model.terminal;
 
-import mashin.oep.model.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.node.Node;
 
 public class FanOutTerminal extends OutputTerminal {

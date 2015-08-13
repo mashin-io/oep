@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mashin.oep.model.ModelElement;
-import mashin.oep.model.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.node.Node;
 
 public abstract class Terminal extends ModelElement {

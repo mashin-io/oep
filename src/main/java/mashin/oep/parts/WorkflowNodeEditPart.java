@@ -7,7 +7,7 @@ import java.util.List;
 import mashin.oep.figures.NodeFigure;
 import mashin.oep.figures.TerminalConnectionAnchor;
 import mashin.oep.model.ModelElement;
-import mashin.oep.model.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.editPolicies.NodeComponentEditPolicy;
 import mashin.oep.model.editPolicies.NodeGraphicalNodeEditPolicy;
 import mashin.oep.model.editPolicies.NodeLabelDirectEditPolicy;

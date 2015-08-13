@@ -1,9 +1,9 @@
 package mashin.oep.model.editPolicies;
 
 import mashin.oep.figures.TerminalConnectionAnchor;
-import mashin.oep.model.WorkflowConnection;
 import mashin.oep.model.commands.connection.ConnectionCreateCommand;
 import mashin.oep.model.commands.connection.ConnectionReconnectCommand;
+import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.terminal.Terminal;
 import mashin.oep.parts.WorkflowNodeEditPart;

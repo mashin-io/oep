@@ -1,5 +1,6 @@
-package mashin.oep.model;
+package mashin.oep.model.connection;
 
+import mashin.oep.model.ModelElement;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.terminal.Terminal;
 

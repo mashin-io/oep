@@ -9,7 +9,7 @@ import mashin.oep.Utils;
 import mashin.oep.model.HPDLSerializable;
 import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.Workflow;
-import mashin.oep.model.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.property.PointPropertyElement;
 import mashin.oep.model.property.TextPropertyElement;
 import mashin.oep.model.terminal.InputTerminal;
