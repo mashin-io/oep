@@ -9,6 +9,8 @@ import mashin.oep.model.editPolicies.WorkflowConnectionEditPolicy;
 import mashin.oep.model.editPolicies.WorkflowConnectionEndpointEditPolicy;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.PolygonDecoration;
+import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 
@@ -48,8 +50,11 @@ public class WorkflowConnectionEditPart extends AbstractConnectionEditPart
   
   @Override
   protected IFigure createFigure() {
-    return super.createFigure();
-    //return new PolylineConnection();
+    PolylineConnection connection = new PolylineConnection();
+    PolygonDecoration arrow = new PolygonDecoration();
+    arrow.setTemplate(PolygonDecoration.TRIANGLE_TIP);
+    connection.setTargetDecoration(arrow);
+    return connection;
   }
 
 }
