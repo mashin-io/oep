@@ -8,6 +8,8 @@ import mashin.oep.parts.WorkflowEditPartFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.KeyHandler;
+import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
@@ -16,18 +18,21 @@ import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
+import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   
+  private KeyHandler sharedKeyHandler;
   private Workflow workflow;
   
   private static PaletteRoot PALETTE_MODEL;
@@ -55,13 +60,34 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     GraphicalViewer viewer = getGraphicalViewer();
     viewer.setEditPartFactory(new WorkflowEditPartFactory());
     viewer.setRootEditPart(new ScalableFreeformRootEditPart());
-    viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
+    viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer)
+                              .setParent(getCommonKeyHandler()));
     
     //// configure the context menu provider
     //ContextMenuProvider cmProvider = new ShapesEditorContextMenuProvider(
     //    viewer, getActionRegistry());
     //viewer.setContextMenu(cmProvider);
     //getSite().registerContextMenu(cmProvider, viewer);
+    
+    //getSite().setSelectionProvider(viewer);
+    
+  }
+  
+  /**
+   * Returns the KeyHandler with common bindings for both the Outline and
+   * Graphical Views. For example, delete is a common action.
+   */
+  protected KeyHandler getCommonKeyHandler() {
+    if (sharedKeyHandler == null) {
+      sharedKeyHandler = new KeyHandler();
+      sharedKeyHandler.put(
+          KeyStroke.getPressed(SWT.F2, 0),
+          getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
+      //sharedKeyHandler.put(
+      //    KeyStroke.getPressed(SWT.DEL, 0),
+      //    getActionRegistry().getAction(ActionFactory.DELETE.getId()));
+    }
+    return sharedKeyHandler;
   }
   
   @Override
@@ -94,7 +120,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     super.createActions();
     ActionRegistry registry = getActionRegistry();
     IAction action;
-
+    
     action = new DirectEditAction((IWorkbenchPart) this);
     registry.registerAction(action);
     getSelectionActions().add(action.getId());
