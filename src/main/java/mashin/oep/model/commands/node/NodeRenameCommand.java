@@ -1,6 +1,7 @@
 package mashin.oep.model.commands.node;
 
 import mashin.oep.model.node.Node;
+import mashin.oep.model.node.control.StartNode;
 
 import org.eclipse.gef.commands.Command;
 
@@ -9,6 +10,18 @@ public class NodeRenameCommand extends Command {
   private String oldName, newName;
   private Node node;
 
+  public NodeRenameCommand() {
+    setLabel("rename");
+  }
+  
+  @Override
+  public boolean canExecute() {
+    if (node instanceof StartNode) {
+      return false;
+    }
+    return true;
+  }
+  
   @Override
   public void execute() {
     oldName = node.getName();
@@ -18,7 +31,11 @@ public class NodeRenameCommand extends Command {
   @Override
   public void undo() {
     node.setName(oldName);
-    super.redo();
+  }
+  
+  @Override
+  public void redo() {
+    node.setName(newName);
   }
 
   public void setNewName(String newName) {
