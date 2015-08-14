@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import mashin.oep.Utils;
 import mashin.oep.model.HPDLSerializable;
 import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.Workflow;
@@ -17,7 +16,6 @@ import mashin.oep.model.terminal.OutputTerminal;
 import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 public abstract class Node extends ModelElementWithSchema implements HPDLSerializable {
   
@@ -37,8 +35,6 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   public static final String PROP_POS                = "prop.node.pos";
   public static final String PROP_NODE_NAME          = "prop.node.name";
   
-  private static IPropertyDescriptor[] NODE_PROPERTY_DESCRIPTORS;
-
   protected TextPropertyElement  name;
   protected PointPropertyElement position;
   
@@ -58,64 +54,24 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   
   public Node(Workflow workflow) {
     this.workflow = workflow;
-    this.name = new TextPropertyElement(PROP_NODE_NAME, "Name");
-    this.position = new PointPropertyElement(PROP_POS, "Position");
-    this.terminals = new ArrayList<Terminal>();
-    this.sourceConnections = new ArrayList<WorkflowConnection>();
-    this.targetConnections = new ArrayList<WorkflowConnection>();
-  }
-  
-  @Override
-  public IPropertyDescriptor[] getPropertyDescriptors() {
-    if(NODE_PROPERTY_DESCRIPTORS == null) {
-      NODE_PROPERTY_DESCRIPTORS = Utils.combine(
-          name.getPropertyDescriptors(),
-          position.getPropertyDescriptors());
-    }
-    return Utils.combine(super.getPropertyDescriptors(), NODE_PROPERTY_DESCRIPTORS);
-  }
-  
-  @Override
-  public void setPropertyValue(Object propertyName, Object propertyValue) {
-    String propertyNameStr = (String) propertyName;
-    switch(propertyNameStr) {
-    case PROP_NODE_NAME:
-      setName((String) propertyValue);
-      break;
-    default:
-      if (position.hasId(propertyNameStr)) {
-        Object oldValue = position.getValue(propertyNameStr);
-        position.setValue(propertyNameStr, propertyValue);
-        firePropertyChange(propertyNameStr, oldValue, propertyValue);
-      } else {
-        super.setPropertyValue(propertyName, propertyValue);
-      }
-    }
-  }
-  
-  @Override
-  public Object getPropertyValue(Object propertyName) {
-    String propertyNameStr = (String) propertyName;
-    switch(propertyNameStr) {
-    case PROP_NODE_NAME:
-      return getName();
-    default:
-      if (position.hasId(propertyNameStr)) {
-        return position.getValue(propertyNameStr);
-      } else {
-        return super.getPropertyValue(propertyName);
-      }
-    }
+    
+    name = new TextPropertyElement(PROP_NODE_NAME, "Name");
+    addPropertyElement(name);
+    
+    position = new PointPropertyElement(PROP_POS, "Position");
+    addPropertyElement(position);
+    
+    terminals = new ArrayList<Terminal>();
+    sourceConnections = new ArrayList<WorkflowConnection>();
+    targetConnections = new ArrayList<WorkflowConnection>();
   }
   
   public Point getPosition() {
-    return this.position.getAsPoint();
+    return position.getAsPoint();
   }
   
   public void setPosition(Point point) {
-    Point oldPosition = this.position.getAsPoint();
-    this.position.setFromPoint(point);
-    firePropertyChange(PROP_POS, oldPosition, point);
+    setPropertyValue(PROP_POS, point);
   }
   
   public String getName() {
@@ -123,9 +79,7 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   }
   
   public void setName(String name) {
-    String oldName = this.name.getStringValue();
-    this.name.setStringValue(name);
-    firePropertyChange(PROP_NODE_NAME, oldName, name);
+    setPropertyValue(PROP_NODE_NAME, name);
   }
   
   public List<WorkflowConnection> getSourceConnections() {

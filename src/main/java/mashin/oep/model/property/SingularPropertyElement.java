@@ -1,6 +1,7 @@
 package mashin.oep.model.property;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 
 public abstract class SingularPropertyElement extends PropertyElement {
@@ -39,9 +40,17 @@ public abstract class SingularPropertyElement extends PropertyElement {
   @Override
   public IPropertyDescriptor[] getPropertyDescriptors() {
     if (descriptor == null) {
-      descriptor = new IPropertyDescriptor[] {
-          getPropertyDescriptor()
-      };
+      IPropertyDescriptor desc = getPropertyDescriptor();
+      if (desc != null && isEditable()) {
+        if (category != null && !category.isEmpty()) {
+          ((PropertyDescriptor) desc).setCategory(category);
+        }
+        descriptor = new IPropertyDescriptor[] {
+            getPropertyDescriptor()
+        };
+      } else {
+        descriptor = new IPropertyDescriptor[0];
+      }
     }
     return descriptor;
   }

@@ -184,6 +184,9 @@ public abstract class PropertyElementGroup extends PropertyElement {
 
   @Override
   public IPropertyDescriptor[] getPropertyDescriptors() {
+    if (!isEditable()) {
+      return null;
+    }
     PropertyDescriptor groupPropertyDescriptor = new PropertyDescriptor(
         getId(), getName());
     groupPropertyDescriptor.setLabelProvider(new LabelProvider() {
@@ -192,6 +195,9 @@ public abstract class PropertyElementGroup extends PropertyElement {
         return element.toString();
       }
     });
+    if (category != null && !category.isEmpty()) {
+      groupPropertyDescriptor.setCategory(category);
+    }
     return new IPropertyDescriptor[] { groupPropertyDescriptor };
   }
   

@@ -41,6 +41,9 @@ public class TextPropertyElement extends SingularPropertyElement {
 
   @Override
   public IPropertyDescriptor getPropertyDescriptor() {
+    if (!isEditable()) {
+      return null;
+    }
     if (propertyDescriptor == null) {
       propertyDescriptor = new TextPropertyDescriptor(getId(), getName());
     }

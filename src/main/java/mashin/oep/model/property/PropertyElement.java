@@ -6,10 +6,13 @@ public abstract class PropertyElement {
 
   protected String name;
   protected String id;
+  protected boolean isEditable;
+  protected String category;
   
   public PropertyElement(String id, String name) {
     this.id = id;
     this.name = name;
+    this.isEditable = true;
   }
   
   public String getId() {
@@ -18,6 +21,22 @@ public abstract class PropertyElement {
   
   public String getName() {
     return this.name;
+  }
+  
+  public void setEditable(boolean isEditable) {
+    this.isEditable = isEditable;
+  }
+  
+  public boolean isEditable() {
+    return isEditable;
+  }
+  
+  public void setCategory(String category) {
+    this.category = category;
+  }
+  
+  public String getCategory() {
+    return category;
   }
   
   public boolean hasId(String id) {

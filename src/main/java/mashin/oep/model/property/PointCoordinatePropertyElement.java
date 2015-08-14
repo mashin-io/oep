@@ -51,7 +51,10 @@ public class PointCoordinatePropertyElement extends SingularPropertyElement {
 
   @Override
   public IPropertyDescriptor getPropertyDescriptor() {
-    if (null == propertyDescriptor) {
+    if (!isEditable()) {
+      return null;
+    }
+    if (propertyDescriptor == null) {
       propertyDescriptor = new TextPropertyDescriptor(getId(), getName());
       ((PropertyDescriptor) propertyDescriptor)
         .setValidator(new ICellEditorValidator() {

@@ -1,9 +1,7 @@
 package mashin.oep.model.property;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import mashin.oep.Utils;
 
@@ -11,12 +9,9 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 public class PropertyElementCollection extends PropertyElement {
 
-  private static AtomicLong ID_SEQ = new AtomicLong(0);
-
   private List<PropertyElement> list;
   private PropertyElement template;
   private PropertyElement empty;
-  private String category;
 
   public PropertyElementCollection(String category, PropertyElement template) {
     super(category, category);
@@ -163,22 +158,14 @@ public class PropertyElementCollection extends PropertyElement {
   }
   
   public IPropertyDescriptor[] getPropertyDescriptors() {
+    if (!isEditable()) {
+      return new IPropertyDescriptor[0];
+    }
     return Utils.getPropertyDescriptors(list, category);
   }
 
   private PropertyElement createEmpty() {
-    try {
-      return template
-          .getClass()
-          .getConstructor(String.class, String.class)
-          .newInstance(template.getId() + "." + ID_SEQ.incrementAndGet(),
-              template.getName());
-    } catch (InstantiationException | IllegalAccessException
-        | IllegalArgumentException | InvocationTargetException
-        | NoSuchMethodException | SecurityException e) {
-      e.printStackTrace();
-      return null;
-    }
+    return PropertyElementCreationFactory.create(template);
   }
 
 }
