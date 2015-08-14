@@ -29,7 +29,7 @@ public class PigActionNode extends BasicActionNode {
   protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
 
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
-  protected PropertyPropertyElement configuration;//configuration
+  protected PropertyElementCollection configuration;//configuration
   protected TextPropertyElement script;//script
   protected PropertyElementCollection param;//param 0-unbounded
   protected PropertyElementCollection argument;//argument 0-unbounded
@@ -55,7 +55,8 @@ public class PigActionNode extends BasicActionNode {
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);
     
-    configuration = new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration");
+    configuration = new PropertyElementCollection("Configuration",
+                      new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
     addPropertyElement(configuration);
     
     script = new TextPropertyElement(PROP_SCRIPT, "Script");
@@ -72,6 +73,8 @@ public class PigActionNode extends BasicActionNode {
     
     archive = new PropertyElementCollection("Archive", new TextPropertyElement(PROP_ARCHIVE, "Archive"));
     addPropertyElement(archive);
+    
+    setName("pig-" + ID_SEQ.incrementAndGet());
   }
 
   @Override

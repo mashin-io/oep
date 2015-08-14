@@ -4,6 +4,11 @@ import mashin.oep.model.Workflow;
 import mashin.oep.model.commands.node.NodeCreateCommand;
 import mashin.oep.model.commands.node.NodeMoveCommand;
 import mashin.oep.model.node.Node;
+import mashin.oep.model.node.action.basic.FSActionNode;
+import mashin.oep.model.node.action.basic.JavaActionNode;
+import mashin.oep.model.node.action.basic.MapReduceActionNode;
+import mashin.oep.model.node.action.basic.PigActionNode;
+import mashin.oep.model.node.action.basic.SubWorkflowActionNode;
 import mashin.oep.model.node.control.DecisionNode;
 import mashin.oep.model.node.control.EndNode;
 import mashin.oep.model.node.control.ForkNode;
@@ -30,7 +35,12 @@ public class WorkflowXYLayoutEditPolicy extends XYLayoutEditPolicy {
         || childClass == KillNode.class
         || childClass == DecisionNode.class
         || childClass == ForkNode.class
-        || childClass == JoinNode.class) {
+        || childClass == JoinNode.class
+        || childClass == MapReduceActionNode.class
+        || childClass == PigActionNode.class
+        || childClass == SubWorkflowActionNode.class
+        || childClass == FSActionNode.class
+        || childClass == JavaActionNode.class) {
       return new NodeCreateCommand((Node) request.getNewObject(),
           (Workflow) getHost().getModel(),
           ((Rectangle) getConstraintFor(request)).getLocation());

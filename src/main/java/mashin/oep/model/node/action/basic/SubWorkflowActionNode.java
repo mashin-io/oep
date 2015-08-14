@@ -2,6 +2,7 @@ package mashin.oep.model.node.action.basic;
 
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
+import mashin.oep.model.property.PropertyElementCollection;
 import mashin.oep.model.property.PropertyPropertyElement;
 import mashin.oep.model.property.TextPropertyElement;
 
@@ -13,7 +14,7 @@ public class SubWorkflowActionNode extends BasicActionNode {
   
   protected TextPropertyElement appPath;//app-path
   protected CheckBoxPropertyElement propagateConfiguration;//propagate-configuration (flag/checkbox)
-  protected PropertyPropertyElement configuration;//configuration
+  protected PropertyElementCollection configuration;//configuration
   
   public SubWorkflowActionNode(Workflow workflow) {
     super(workflow);
@@ -24,8 +25,11 @@ public class SubWorkflowActionNode extends BasicActionNode {
     propagateConfiguration = new CheckBoxPropertyElement(PROP_PROPAGATE_CONFIGURATION, "Propagate Configuration");
     addPropertyElement(propagateConfiguration);
     
-    configuration = new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration");
+    configuration = new PropertyElementCollection("Configuration",
+                      new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
     addPropertyElement(configuration);
+    
+    setName("sub-workflow-" + ID_SEQ.incrementAndGet());
   }
 
   @Override

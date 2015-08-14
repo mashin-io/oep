@@ -32,7 +32,7 @@ public class JavaActionNode extends BasicActionNode {
   protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
   
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
-  protected PropertyPropertyElement configuration;//configuration
+  protected PropertyElementCollection configuration;//configuration
   protected TextPropertyElement mainClass;//main-class
   protected TextPropertyElement javaOpts;//java-opts
   protected PropertyElementCollection javaOpt;//java-opt 0-unbounded
@@ -60,7 +60,8 @@ public class JavaActionNode extends BasicActionNode {
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);
     
-    configuration = new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration");
+    configuration = new PropertyElementCollection("Configuration",
+                      new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
     addPropertyElement(configuration);
     
     mainClass = new TextPropertyElement(PROP_MAIN_CLASS, "Main Class");
@@ -83,6 +84,8 @@ public class JavaActionNode extends BasicActionNode {
     
     captureOutput = new CheckBoxPropertyElement(PROP_CAPTURE_OUTPUT, "Capture Output");
     addPropertyElement(captureOutput);
+    
+    setName("java-" + ID_SEQ.incrementAndGet());
   }
 
   @Override

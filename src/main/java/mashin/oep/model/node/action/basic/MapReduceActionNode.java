@@ -57,7 +57,7 @@ public class MapReduceActionNode extends BasicActionNode {
   protected TextPropertyElement pipesProgram;//program
   
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
-  protected PropertyPropertyElement configuration;//configuration
+  protected PropertyElementCollection configuration;//configuration
   protected TextPropertyElement configClass;//config-class
   protected PropertyElementCollection file;//file 0-unbounded
   protected PropertyElementCollection archive;//archive o-unbounded
@@ -131,7 +131,8 @@ public class MapReduceActionNode extends BasicActionNode {
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);
     
-    configuration = new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration");
+    configuration = new PropertyElementCollection("Configuration",
+                      new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
     addPropertyElement(configuration);
     
     configClass = new TextPropertyElement(PROP_CONFIGCLASS, "Config Class");
@@ -142,6 +143,8 @@ public class MapReduceActionNode extends BasicActionNode {
     
     archive = new PropertyElementCollection("Archive", new TextPropertyElement(PROP_ARCHIVE, "Archive"));
     addPropertyElement(archive);
+    
+    setName("map-reduce-" + ID_SEQ.incrementAndGet());
   }
   
   @Override

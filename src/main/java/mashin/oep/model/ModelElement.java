@@ -47,13 +47,13 @@ public abstract class ModelElement implements IPropertySource {
 
   @Override
   public IPropertyDescriptor[] getPropertyDescriptors() {
-    if(descriptors == null) {
+    //if(descriptors == null) {
       List<IPropertyDescriptor[]> descriptorsList = new ArrayList<IPropertyDescriptor[]>(propertyElements.size());
       for (PropertyElement propertyElement : propertyElements) {
         descriptorsList.add(propertyElement.getPropertyDescriptors());
       }
       descriptors = Utils.combine(descriptorsList);
-    }
+    //}
     return descriptors;
   }
 

@@ -13,30 +13,17 @@ public class FSActionNode extends BasicActionNode {
   public static final String PROP_JOBXML = "prop.node.fs.job-xml";
   public static final String PROP_CONFIGURATION = "prop.node.fs.configuration";
   public static final String PROP_OP_DELETE = "prop.node.fs.op.delete";
-  public static final String PROP_OP_DELETE_PATH = "prop.node.fs.op.delete.path";
   public static final String PROP_OP_MKDIR = "prop.node.fs.op.mkdir";
-  public static final String PROP_OP_MKDIR_PATH = "prop.node.fs.op.mkdir.path";
   public static final String PROP_OP_MOVE = "prop.node.fs.op.move";
-  public static final String PROP_OP_MOVE_SOURCE = "prop.node.fs.op.move.source";
-  public static final String PROP_OP_MOVE_TARGET = "prop.node.fs.op.move.target";
   public static final String PROP_OP_CHMOD = "prop.node.fs.op.chmod";
-  public static final String PROP_OP_CHMOD_RECURSIVE = "prop.node.fs.op.chmod.recursive";
-  public static final String PROP_OP_CHMOD_PATH = "prop.node.fs.op.chmod.path";
-  public static final String PROP_OP_CHMOD_PERMISSIONS = "prop.node.fs.op.chmod.permissions";
-  public static final String PROP_OP_CHMOD_DIRFILES = "prop.node.fs.op.chmod.dir-files";
   public static final String PROP_OP_TOUCHZ = "prop.node.fs.op.touchz";
-  public static final String PROP_OP_TOUCHZ_PATH = "prop.node.fs.op.touchz.path";
   public static final String PROP_OP_CHGRP = "prop.node.fs.op.chgrp";
-  public static final String PROP_OP_CHGRP_RECURSIVE = "prop.node.fs.op.chgrp.recursive";
-  public static final String PROP_OP_CHGRP_PATH = "prop.node.fs.op.chgrp.path";
-  public static final String PROP_OP_CHGRP_GROUP = "prop.node.fs.op.chgrp.group";
-  public static final String PROP_OP_CHGRP_DIRFILES = "prop.node.fs.op.chgrp.dir-files";
   
   public static final String CATEGORY_OPERATIONS = "Operations";
   
   protected TextPropertyElement namenode;//name-node
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
-  protected PropertyPropertyElement configuration;//configuration
+  protected PropertyElementCollection configuration;//configuration
   
   //operations
   protected PropertyElementCollection delete;
@@ -55,35 +42,43 @@ public class FSActionNode extends BasicActionNode {
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);
     
-    configuration = new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration");
+    configuration = new PropertyElementCollection("Configuration",
+                      new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
     addPropertyElement(configuration);
     
     //operations
-    delete = new PropertyElementCollection(CATEGORY_OPERATIONS, new OperationDelete(PROP_OP_DELETE, "Delete"));
+    delete = new PropertyElementCollection(CATEGORY_OPERATIONS,
+                new FSOperationDelete(PROP_OP_DELETE, "Delete"));
     addPropertyElement(delete);
     
-    mkdir = new PropertyElementCollection(CATEGORY_OPERATIONS, new OperationMkdir(PROP_OP_MKDIR, "Mkdir"));
+    mkdir = new PropertyElementCollection(CATEGORY_OPERATIONS,
+              new FSOperationMkdir(PROP_OP_MKDIR, "Mkdir"));
     addPropertyElement(mkdir);
     
-    move = new PropertyElementCollection(CATEGORY_OPERATIONS, new OperationMkdir(PROP_OP_MOVE, "Move"));
+    move = new PropertyElementCollection(CATEGORY_OPERATIONS,
+              new FSOperationMove(PROP_OP_MOVE, "Move"));
     addPropertyElement(move);
     
-    chmod = new PropertyElementCollection(CATEGORY_OPERATIONS, new OperationMkdir(PROP_OP_CHMOD, "Chmod"));
+    chmod = new PropertyElementCollection(CATEGORY_OPERATIONS,
+              new FSOperationChmod(PROP_OP_CHMOD, "Chmod"));
     addPropertyElement(chmod);
     
-    touchz = new PropertyElementCollection(CATEGORY_OPERATIONS, new OperationMkdir(PROP_OP_TOUCHZ, "touchz"));
+    touchz = new PropertyElementCollection(CATEGORY_OPERATIONS,
+                new FSOperationTouchz(PROP_OP_TOUCHZ, "Touchz"));
     addPropertyElement(touchz);
     
-    chgrp = new PropertyElementCollection(CATEGORY_OPERATIONS, new OperationMkdir(PROP_OP_CHGRP, "chgrp"));
+    chgrp = new PropertyElementCollection(CATEGORY_OPERATIONS,
+              new FSOperationChgrp(PROP_OP_CHGRP, "Chgrp"));
     addPropertyElement(chgrp);
     
+    setName("fs-" + ID_SEQ.incrementAndGet());
   }
 
-  class OperationDelete extends PropertyElementGroup {
+  public static class FSOperationDelete extends PropertyElementGroup {
 
-    public OperationDelete(String id, String name) {
+    public FSOperationDelete(String id, String name) {
       super(id, name);
-      propertyElements.add(new TextPropertyElement(PROP_OP_DELETE_PATH, "Path"));
+      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
     }
 
     @Override
@@ -91,11 +86,11 @@ public class FSActionNode extends BasicActionNode {
     
   }
   
-  class OperationMkdir extends PropertyElementGroup {
+  public static class FSOperationMkdir extends PropertyElementGroup {
 
-    public OperationMkdir(String id, String name) {
+    public FSOperationMkdir(String id, String name) {
       super(id, name);
-      propertyElements.add(new TextPropertyElement(PROP_OP_MKDIR_PATH, "Path"));
+      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
     }
 
     @Override
@@ -103,12 +98,12 @@ public class FSActionNode extends BasicActionNode {
     
   }
   
-  class OperationMove extends PropertyElementGroup {
+  public static class FSOperationMove extends PropertyElementGroup {
     
-    public OperationMove(String id, String name) {
+    public FSOperationMove(String id, String name) {
       super(id, name);
-      propertyElements.add(new TextPropertyElement(PROP_OP_MOVE_SOURCE, "Source"));
-      propertyElements.add(new TextPropertyElement(PROP_OP_MOVE_TARGET, "Target"));
+      this.propertyElements.add(new TextPropertyElement(id + ".source", "Source"));
+      this.propertyElements.add(new TextPropertyElement(id + ".target", "Target"));
     }
 
     @Override
@@ -116,14 +111,14 @@ public class FSActionNode extends BasicActionNode {
     
   }
   
-  class OperationChmod extends PropertyElementGroup {
+  public static class FSOperationChmod extends PropertyElementGroup {
     
-    public OperationChmod(String id, String name) {
+    public FSOperationChmod(String id, String name) {
       super(id, name);
-      propertyElements.add(new CheckBoxPropertyElement(PROP_OP_CHMOD_RECURSIVE, "Recursive"));
-      propertyElements.add(new TextPropertyElement(PROP_OP_CHMOD_PATH, "Path"));
-      propertyElements.add(new TextPropertyElement(PROP_OP_CHMOD_PERMISSIONS, "Permissions"));
-      propertyElements.add(new TextPropertyElement(PROP_OP_CHMOD_DIRFILES, "Dir Files"));
+      this.propertyElements.add(new CheckBoxPropertyElement(id + ".recursive", "Recursive"));
+      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
+      this.propertyElements.add(new TextPropertyElement(id + ".permissions", "Permissions"));
+      this.propertyElements.add(new TextPropertyElement(id + ".dir-files", "Dir Files"));
     }
 
     @Override
@@ -131,11 +126,11 @@ public class FSActionNode extends BasicActionNode {
     
   }
   
-  class OperationTouchz extends PropertyElementGroup {
+  public static class FSOperationTouchz extends PropertyElementGroup {
     
-    public OperationTouchz(String id, String name) {
+    public FSOperationTouchz(String id, String name) {
       super(id, name);
-      propertyElements.add(new TextPropertyElement(PROP_OP_TOUCHZ_PATH, "Path"));
+      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
     }
 
     @Override
@@ -143,14 +138,14 @@ public class FSActionNode extends BasicActionNode {
     
   }
   
-  class OperationChgrp extends PropertyElementGroup {
+  public static class FSOperationChgrp extends PropertyElementGroup {
     
-    public OperationChgrp(String id, String name) {
+    public FSOperationChgrp(String id, String name) {
       super(id, name);
-      propertyElements.add(new CheckBoxPropertyElement(PROP_OP_CHGRP_RECURSIVE, "Recursive"));
-      propertyElements.add(new TextPropertyElement(PROP_OP_CHGRP_PATH, "Path"));
-      propertyElements.add(new TextPropertyElement(PROP_OP_CHGRP_GROUP, "Group"));
-      propertyElements.add(new TextPropertyElement(PROP_OP_CHGRP_DIRFILES, "Dir Files"));
+      this.propertyElements.add(new CheckBoxPropertyElement(id + ".recursive", "Recursive"));
+      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
+      this.propertyElements.add(new TextPropertyElement(id + ".group", "Group"));
+      this.propertyElements.add(new TextPropertyElement(id + ".dir-files", "Dir Files"));
     }
 
     @Override

@@ -2,6 +2,7 @@ package mashin.oep.model.property;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -21,7 +22,7 @@ public class CheckBoxPropertyElement extends SingularPropertyElement {
     if (propertyDescriptor == null) {
       propertyDescriptor = new CheckboxPropertyDescriptor(getId(), getName());
     }
-    return null;
+    return propertyDescriptor;
   }
 
   @Override
@@ -54,6 +55,7 @@ public class CheckBoxPropertyElement extends SingularPropertyElement {
    * 
    */
   public class CheckboxPropertyDescriptor extends PropertyDescriptor {
+    
     /**
      * @param id
      * @param displayName
@@ -69,9 +71,10 @@ public class CheckBoxPropertyElement extends SingularPropertyElement {
      * opertyEditor(org.eclipse.swt.widgets.Composite)
      */
     public CellEditor createPropertyEditor(Composite parent) {
-      CellEditor editor = new CheckboxCellEditor(parent);
-      if (getValidator() != null)
+      CellEditor editor = new CheckboxCellEditor(parent, SWT.CHECK);
+      if (getValidator() != null) {
         editor.setValidator(getValidator());
+      }
       return editor;
     }
 

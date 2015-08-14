@@ -1,5 +1,10 @@
 package mashin.oep;
 
+import mashin.oep.model.node.action.basic.FSActionNode;
+import mashin.oep.model.node.action.basic.JavaActionNode;
+import mashin.oep.model.node.action.basic.MapReduceActionNode;
+import mashin.oep.model.node.action.basic.PigActionNode;
+import mashin.oep.model.node.action.basic.SubWorkflowActionNode;
 import mashin.oep.model.node.control.DecisionNode;
 import mashin.oep.model.node.control.EndNode;
 import mashin.oep.model.node.control.ForkNode;
@@ -80,6 +85,47 @@ public class WorkflowEditorPalleteFactory {
 
     return controlNodesDrawer;
   }
+
+  private static PaletteContainer createBasicActionNodesGroup(WorkflowEditor workflowEditor) {
+    PaletteDrawer actionNodesDrawer = new PaletteDrawer("Action Nodes");
+
+    CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry(
+        "MapReduce", "Create a MapReduce node",
+        MapReduceActionNode.class, new NodeCreationFactory<MapReduceActionNode>(workflowEditor, MapReduceActionNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    actionNodesDrawer.add(component);
+
+    component = new CombinedTemplateCreationEntry(
+        "Pig", "Create a Pig node",
+        PigActionNode.class, new NodeCreationFactory<PigActionNode>(workflowEditor, PigActionNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    actionNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
+        "Sub Workflow", "Create a Sub Workflow node",
+        SubWorkflowActionNode.class, new NodeCreationFactory<SubWorkflowActionNode>(workflowEditor, SubWorkflowActionNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    actionNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
+        "FS", "Create an FS node",
+        FSActionNode.class, new NodeCreationFactory<FSActionNode>(workflowEditor, FSActionNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    actionNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
+        "Java", "Create a Java node",
+        JavaActionNode.class, new NodeCreationFactory<JavaActionNode>(workflowEditor, JavaActionNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    actionNodesDrawer.add(component);
+
+    return actionNodesDrawer;
+  }
   
   /**
    * Creates the PaletteRoot and adds all Palette elements.
@@ -90,6 +136,7 @@ public class WorkflowEditorPalleteFactory {
     PaletteRoot workflowPalette = new PaletteRoot();
     workflowPalette.add(createToolsGroup(workflowPalette));
     workflowPalette.add(createControlNodesGroup(workflowEditor));
+    workflowPalette.add(createBasicActionNodesGroup(workflowEditor));
     return workflowPalette;
   }
   
