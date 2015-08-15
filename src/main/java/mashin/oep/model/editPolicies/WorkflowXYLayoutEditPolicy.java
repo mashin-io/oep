@@ -9,6 +9,15 @@ import mashin.oep.model.node.action.basic.JavaActionNode;
 import mashin.oep.model.node.action.basic.MapReduceActionNode;
 import mashin.oep.model.node.action.basic.PigActionNode;
 import mashin.oep.model.node.action.basic.SubWorkflowActionNode;
+import mashin.oep.model.node.action.extended.CustomActionNode;
+import mashin.oep.model.node.action.extended.DistcpActionNode;
+import mashin.oep.model.node.action.extended.EmailActionNode;
+import mashin.oep.model.node.action.extended.Hive2ActionNode;
+import mashin.oep.model.node.action.extended.HiveActionNode;
+import mashin.oep.model.node.action.extended.SSHActionNode;
+import mashin.oep.model.node.action.extended.ShellActionNode;
+import mashin.oep.model.node.action.extended.SparkActionNode;
+import mashin.oep.model.node.action.extended.SqoopActionNode;
 import mashin.oep.model.node.control.DecisionNode;
 import mashin.oep.model.node.control.EndNode;
 import mashin.oep.model.node.control.ForkNode;
@@ -40,7 +49,16 @@ public class WorkflowXYLayoutEditPolicy extends XYLayoutEditPolicy {
         || childClass == PigActionNode.class
         || childClass == SubWorkflowActionNode.class
         || childClass == FSActionNode.class
-        || childClass == JavaActionNode.class) {
+        || childClass == JavaActionNode.class
+        || childClass == SSHActionNode.class
+        || childClass == SqoopActionNode.class
+        || childClass == SparkActionNode.class
+        || childClass == ShellActionNode.class
+        || childClass == DistcpActionNode.class
+        || childClass == HiveActionNode.class
+        || childClass == Hive2ActionNode.class
+        || childClass == EmailActionNode.class
+        || childClass == CustomActionNode.class) {
       return new NodeCreateCommand((Node) request.getNewObject(),
           (Workflow) getHost().getModel(),
           ((Rectangle) getConstraintFor(request)).getLocation());
