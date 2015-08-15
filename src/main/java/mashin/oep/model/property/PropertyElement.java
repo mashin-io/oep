@@ -57,7 +57,7 @@ public abstract class PropertyElement {
   
   @Override
   public String toString() {
-    return name + ": " + getValue(getId());
+    return name + ": " + getValue();
   }
   
 }

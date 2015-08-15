@@ -167,5 +167,22 @@ public class PropertyElementCollection extends PropertyElement {
   private PropertyElement createEmpty() {
     return PropertyElementCreationFactory.create(template);
   }
+  
+  @Override
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    sb.append("[");
+    for(PropertyElement propertyElement: list) {
+      if (propertyElement != empty) {
+        sb.append(propertyElement.toString());
+        sb.append(", ");
+      }
+    }
+    if (sb.toString().endsWith(", ")) {
+      sb.delete(sb.length() - 2, sb.length());
+    }
+    sb.append("]");
+    return sb.toString();
+  }
 
 }
