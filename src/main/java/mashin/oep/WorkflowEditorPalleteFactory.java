@@ -15,7 +15,6 @@ import mashin.oep.model.node.action.extended.ShellActionNode;
 import mashin.oep.model.node.action.extended.SparkActionNode;
 import mashin.oep.model.node.action.extended.SqoopActionNode;
 import mashin.oep.model.node.control.DecisionNode;
-import mashin.oep.model.node.control.EndNode;
 import mashin.oep.model.node.control.ForkNode;
 import mashin.oep.model.node.control.JoinNode;
 import mashin.oep.model.node.control.KillNode;
@@ -57,12 +56,14 @@ public class WorkflowEditorPalleteFactory {
   private static PaletteContainer createControlNodesGroup(WorkflowEditor workflowEditor) {
     PaletteDrawer controlNodesDrawer = new PaletteDrawer("Control Nodes");
 
-    CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry(
-        "End", "Create an End node",
-        EndNode.class, new NodeCreationFactory<EndNode>(workflowEditor, EndNode.class),
-        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
-        ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
-    controlNodesDrawer.add(component);
+    CombinedTemplateCreationEntry component = null;
+    
+    //CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry(
+    //    "End", "Create an End node",
+    //    EndNode.class, new NodeCreationFactory<EndNode>(workflowEditor, EndNode.class),
+    //    ImageDescriptor.createFromFile(Activator.class, "icons/rectangle16.gif"),
+    //    ImageDescriptor.createFromFile(Activator.class, "icons/rectangle24.gif"));
+    //controlNodesDrawer.add(component);
 
     component = new CombinedTemplateCreationEntry(
         "Kill", "Create a Kill node",

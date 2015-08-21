@@ -3,6 +3,10 @@ package mashin.oep.model.node.action.extended;
 import java.util.Arrays;
 import java.util.List;
 
+import org.dom4j.Element;
+import org.dom4j.Node;
+
+import mashin.oep.XMLUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
@@ -32,7 +36,11 @@ public class SSHActionNode extends ExtendedActionNode {
   protected CheckBoxPropertyElement captureOutput;//capture-output (flag/checkbox)
   
   public SSHActionNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+  
+  public SSHActionNode(Workflow workflow, Node hpdlNode) {
+    super(workflow, hpdlNode);
     
     host = new TextPropertyElement(PROP_HOST, "Host");
     addPropertyElement(host);
@@ -49,10 +57,35 @@ public class SSHActionNode extends ExtendedActionNode {
     addPropertyElement(arg);
     
     captureOutput = new CheckBoxPropertyElement(PROP_CAPTURE_OUTPUT, "Capture Output");
-    
-    setName("ssh-" + ID_SEQ.incrementAndGet());
   }
 
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
+    setName("ssh-" + ID_SEQ.incrementAndGet());
+  }
+  
+  @Override
+  public void write(Element parentNode) {
+    
+  }
+
+  @Override
+  public void read(Node hpdlNode) {
+    super.read(hpdlNode);
+    
+    XMLUtils.initTextPropertyFrom(host, hpdlNode, "./ssh/host");
+    XMLUtils.initTextPropertyFrom(command, hpdlNode, "./ssh/command");
+    XMLUtils.initTextCollectionFrom(args, hpdlNode, "./ssh/args");
+    XMLUtils.initTextCollectionFrom(arg, hpdlNode, "./ssh/arg");
+    captureOutput.setValue(!XMLUtils.valueOf("./ssh/capture-output", hpdlNode).isEmpty());
+  }
+  
+  @Override
+  public String getNodeType() {
+    return "ssh";
+  }
+  
   @Override
   public List<SchemaVersion> getPossibleSchemaVersions() {
     return SSH_POSSIBLE_SCHEMA_VERSIONS;
@@ -68,14 +101,4 @@ public class SSHActionNode extends ExtendedActionNode {
     return SSH_LATEST_SCHEMA_VERSION;
   }
   
-  @Override
-  public String toHPDL() {
-    return null;
-  }
-
-  @Override
-  public void fromHPDL(String hpdl) {
-    
-  }
-
 }

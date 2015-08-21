@@ -2,14 +2,17 @@ package mashin.oep.model;
 
 import java.util.List;
 
+import mashin.oep.hpdl.HPDLModel;
+import mashin.oep.hpdl.HPDLSerializable;
 import mashin.oep.model.property.ComboBoxPropertyElement;
 
 
-public abstract class ModelElementWithSchema extends ModelElement implements Comparable<ModelElementWithSchema> {
+public abstract class ModelElementWithSchema extends ModelElement implements HPDLSerializable, Comparable<ModelElementWithSchema> {
   
   public static final String PROP_SCHEMA_VERSION = "prop.schema.version";
   
   protected ComboBoxPropertyElement schemaVersion;
+  protected HPDLModel hpdlModel;
   
   public ModelElementWithSchema() {
     schemaVersion = new ComboBoxPropertyElement(PROP_SCHEMA_VERSION, "Schema Version");
@@ -26,6 +29,7 @@ public abstract class ModelElementWithSchema extends ModelElement implements Com
     schemaVersion.setContentValue(getDefaultSchemaVersion());
     schemaVersion.setEditable(isSchemaVersionEditable());
     addPropertyElement(schemaVersion);
+    hpdlModel = new HPDLModel();
   }
   
   public void setSchemaVersion(String schemaVersion) {

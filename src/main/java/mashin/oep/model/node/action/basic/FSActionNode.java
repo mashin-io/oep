@@ -1,5 +1,9 @@
 package mashin.oep.model.node.action.basic;
 
+import org.dom4j.Element;
+import org.dom4j.Node;
+
+import mashin.oep.XMLUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
 import mashin.oep.model.property.PropertyElementCollection;
@@ -34,7 +38,11 @@ public class FSActionNode extends BasicActionNode {
   protected PropertyElementCollection chgrp;
   
   public FSActionNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+
+  public FSActionNode(Workflow workflow, org.dom4j.Node hpdlNode) {
+    super(workflow, hpdlNode);
     
     namenode = new TextPropertyElement(PROP_NAMENODE, "Namenode");
     addPropertyElement(namenode);
@@ -70,97 +78,293 @@ public class FSActionNode extends BasicActionNode {
     chgrp = new PropertyElementCollection(CATEGORY_OPERATIONS,
               new FSOperationChgrp(PROP_OP_CHGRP, "Chgrp"));
     addPropertyElement(chgrp);
-    
+  }
+  
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
     setName("fs-" + ID_SEQ.incrementAndGet());
   }
-
+  
+  @Override
+  public void write(Element paretNode) {
+    
+  }
+  
+  @Override
+  public void read(Node hpdlNode) {
+    super.read(hpdlNode);
+    XMLUtils.initTextPropertyFrom(namenode, hpdlNode, "./fs/name-node");
+    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./fs/job-xml");
+    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./fs/configuration", "./property");
+    XMLUtils.initFSDeleteCollectionFrom(delete, hpdlNode, "./fs/delete");
+    XMLUtils.initFSMkdirCollectionFrom(mkdir, hpdlNode, "./fs/mkdir");
+    XMLUtils.initFSMoveCollectionFrom(move, hpdlNode, "./fs/move");
+    XMLUtils.initFSChmodCollectionFrom(chmod, hpdlNode, "./fs/chmod");
+    XMLUtils.initFSTouchzCollectionFrom(touchz, hpdlNode, "./fs/touchz");
+    XMLUtils.initFSChgrpCollectionFrom(chgrp, hpdlNode, "./fs/chgrp");
+  }
+  
+  @Override
+  public String getNodeType() {
+    return "fs";
+  }
+  
+  public void setNamenode(String namenode) {
+    setPropertyValue(PROP_NAMENODE, namenode);
+  }
+  
+  public String getNamenode() {
+    return namenode.getStringValue();
+  }
+  
   public static class FSOperationDelete extends PropertyElementGroup {
 
+    public TextPropertyElement path;
+    
+    String pathId;
+    
     public FSOperationDelete(String id, String name) {
       super(id, name);
-      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
+      pathId = id + ".path";
+      path = new TextPropertyElement(pathId, "Path");
+      this.propertyElements.add(path);
     }
 
     @Override
     public void setComplexValue(Object value) {}
+    
+    public void setValueOfPath(String path) {
+      setValue(pathId, path);
+    }
+    
+    public String getValueOfPath() {
+      return (String) getValue(pathId);
+    }
     
   }
   
   public static class FSOperationMkdir extends PropertyElementGroup {
 
+    public TextPropertyElement path;
+    
+    String pathId;
+    
     public FSOperationMkdir(String id, String name) {
       super(id, name);
-      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
+      pathId = id + ".path";
+      path = new TextPropertyElement(pathId, "Path");
+      this.propertyElements.add(path);
     }
 
     @Override
     public void setComplexValue(Object value) {}
+    
+    public void setValueOfPath(String path) {
+      setValue(pathId, path);
+    }
+    
+    public String getValueOfPath() {
+      return (String) getValue(pathId);
+    }
     
   }
   
   public static class FSOperationMove extends PropertyElementGroup {
     
+    public TextPropertyElement source;
+    public TextPropertyElement target;
+    
+    String sourceId, targetId;
+    
     public FSOperationMove(String id, String name) {
       super(id, name);
-      this.propertyElements.add(new TextPropertyElement(id + ".source", "Source"));
-      this.propertyElements.add(new TextPropertyElement(id + ".target", "Target"));
+      
+      sourceId = id + ".source";
+      targetId = id + ".target";
+      
+      source = new TextPropertyElement(sourceId, "Source");
+      target = new TextPropertyElement(targetId, "Target");
+      
+      this.propertyElements.add(source);
+      this.propertyElements.add(target);
     }
 
     @Override
     public void setComplexValue(Object value) {}
+    
+    public void setValueOfSource(String source) {
+      setValue(sourceId, source);
+    }
+    
+    public String getValueOfSource() {
+      return (String) getValue(sourceId);
+    }
+    
+    public void setValueOfTarget(String target) {
+      setValue(targetId, target);
+    }
+    
+    public String getValueOfTarget() {
+      return (String) getValue(targetId);
+    }
     
   }
   
   public static class FSOperationChmod extends PropertyElementGroup {
     
+    public CheckBoxPropertyElement recursive;
+    public TextPropertyElement path;
+    public TextPropertyElement permissions;
+    public TextPropertyElement dirFiles;
+    
+    String recursiveId, pathId, permissionsId, dirFilesId;
+    
     public FSOperationChmod(String id, String name) {
       super(id, name);
-      this.propertyElements.add(new CheckBoxPropertyElement(id + ".recursive", "Recursive"));
-      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
-      this.propertyElements.add(new TextPropertyElement(id + ".permissions", "Permissions"));
-      this.propertyElements.add(new TextPropertyElement(id + ".dir-files", "Dir Files"));
+      
+      recursiveId = id + ".recursive";
+      pathId = id + ".path";
+      permissionsId = id + ".permissions";
+      dirFilesId = id + ".dir-files";
+      
+      recursive = new CheckBoxPropertyElement(recursiveId, "Recursive");
+      path = new TextPropertyElement(pathId, "Path");
+      permissions = new TextPropertyElement(permissionsId, "Permissions");
+      dirFiles = new TextPropertyElement(dirFilesId, "Dir Files");
+      
+      this.propertyElements.add(recursive);
+      this.propertyElements.add(path);
+      this.propertyElements.add(permissions);
+      this.propertyElements.add(dirFiles);
     }
 
     @Override
     public void setComplexValue(Object value) {}
+    
+    public void setValueOfRecursive(Boolean recursive) {
+      setValue(recursiveId, recursive);
+    }
+    
+    public Boolean getValueOfRecursive() {
+      return (Boolean) getValue(recursiveId);
+    }
+    
+    public void setValueOfPath(String path) {
+      setValue(pathId, path);
+    }
+    
+    public String getValueOfPath() {
+      return (String) getValue(pathId);
+    }
+    
+    public void setValueOfPermissions(String permissions) {
+      setValue(permissionsId, permissions);
+    }
+
+    public String getValueOfPermissions() {
+      return (String) getValue(permissionsId);
+    }
+    
+    public void setValueOfDirFiles(String dirFiles) {
+      setValue(dirFilesId, dirFiles);
+    }
+    
+    public String getValueOfDirFiles() {
+      return (String) getValue(dirFilesId);
+    }
     
   }
   
   public static class FSOperationTouchz extends PropertyElementGroup {
     
+    public TextPropertyElement path;
+    
+    String pathId;
+    
     public FSOperationTouchz(String id, String name) {
       super(id, name);
-      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
+      pathId = id + ".path";
+      path = new TextPropertyElement(pathId, "Path");
+      this.propertyElements.add(path);
     }
 
     @Override
     public void setComplexValue(Object value) {}
+    
+    public void setValueOfPath(String path) {
+      setValue(pathId, path);
+    }
+    
+    public String getValueOfPath() {
+      return (String) getValue(pathId);
+    }
     
   }
   
   public static class FSOperationChgrp extends PropertyElementGroup {
     
+    public CheckBoxPropertyElement recursive;
+    public TextPropertyElement path;
+    public TextPropertyElement group;
+    public TextPropertyElement dirFiles;
+    
+    String recursiveId, pathId, groupId, dirFilesId;
+    
     public FSOperationChgrp(String id, String name) {
       super(id, name);
-      this.propertyElements.add(new CheckBoxPropertyElement(id + ".recursive", "Recursive"));
-      this.propertyElements.add(new TextPropertyElement(id + ".path", "Path"));
-      this.propertyElements.add(new TextPropertyElement(id + ".group", "Group"));
-      this.propertyElements.add(new TextPropertyElement(id + ".dir-files", "Dir Files"));
+      
+      recursiveId = id + ".recursive";
+      pathId = id + ".path";
+      groupId = id + ".group";
+      dirFilesId = id + ".dir-files";
+      
+      recursive = new CheckBoxPropertyElement(recursiveId, "Recursive");
+      path = new TextPropertyElement(pathId, "Path");
+      group = new TextPropertyElement(groupId, "Group");
+      dirFiles = new TextPropertyElement(dirFilesId, "Dir Files");
+      
+      this.propertyElements.add(recursive);
+      this.propertyElements.add(path);
+      this.propertyElements.add(group);
+      this.propertyElements.add(dirFiles);
     }
 
     @Override
     public void setComplexValue(Object value) {}
     
-  }
-  
-  @Override
-  public String toHPDL() {
-    return null;
-  }
+    public void setValueOfRecursive(Boolean recursive) {
+      setValue(recursiveId, recursive);
+    }
+    
+    public Boolean getValueOfRecursive() {
+      return (Boolean) getValue(recursiveId);
+    }
+    
+    public void setValueOfPath(String path) {
+      setValue(pathId, path);
+    }
+    
+    public String getValueOfPath() {
+      return (String) getValue(pathId);
+    }
+    
+    public void setValueOfGroup(String group) {
+      setValue(groupId, group);
+    }
 
-  @Override
-  public void fromHPDL(String hpdl) {
+    public String getValueOfGroup() {
+      return (String) getValue(groupId);
+    }
+    
+    public void setValueOfDirFiles(String dirFiles) {
+      setValue(dirFilesId, dirFiles);
+    }
+    
+    public String getValueOfDirFiles() {
+      return (String) getValue(dirFilesId);
+    }
     
   }
-
+  
 }

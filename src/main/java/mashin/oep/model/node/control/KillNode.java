@@ -1,5 +1,6 @@
 package mashin.oep.model.node.control;
 
+import mashin.oep.XMLUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.property.TextPropertyElement;
@@ -16,16 +17,41 @@ public class KillNode extends ControlNode {
   protected NoOutputTerminal noOutputTerminal;
   
   public KillNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+
+  public KillNode(Workflow workflow, org.dom4j.Node hpdlNode) {
+    super(workflow, hpdlNode);
     fanInTerminal     = new FanInTerminal(TERMINAL_FANIN, this);
     noOutputTerminal  = new NoOutputTerminal(TERMINAL_NONE, this);
     terminals.add(fanInTerminal);
     terminals.add(noOutputTerminal);
-    setName("kill-" + ID_SEQ.incrementAndGet());
     message = new TextPropertyElement(PROP_NODE_KILL_MESSAGE, "Message");
     addPropertyElement(message);
   }
+  
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
+    setName("kill-" + ID_SEQ.incrementAndGet());
+  }
+  
+  @Override
+  public void write(org.dom4j.Element parentNode) {
+    
+  }
 
+  @Override
+  public void read(org.dom4j.Node hpdlNode) {
+    super.read(hpdlNode);
+    XMLUtils.initTextPropertyFrom(message, hpdlNode, "./message");
+  }
+  
+  @Override
+  public String getNodeType() {
+    return "kill";
+  }
+  
   public void setMessage(String message) {
     setPropertyValue(PROP_NODE_KILL_MESSAGE, message);
   }
@@ -34,16 +60,6 @@ public class KillNode extends ControlNode {
     return message.getStringValue();
   }
   
-  @Override
-  public String toHPDL() {
-    return null;
-  }
-
-  @Override
-  public void fromHPDL(String hpdl) {
-    
-  }
-
   @Override
   public boolean canConnectTo(Node target) {
     return false;

@@ -3,6 +3,7 @@ package mashin.oep.model.node.action;
 import java.util.Arrays;
 import java.util.List;
 
+import mashin.oep.XMLUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.node.Node;
@@ -25,7 +26,11 @@ public abstract class ActionNode extends Node {
   protected TextPropertyElement retryInterval;
   
   public ActionNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+
+  public ActionNode(Workflow workflow, org.dom4j.Node hpdlNode) {
+    super(workflow, hpdlNode);
     this.setSchemaVersion(workflow.getSchemaVersion());
     
     fanInTerminal           = new FanInTerminal(TERMINAL_FANIN, this);
@@ -44,7 +49,44 @@ public abstract class ActionNode extends Node {
     retryInterval = new TextPropertyElement(PROP_NODE_RETRYINTERVAL, "Retry Interval");
     addPropertyElement(retryInterval);
   }
-
+  
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
+  }
+  
+  @Override
+  public void read(org.dom4j.Node hpdlNode) {
+    super.read(hpdlNode);
+    XMLUtils.initTextPropertyFrom(cred, hpdlNode, "@cred");
+    XMLUtils.initTextPropertyFrom(retryMax, hpdlNode, "@retry-max");
+    XMLUtils.initTextPropertyFrom(retryInterval, hpdlNode, "@retry-interval");
+  }
+  
+  public void setCred(String cred) {
+    setPropertyValue(PROP_NODE_CRED, cred);
+  }
+  
+  public String getCred() {
+    return cred.getStringValue();
+  }
+  
+  public void setRetryMax(String retryMax) {
+    setPropertyValue(PROP_NODE_RETRYMAX, retryMax);
+  }
+  
+  public String getRetryMax() {
+    return retryMax.getStringValue();
+  }
+  
+  public void setRetryInterval(String retryInterval) {
+    setPropertyValue(PROP_NODE_RETRYINTERVAL, retryInterval);
+  }
+  
+  public String getRetryInterval() {
+    return retryInterval.getStringValue();
+  }
+  
   @Override
   public List<SchemaVersion> getPossibleSchemaVersions() {
     if (this.workflow == null) {

@@ -3,9 +3,14 @@ package mashin.oep.model.node.action.extended;
 import java.util.Arrays;
 import java.util.List;
 
+import org.dom4j.Element;
+import org.dom4j.Node;
+
+import mashin.oep.XMLUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
+import mashin.oep.model.property.PreparePropertyElement;
 import mashin.oep.model.property.PropertyElementCollection;
 import mashin.oep.model.property.PropertyPropertyElement;
 import mashin.oep.model.property.TextPropertyElement;
@@ -20,8 +25,9 @@ public class ShellActionNode extends ExtendedActionNode {
   
   public static final String PROP_JOBTRACKER = "prop.node.shell.job-tracker";
   public static final String PROP_NAMENODE = "prop.node.shell.name-ndoe";
-  public static final String PROP_PREPARE_DELETE = "prop.node.shell.prepare.delete";
-  public static final String PROP_PREPARE_MKDIR = "prop.node.shell.prepare.mkdir";
+  public static final String PROP_PREPARE = "prop.node.shell.prepare";
+  //public static final String PROP_PREPARE_DELETE = "prop.node.shell.prepare.delete";
+  //public static final String PROP_PREPARE_MKDIR = "prop.node.shell.prepare.mkdir";
   public static final String PROP_JOBXML = "prop.node.shell.job-xml";
   public static final String PROP_CONFIGURATION = "prop.node.shell.configuration";
   public static final String PROP_EXEC = "prop.node.shell.exec";
@@ -31,14 +37,15 @@ public class ShellActionNode extends ExtendedActionNode {
   public static final String PROP_ARCHIVE = "prop.node.shell.archive";
   public static final String PROP_CAPTURE_OUTPUT = "prop.node.shell.capture-output";
   
-  public static final String CATEGORY_PREPARE = "Prepare";
+  //public static final String CATEGORY_PREPARE = "Prepare";
   
   protected TextPropertyElement jobTracker;//job-tracker
   protected TextPropertyElement nameNode;//name-node
   
   //prepare
-  protected PropertyElementCollection prepareDelete;//delete {path} 0-unbounded
-  protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
+  protected PreparePropertyElement prepare;
+  //protected PropertyElementCollection prepareDelete;//delete {path} 0-unbounded
+  //protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
   
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
   protected PropertyElementCollection configuration;//configuration
@@ -50,7 +57,11 @@ public class ShellActionNode extends ExtendedActionNode {
   protected CheckBoxPropertyElement captureOutput;//capture-output (flag/checkbox)
   
   public ShellActionNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+  
+  public ShellActionNode(Workflow workflow, Node hpdlNode) {
+    super(workflow, hpdlNode);
     
     jobTracker = new TextPropertyElement(PROP_JOBTRACKER, "Jobtracker");
     addPropertyElement(jobTracker);
@@ -59,13 +70,15 @@ public class ShellActionNode extends ExtendedActionNode {
     addPropertyElement(nameNode);
     
     //prepare
-    prepareDelete = new PropertyElementCollection(CATEGORY_PREPARE,
-                      new TextPropertyElement(PROP_PREPARE_DELETE, "Delete"));
-    addPropertyElement(prepareDelete);
-    
-    prepareMkdir = new PropertyElementCollection(CATEGORY_PREPARE,
-                      new TextPropertyElement(PROP_PREPARE_MKDIR, "Mkdir"));
-    addPropertyElement(prepareMkdir);
+    prepare = new PreparePropertyElement(PROP_PREPARE, "Prepare");
+    addPropertyElement(prepare);
+    //prepareDelete = new PropertyElementCollection(CATEGORY_PREPARE,
+    //                  new TextPropertyElement(PROP_PREPARE_DELETE, "Delete"));
+    //addPropertyElement(prepareDelete);
+    //
+    //prepareMkdir = new PropertyElementCollection(CATEGORY_PREPARE,
+    //                  new TextPropertyElement(PROP_PREPARE_MKDIR, "Mkdir"));
+    //addPropertyElement(prepareMkdir);
     
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);
@@ -95,10 +108,41 @@ public class ShellActionNode extends ExtendedActionNode {
     
     captureOutput = new CheckBoxPropertyElement(PROP_CAPTURE_OUTPUT, "Capture Output");
     addPropertyElement(captureOutput);
-    
-    setName("shell-" + ID_SEQ.incrementAndGet());
   }
 
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
+    setName("shell-" + ID_SEQ.incrementAndGet());
+  }
+  
+  @Override
+  public void write(Element paretNode) {
+    
+  }
+  
+  @Override
+  public void read(Node hpdlNode) {
+    super.read(hpdlNode);
+    
+    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./shell/job-tracker");
+    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./shell/name-node");
+    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./shell/prepare");
+    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./shell/job-xml");
+    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./shell/configuration", "./property");
+    XMLUtils.initTextPropertyFrom(exec, hpdlNode, "./shell/exec");
+    XMLUtils.initTextCollectionFrom(argument, hpdlNode, "./shell/argument");
+    XMLUtils.initTextCollectionFrom(envVar, hpdlNode, "./shell/env-var");
+    XMLUtils.initTextCollectionFrom(file, hpdlNode, "./shell/file");
+    XMLUtils.initTextCollectionFrom(archive, hpdlNode, "./shell/archive");
+    captureOutput.setValue(!XMLUtils.valueOf("./shell/capture-output", hpdlNode).isEmpty());
+  }
+  
+  @Override
+  public String getNodeType() {
+    return "shell";
+  }
+  
   @Override
   public List<SchemaVersion> getPossibleSchemaVersions() {
     return SHELL_POSSIBLE_SCHEMA_VERSIONS;
@@ -114,14 +158,4 @@ public class ShellActionNode extends ExtendedActionNode {
     return SHELL_LATEST_SCHEMA_VERSION;
   }
   
-  @Override
-  public String toHPDL() {
-    return null;
-  }
-
-  @Override
-  public void fromHPDL(String hpdl) {
-    
-  }
-
 }

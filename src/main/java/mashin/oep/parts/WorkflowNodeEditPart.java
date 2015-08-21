@@ -78,10 +78,11 @@ public class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
   
   @Override
   protected IFigure createFigure() {
-    NodeFigure nodeFigure = new NodeFigure();
-    nodeFigure.setLocation(getCastedModel().getPosition());
+    Node node = getCastedModel();
+    NodeFigure nodeFigure = new NodeFigure(node.getNodeType());
+    nodeFigure.setLocation(node.getPosition());
     
-    List<Terminal> terminals = getCastedModel().getTerminals();
+    List<Terminal> terminals = node.getTerminals();
     for (Terminal terminal : terminals) {
       if (terminal instanceof FanInTerminal) {
         nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(

@@ -1,9 +1,12 @@
 package mashin.oep.model.property;
 
+import mashin.oep.hpdl.HPDLModel;
+
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
-public abstract class PropertyElement {
+public abstract class PropertyElement extends HPDLModel {
 
+  // view data
   protected String name;
   protected String id;
   protected boolean isEditable;

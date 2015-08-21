@@ -10,8 +10,17 @@ import mashin.oep.model.node.Node;
 public abstract class ControlNode extends Node {
   
   public ControlNode(Workflow workflow) {
-    super(workflow);
-    this.setSchemaVersion(workflow.getSchemaVersion()); 
+    this(workflow, null);
+  }
+  
+  public ControlNode(Workflow workflow, org.dom4j.Node hpdlNode) {
+    super(workflow, hpdlNode);
+    setSchemaVersion(workflow.getSchemaVersion());
+  }
+  
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
   }
   
   @Override

@@ -14,7 +14,7 @@ public class PropertyElementCollection extends PropertyElement {
   private PropertyElement empty;
 
   public PropertyElementCollection(String category, PropertyElement template) {
-    super(category, category);
+    super(template.getId(), category);
     this.category = category;
     list = new ArrayList<PropertyElement>();
     this.template = template;
@@ -24,6 +24,9 @@ public class PropertyElementCollection extends PropertyElement {
 
   @Override
   public boolean hasId(String propertyName) {
+    if (id.equals(propertyName)) {
+      return true;
+    }
     for (PropertyElement propertyElement : list) {
       if (propertyElement.hasId(propertyName)) {
         return true;
@@ -33,7 +36,14 @@ public class PropertyElementCollection extends PropertyElement {
   }
 
   @Override
-  public void setValue(Object value) {}
+  public void setValue(Object value) {
+    if (value instanceof PropertyElementCollection) {
+      PropertyElementCollection other = (PropertyElementCollection) value;
+      this.list = other.list;
+      this.template = other.template;
+      this.empty = other.empty;
+    }
+  }
   
   @Override
   public void setValue(String id, Object value) {
@@ -56,6 +66,12 @@ public class PropertyElementCollection extends PropertyElement {
       empty = createEmpty();
       list.add(empty);
     }
+  }
+  
+  public PropertyElement createAndAdd() {
+    PropertyElement pe = createEmpty();
+    list.add(list.size() - 1, pe);
+    return pe;
   }
   
   @Override

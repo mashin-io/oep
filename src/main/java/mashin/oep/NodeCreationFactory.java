@@ -22,7 +22,9 @@ public class NodeCreationFactory<T extends Node> implements CreationFactory {
     try {
       
       Workflow workflow = workflowEditor.getModel();
-      return type.getConstructor(workflow.getClass()).newInstance(workflow);
+      Node node = type.getConstructor(workflow.getClass()).newInstance(workflow);
+      node.init();
+      return node;
       
     } catch (InstantiationException | IllegalAccessException
         | IllegalArgumentException | InvocationTargetException

@@ -3,8 +3,13 @@ package mashin.oep.model.node.action.extended;
 import java.util.Arrays;
 import java.util.List;
 
+import org.dom4j.Element;
+import org.dom4j.Node;
+
+import mashin.oep.XMLUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
+import mashin.oep.model.property.PreparePropertyElement;
 import mashin.oep.model.property.PropertyElementCollection;
 import mashin.oep.model.property.PropertyPropertyElement;
 import mashin.oep.model.property.TextPropertyElement;
@@ -18,8 +23,9 @@ public class Hive2ActionNode extends ExtendedActionNode {
   
   public static final String PROP_JOBTRACKER = "prop.node.hive2.job-tracker";
   public static final String PROP_NAMENODE = "prop.node.hive2.name-ndoe";
-  public static final String PROP_PREPARE_DELETE = "prop.node.hive2.prepare.delete";
-  public static final String PROP_PREPARE_MKDIR = "prop.node.hive2.prepare.mkdir";
+  public static final String PROP_PREPARE = "prop.node.hive2.prepare";
+  //public static final String PROP_PREPARE_DELETE = "prop.node.hive2.prepare.delete";
+  //public static final String PROP_PREPARE_MKDIR = "prop.node.hive2.prepare.mkdir";
   public static final String PROP_JOBXML = "prop.node.hive2.job-xml";
   public static final String PROP_CONFIGURATION = "prop.node.hive2.configuration";
   public static final String PROP_JDBC_URL = "prop.node.hive2.jdbc-url";
@@ -30,14 +36,15 @@ public class Hive2ActionNode extends ExtendedActionNode {
   public static final String PROP_FILE = "prop.node.hive2.file";
   public static final String PROP_ARCHIVE = "prop.node.hive2.archive";
   
-  public static final String CATEGORY_PREPARE = "Prepare";
+  //public static final String CATEGORY_PREPARE = "Prepare";
   
   protected TextPropertyElement jobTracker;//job-tracker
   protected TextPropertyElement nameNode;//name-node
   
   //prepare
-  protected PropertyElementCollection prepareDelete;//delete {path} 0-unbounded
-  protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
+  protected PreparePropertyElement prepare;
+  //protected PropertyElementCollection prepareDelete;//delete {path} 0-unbounded
+  //protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
   
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
   protected PropertyElementCollection configuration;//configuration
@@ -50,7 +57,11 @@ public class Hive2ActionNode extends ExtendedActionNode {
   protected PropertyElementCollection archive;//archive 0-unbounded
   
   public Hive2ActionNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+  
+  public Hive2ActionNode(Workflow workflow, Node hpdlNode) {
+    super(workflow, hpdlNode);
     
     jobTracker = new TextPropertyElement(PROP_JOBTRACKER, "Jobtracker");
     addPropertyElement(jobTracker);
@@ -59,13 +70,15 @@ public class Hive2ActionNode extends ExtendedActionNode {
     addPropertyElement(nameNode);
     
     //prepare
-    prepareDelete = new PropertyElementCollection(CATEGORY_PREPARE,
-                      new TextPropertyElement(PROP_PREPARE_DELETE, "Delete"));
-    addPropertyElement(prepareDelete);
-    
-    prepareMkdir = new PropertyElementCollection(CATEGORY_PREPARE,
-                      new TextPropertyElement(PROP_PREPARE_MKDIR, "Mkdir"));
-    addPropertyElement(prepareMkdir);
+    prepare = new PreparePropertyElement(PROP_PREPARE, "Prepare");
+    addPropertyElement(prepare);
+    //prepareDelete = new PropertyElementCollection(CATEGORY_PREPARE,
+    //                  new TextPropertyElement(PROP_PREPARE_DELETE, "Delete"));
+    //addPropertyElement(prepareDelete);
+    //
+    //prepareMkdir = new PropertyElementCollection(CATEGORY_PREPARE,
+    //                  new TextPropertyElement(PROP_PREPARE_MKDIR, "Mkdir"));
+    //addPropertyElement(prepareMkdir);
     
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);
@@ -98,10 +111,42 @@ public class Hive2ActionNode extends ExtendedActionNode {
     archive = new PropertyElementCollection("Archive2",
                 new TextPropertyElement(PROP_ARCHIVE, "Archive2"));
     addPropertyElement(archive);
-    
-    setName("hive2-" + ID_SEQ.incrementAndGet());
   }
 
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
+    setName("hive2-" + ID_SEQ.incrementAndGet());
+  }
+  
+  @Override
+  public void write(Element paretNode) {
+    
+  }
+  
+  @Override
+  public void read(Node hpdlNode) {
+    super.read(hpdlNode);
+    
+    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./hive2/job-tracker");
+    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./hive2/name-node");
+    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./hive2/prepare");
+    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./hive2/job-xml");
+    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./hive2/configuration", "./property");
+    XMLUtils.initTextPropertyFrom(jdbcURL, hpdlNode, "./hive2/jdbc-url");
+    XMLUtils.initTextPropertyFrom(password, hpdlNode, "./hive2/password");
+    XMLUtils.initTextPropertyFrom(script, hpdlNode, "./hive2/script");
+    XMLUtils.initTextCollectionFrom(param, hpdlNode, "./hive2/param");
+    XMLUtils.initTextCollectionFrom(argument, hpdlNode, "./hive2/argument");
+    XMLUtils.initTextCollectionFrom(file, hpdlNode, "./hive2/file");
+    XMLUtils.initTextCollectionFrom(archive, hpdlNode, "./hive2/archive");
+  }
+  
+  @Override
+  public String getNodeType() {
+    return "hive2";
+  }
+  
   @Override
   public List<SchemaVersion> getPossibleSchemaVersions() {
     return HIVE2_POSSIBLE_SCHEMA_VERSIONS;
@@ -115,16 +160,6 @@ public class Hive2ActionNode extends ExtendedActionNode {
   @Override
   public SchemaVersion getLatestSchemaVersion() {
     return HIVE2_LATEST_SCHEMA_VERSION;
-  }
-
-  @Override
-  public String toHPDL() {
-    return null;
-  }
-
-  @Override
-  public void fromHPDL(String hpdl) {
-    
   }
 
 }

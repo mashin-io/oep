@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import mashin.oep.model.HPDLSerializable;
+import mashin.oep.XMLUtils;
 import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.connection.WorkflowConnection;
@@ -17,7 +17,7 @@ import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.draw2d.geometry.Point;
 
-public abstract class Node extends ModelElementWithSchema implements HPDLSerializable {
+public abstract class Node extends ModelElementWithSchema {
   
   public static final AtomicLong ID_SEQ = new AtomicLong(0);
   
@@ -34,8 +34,10 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   public static final String PROP_CONNECTION_TARGET  = "prop.node.connection.target";
   public static final String PROP_POS                = "prop.node.pos";
   public static final String PROP_NODE_NAME          = "prop.node.name";
+  public static final String PROP_NODE_TYPE          = "prop.node.type";
   
   protected TextPropertyElement  name;
+  protected TextPropertyElement  nodeType;
   protected PointPropertyElement position;
   
   protected Workflow workflow;
@@ -53,10 +55,17 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   protected List<WorkflowConnection> targetConnections;
   
   public Node(Workflow workflow) {
+    this(workflow, null);
+  }
+  
+  public Node(Workflow workflow, org.dom4j.Node hpdlNode) {
     this.workflow = workflow;
     
     name = new TextPropertyElement(PROP_NODE_NAME, "Name");
     addPropertyElement(name);
+    
+    nodeType = new TextPropertyElement(PROP_NODE_TYPE, "Type");
+    addPropertyElement(nodeType);
     
     position = new PointPropertyElement(PROP_POS, "Position");
     addPropertyElement(position);
@@ -64,6 +73,27 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
     terminals = new ArrayList<Terminal>();
     sourceConnections = new ArrayList<WorkflowConnection>();
     targetConnections = new ArrayList<WorkflowConnection>();
+    
+    hpdlModel.set(hpdlNode);
+    setNodeType();
+  }
+  
+  public void init() {
+    org.dom4j.Node hpdlNode = hpdlModel.get();
+    if (hpdlNode == null) {
+      initDefaults();
+    } else {
+      read(hpdlNode);
+    }
+  }
+  
+  public void initDefaults() {
+    
+  }
+  
+  @Override
+  public void read(org.dom4j.Node node) {
+    XMLUtils.initTextPropertyFrom(name, node, "@name");
   }
   
   public Point getPosition() {
@@ -80,6 +110,21 @@ public abstract class Node extends ModelElementWithSchema implements HPDLSeriali
   
   public void setName(String name) {
     setPropertyValue(PROP_NODE_NAME, name);
+  }
+  
+  public abstract String getNodeType();
+  
+  public void setNodeType() {
+    setPropertyValue(PROP_NODE_TYPE, "");
+  }
+  
+  @Override
+  public void setPropertyValue(Object propertyName, Object propertyValue) {
+    if (propertyName.equals(PROP_NODE_TYPE)) {
+      super.setPropertyValue(PROP_NODE_TYPE, getNodeType());
+    } else {
+      super.setPropertyValue(propertyName, propertyValue);
+    }
   }
   
   public List<WorkflowConnection> getSourceConnections() {

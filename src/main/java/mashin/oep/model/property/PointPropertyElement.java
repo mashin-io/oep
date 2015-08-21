@@ -5,8 +5,8 @@ import org.eclipse.draw2d.geometry.Point;
 
 public class PointPropertyElement extends PropertyElementGroup {
 
-  private PointCoordinatePropertyElement x;
-  private PointCoordinatePropertyElement y;
+  public PointCoordinatePropertyElement x;
+  public PointCoordinatePropertyElement y;
   
   public PointPropertyElement(String id, String name) {
     super(id, name);

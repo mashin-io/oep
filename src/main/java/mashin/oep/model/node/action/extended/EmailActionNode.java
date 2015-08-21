@@ -3,6 +3,10 @@ package mashin.oep.model.node.action.extended;
 import java.util.Arrays;
 import java.util.List;
 
+import org.dom4j.Element;
+import org.dom4j.Node;
+
+import mashin.oep.XMLUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.TextPropertyElement;
@@ -29,7 +33,11 @@ public class EmailActionNode extends ExtendedActionNode {
   protected TextPropertyElement attachment;//attachment
   
   public EmailActionNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+  
+  public EmailActionNode(Workflow workflow, Node hpdlNode) {
+    super(workflow, hpdlNode);
     
     to = new TextPropertyElement(PROP_TO, "To");
     addPropertyElement(to);
@@ -48,10 +56,36 @@ public class EmailActionNode extends ExtendedActionNode {
     
     attachment = new TextPropertyElement(PROP_ATTACHMENT, "Attachment");
     addPropertyElement(attachment);
-    
-    setName("email-" + ID_SEQ.incrementAndGet());
   }
 
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
+    setName("email-" + ID_SEQ.incrementAndGet());
+  }
+  
+  @Override
+  public void write(Element paretNode) {
+    
+  }
+  
+  @Override
+  public void read(Node hpdlNode) {
+    super.read(hpdlNode);
+    
+    XMLUtils.initTextPropertyFrom(to, hpdlNode, "./email/to");
+    XMLUtils.initTextPropertyFrom(cc, hpdlNode, "./email/cc");
+    XMLUtils.initTextPropertyFrom(subject, hpdlNode, "./email/subject");
+    XMLUtils.initTextPropertyFrom(body, hpdlNode, "./email/body");
+    XMLUtils.initTextPropertyFrom(contentType, hpdlNode, "./email/content_type");
+    XMLUtils.initTextPropertyFrom(attachment, hpdlNode, "./email/attachment");
+  }
+  
+  @Override
+  public String getNodeType() {
+    return "email";
+  }
+  
   @Override
   public List<SchemaVersion> getPossibleSchemaVersions() {
     return EMAIL_POSSIBLE_SCHEMA_VERSIONS;
@@ -65,16 +99,6 @@ public class EmailActionNode extends ExtendedActionNode {
   @Override
   public SchemaVersion getLatestSchemaVersion() {
     return EMAIL_LATEST_SCHEMA_VERSION;
-  }
-  
-  @Override
-  public String toHPDL() {
-    return null;
-  }
-
-  @Override
-  public void fromHPDL(String hpdl) {
-    
   }
 
 }

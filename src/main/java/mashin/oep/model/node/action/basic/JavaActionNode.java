@@ -1,7 +1,12 @@
 package mashin.oep.model.node.action.basic;
 
+import org.dom4j.Element;
+import org.dom4j.Node;
+
+import mashin.oep.XMLUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
+import mashin.oep.model.property.PreparePropertyElement;
 import mashin.oep.model.property.PropertyElementCollection;
 import mashin.oep.model.property.PropertyPropertyElement;
 import mashin.oep.model.property.TextPropertyElement;
@@ -10,8 +15,9 @@ public class JavaActionNode extends BasicActionNode {
 
   public static final String PROP_JOBTRACKER = "prop.node.java.job-tracker";
   public static final String PROP_NAMENODE = "prop.node.java.name-ndoe";
-  public static final String PROP_PREPARE_DELETE = "prop.node.java.prepare.delete";
-  public static final String PROP_PREPARE_MKDIR = "prop.node.java.prepare.mkdir";
+  public static final String PROP_PREPARE = "prop.node.java.prepare";
+  //public static final String PROP_PREPARE_DELETE = "prop.node.java.prepare.delete";
+  //public static final String PROP_PREPARE_MKDIR = "prop.node.java.prepare.mkdir";
   public static final String PROP_JOBXML = "prop.node.java.job-xml";
   public static final String PROP_CONFIGURATION = "prop.node.java.configuration";
   public static final String PROP_MAIN_CLASS = "prop.node.java.main-class";
@@ -22,14 +28,15 @@ public class JavaActionNode extends BasicActionNode {
   public static final String PROP_ARCHIVE = "prop.node.java.archive";
   public static final String PROP_CAPTURE_OUTPUT = "prop.node.java.capture-output";
   
-  public static final String CATEGORY_PREPARE = "Prepare";
+  //public static final String CATEGORY_PREPARE = "Prepare";
   
   protected TextPropertyElement jobTracker;//job-tracker
   protected TextPropertyElement nameNode;//name-node
   
   //prepare
-  protected PropertyElementCollection prepareDelete;//delete {path} 0-unbounded
-  protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
+  protected PreparePropertyElement prepare;
+  //protected PropertyElementCollection prepareDelete;//delete {path} 0-unbounded
+  //protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
   
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
   protected PropertyElementCollection configuration;//configuration
@@ -42,7 +49,11 @@ public class JavaActionNode extends BasicActionNode {
   protected CheckBoxPropertyElement captureOutput;//capture-output (flag/checkbox)
   
   public JavaActionNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+
+  public JavaActionNode(Workflow workflow, org.dom4j.Node hpdlNode) {
+    super(workflow, hpdlNode);
     
     jobTracker = new TextPropertyElement(PROP_JOBTRACKER, "Jobtracker");
     addPropertyElement(jobTracker);
@@ -51,11 +62,13 @@ public class JavaActionNode extends BasicActionNode {
     addPropertyElement(nameNode);
 
     //prepare
-    prepareDelete = new PropertyElementCollection(CATEGORY_PREPARE, new TextPropertyElement(PROP_PREPARE_DELETE, "Delete"));
-    addPropertyElement(prepareDelete);
-    
-    prepareMkdir = new PropertyElementCollection(CATEGORY_PREPARE, new TextPropertyElement(PROP_PREPARE_MKDIR, "Mkdir"));
-    addPropertyElement(prepareMkdir);
+    prepare = new PreparePropertyElement(PROP_PREPARE, "Prepare");
+    addPropertyElement(prepare);
+    //prepareDelete = new PropertyElementCollection(CATEGORY_PREPARE, new TextPropertyElement(PROP_PREPARE_DELETE, "Delete"));
+    //addPropertyElement(prepareDelete);
+    //
+    //prepareMkdir = new PropertyElementCollection(CATEGORY_PREPARE, new TextPropertyElement(PROP_PREPARE_MKDIR, "Mkdir"));
+    //addPropertyElement(prepareMkdir);
 
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);
@@ -84,18 +97,39 @@ public class JavaActionNode extends BasicActionNode {
     
     captureOutput = new CheckBoxPropertyElement(PROP_CAPTURE_OUTPUT, "Capture Output");
     addPropertyElement(captureOutput);
-    
+  }
+  
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
     setName("java-" + ID_SEQ.incrementAndGet());
   }
-
+  
   @Override
-  public String toHPDL() {
-    return null;
-  }
-
-  @Override
-  public void fromHPDL(String hpdl) {
+  public void write(Element paretNode) {
     
   }
-
+  
+  @Override
+  public void read(Node hpdlNode) {
+    super.read(hpdlNode);
+    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./java/job-tracker");
+    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./java/name-node");
+    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./java/prepare");
+    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./java/job-xml");
+    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./java/configuration", "./property");
+    XMLUtils.initTextPropertyFrom(mainClass, hpdlNode, "./java/main-class");
+    XMLUtils.initTextPropertyFrom(javaOpts, hpdlNode, "./java/java-opts");
+    XMLUtils.initTextCollectionFrom(javaOpt, hpdlNode, "./java/java-opt");
+    XMLUtils.initTextCollectionFrom(arg, hpdlNode, "./java/arg");
+    XMLUtils.initTextCollectionFrom(file, hpdlNode, "./java/file");
+    XMLUtils.initTextCollectionFrom(archive, hpdlNode, "./java/archive");
+    captureOutput.setValue(!XMLUtils.valueOf("./java/capture-output", hpdlNode).isEmpty());
+  }
+  
+  @Override
+  public String getNodeType() {
+    return "java";
+  }
+  
 }

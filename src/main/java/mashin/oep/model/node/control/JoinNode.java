@@ -11,26 +11,38 @@ public class JoinNode extends ControlNode {
   protected SingleOutputTerminal singleOutputTerminal;
   
   public JoinNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+
+  public JoinNode(Workflow workflow, org.dom4j.Node hpdlNode) {
+    super(workflow, hpdlNode);
     fanInTerminal        = new FanInTerminal(TERMINAL_FANIN, this);
     singleOutputTerminal = new SingleOutputTerminal(TERMINAL_OUT, this);
     terminals.add(fanInTerminal);
     terminals.add(singleOutputTerminal);
+  }
+  
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
     setName("join-" + ID_SEQ.incrementAndGet());
   }
-
+  
   @Override
-  public String toHPDL() {
-    // TODO Auto-generated method stub
-    return null;
+  public void write(org.dom4j.Element parentNode) {
+    
   }
 
   @Override
-  public void fromHPDL(String hpdl) {
-    // TODO Auto-generated method stub
-
+  public void read(org.dom4j.Node hpdlNode) {
+    super.read(hpdlNode);
   }
 
+  @Override
+  public String getNodeType() {
+    return "join";
+  }
+  
   @Override
   public boolean canConnectTo(Node target) {
     return true;

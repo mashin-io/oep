@@ -1,10 +1,18 @@
 package mashin.oep;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.EventObject;
 
 import mashin.oep.model.Workflow;
 import mashin.oep.parts.WorkflowEditPartFactory;
 
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
@@ -28,7 +36,9 @@ import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 
 public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   
@@ -174,8 +184,49 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   @Override
   protected void setInput(IEditorInput input) {
     super.setInput(input);
-    workflow = new Workflow();
-    workflow.init();
+    BufferedReader br = null;
+    String hpdl = "";
+    try {
+      
+      if (input instanceof FileStoreEditorInput) {
+        
+        File file = new File(((FileStoreEditorInput) input).getURI());
+        br = new BufferedReader(new FileReader(file));
+        
+      } else if (input instanceof IFileEditorInput) {
+        
+        IFile file = ((IFileEditorInput) input).getFile();
+        br = new BufferedReader(new InputStreamReader(file.getContents()));
+        
+      }
+      
+      if (br != null) {
+        StringBuffer sb = new StringBuffer();
+        String line = "";
+        while ((line = br.readLine()) != null) {
+          sb.append(line);
+        }
+        hpdl = sb.toString().trim();
+        hpdl = hpdl.replaceAll("xmlns=", "schema-version=");
+        
+        br.close();
+      }
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+    if (hpdl.isEmpty()) {
+      workflow = new Workflow();
+    } else {
+      try {
+        SAXReader reader = new SAXReader();
+        Document document = reader.read(new StringReader(hpdl));
+        document.accept(new XMLUtils.NameSpaceCleaner());
+        
+        workflow = new Workflow(document);
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
+    }
     workflow.setName(input.getName());
     setPartName(input.getName());
   }

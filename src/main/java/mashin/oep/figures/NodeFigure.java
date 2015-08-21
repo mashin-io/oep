@@ -19,8 +19,9 @@ public class NodeFigure extends Figure {
   private Label label;
   private Label toolTipLabel;
   private List<TerminalConnectionAnchor> connectionAnchors;
+  private String nodeType;
   
-  public NodeFigure() {
+  public NodeFigure(String nodeType) {
     FreeformLayout layout = new FreeformLayout();
     setLayoutManager(layout);
     
@@ -48,6 +49,8 @@ public class NodeFigure extends Figure {
     setToolTip(toolTipLabel);
     
     connectionAnchors = new ArrayList<TerminalConnectionAnchor>();
+    
+    this.nodeType = nodeType;
   }
   
   public Label getLabelFigure() {
@@ -60,7 +63,7 @@ public class NodeFigure extends Figure {
   
   public void setLabel(String label) {
     this.label.setText(label);
-    this.toolTipLabel.setText(label);
+    this.toolTipLabel.setText(nodeType + ": " + label);
   }
   
   public String getLabel() {

@@ -13,26 +13,40 @@ public class DecisionNode extends ControlNode {
   protected SingleOutputTerminal defaultSingleOutputTerminal;
   
   public DecisionNode(Workflow workflow) {
-    super(workflow);
+    this(workflow, null);
+  }
+
+  public DecisionNode(Workflow workflow, org.dom4j.Node hpdlNode) {
+    super(workflow, hpdlNode);
     fanInTerminal               = new FanInTerminal(TERMINAL_FANIN, this);
     caseFanOutTerminal          = new FanOutTerminal(TERMINAL_CASE, this);
     defaultSingleOutputTerminal = new SingleOutputTerminal(TERMINAL_DEFAULT, this);
     terminals.add(fanInTerminal);
     terminals.add(caseFanOutTerminal);
     terminals.add(defaultSingleOutputTerminal);
+  }
+  
+  @Override
+  public void initDefaults() {
+    super.initDefaults();
     setName("decision-" + ID_SEQ.incrementAndGet());
   }
-
+  
   @Override
-  public String toHPDL() {
-    return null;
-  }
-
-  @Override
-  public void fromHPDL(String hpdl) {
+  public void write(org.dom4j.Element parentNode) {
     
   }
 
+  @Override
+  public void read(org.dom4j.Node hpdlNode) {
+    super.read(hpdlNode);
+  }
+
+  @Override
+  public String getNodeType() {
+    return "decision";
+  }
+  
   @Override
   public boolean canConnectTo(Node target) {
     return true;
