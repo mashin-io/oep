@@ -10,6 +10,13 @@ public class WorkflowCaseConnection extends WorkflowConnection {
   
   protected TextPropertyElement condition;
   
+  public WorkflowCaseConnection(WorkflowConnectionEndPoint source,
+      WorkflowConnectionEndPoint target) {
+    super(source, target);
+    condition = new TextPropertyElement(PROP_CONN_CONDITION, "Condition");
+    addPropertyElement(condition);
+  }
+  
   public WorkflowCaseConnection(Node source, Node target,
       Terminal sourceTerminal, Terminal targetTerminal) {
     super(source, target, sourceTerminal, targetTerminal);

@@ -1,11 +1,14 @@
 package mashin.oep.model.node.control;
 
-import org.dom4j.Element;
-
+import mashin.oep.hpdl.XMLUtils;
 import mashin.oep.model.Workflow;
+import mashin.oep.model.connection.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.terminal.NoInputTerminal;
 import mashin.oep.model.terminal.SingleOutputTerminal;
+
+import org.dom4j.Element;
 
 public class StartNode extends ControlNode {
 
@@ -27,6 +30,7 @@ public class StartNode extends ControlNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
+    
     setName("start");
   }
   
@@ -38,7 +42,15 @@ public class StartNode extends ControlNode {
   @Override
   public void read(org.dom4j.Node hpdlNode) {
     super.read(hpdlNode);
+    
     setName("start");
+    
+    // read connections
+    
+    WorkflowConnection conn = new WorkflowConnection(
+        new WorkflowConnectionEndPoint(this, singleOutputTerminal),
+        new WorkflowConnectionEndPoint(XMLUtils.valueOf("@to", hpdlNode), TERMINAL_FANIN));
+    sourceConnections.add(conn);
   }
   
   @Override

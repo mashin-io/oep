@@ -45,8 +45,8 @@ public class ConnectionReconnectCommand extends Command {
 			throw new IllegalArgumentException();
 		}
 		this.connection = connection;
-		this.oldSourceNode = connection.getSource();
-		this.oldTargetNode = connection.getTarget();
+		this.oldSourceNode = connection.getSourceNode();
+		this.oldTargetNode = connection.getTargetNode();
 		this.oldSourceTerminal = connection.getSourceTerminal();
 		this.oldTargetTerminal = connection.getTargetTerminal();
 	}

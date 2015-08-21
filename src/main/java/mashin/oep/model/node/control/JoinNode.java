@@ -1,6 +1,9 @@
 package mashin.oep.model.node.control;
 
+import mashin.oep.hpdl.XMLUtils;
 import mashin.oep.model.Workflow;
+import mashin.oep.model.connection.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.SingleOutputTerminal;
@@ -36,6 +39,13 @@ public class JoinNode extends ControlNode {
   @Override
   public void read(org.dom4j.Node hpdlNode) {
     super.read(hpdlNode);
+    
+    // read connections
+    
+    WorkflowConnection conn = new WorkflowConnection(
+        new WorkflowConnectionEndPoint(this, singleOutputTerminal),
+        new WorkflowConnectionEndPoint(XMLUtils.valueOf("@to", hpdlNode), TERMINAL_FANIN));
+    sourceConnections.add(conn);
   }
 
   @Override

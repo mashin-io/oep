@@ -12,7 +12,7 @@ public class SingleOutputTerminal extends OutputTerminal {
   @Override
   public boolean canAddConnection(WorkflowConnection connection) {
     if (connections.isEmpty()
-        && connection.getSource().equals(holderNode)) {
+        && connection.getSourceNode().equals(holderNode)) {
       return true;
     }
     return false;

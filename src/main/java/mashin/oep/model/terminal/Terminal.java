@@ -55,10 +55,10 @@ public abstract class Terminal extends ModelElement {
   
   public boolean addConnectionInitiate(WorkflowConnection connection) {
     if (!canAddConnection(connection)
-        || !(holderNode == connection.getSource() 
-            && holderNode.canConnectTo(connection.getTarget()))
-        || !(holderNode == connection.getTarget() 
-            && holderNode.canConnectFrom(connection.getSource()))) {
+        || !(holderNode == connection.getSourceNode() 
+            && holderNode.canConnectTo(connection.getTargetNode()))
+        || !(holderNode == connection.getTargetNode() 
+            && holderNode.canConnectFrom(connection.getSourceNode()))) {
       return false;
     }
     boolean success = connections.add(connection);

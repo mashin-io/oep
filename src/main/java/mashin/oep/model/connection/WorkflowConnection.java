@@ -13,36 +13,48 @@ public class WorkflowConnection extends ModelElement {
   
   private boolean isConnected;
 
-  private Node sourceNode;
-  private Node targetNode;
+  private WorkflowConnectionEndPoint source;
+  private WorkflowConnectionEndPoint target;
   
-  private Terminal sourceTerminal;
-  private Terminal targetTerminal;
-
+  public WorkflowConnection(WorkflowConnectionEndPoint source,
+      WorkflowConnectionEndPoint target) {
+    this.source = source;
+    this.target = target;
+  }
+  
   public WorkflowConnection(Node source, Node target, Terminal sourceTerminal,
       Terminal targetTerminal) {
-    this.sourceNode = source;
-    this.targetNode = target;
-    this.sourceTerminal = sourceTerminal;
-    this.targetTerminal = targetTerminal;
+    this.source = new WorkflowConnectionEndPoint(source, sourceTerminal);
+    this.target = new WorkflowConnectionEndPoint(target, targetTerminal);
   }
 
   public void disconnect() {
     if (isConnected) {
-      sourceNode.removeConnectionInitiate(this);
-      targetNode.removeConnectionInitiate(this);
+      source.getNode().removeConnectionInitiate(this);
+      target.getNode().removeConnectionInitiate(this);
       isConnected = false;
     }
   }
 
   public void reconnect() {
     if (!isConnected) {
-      sourceNode.addConnectionInitiate(this);
-      targetNode.addConnectionInitiate(this);
+      source.getNode().addConnectionInitiate(this);
+      target.getNode().addConnectionInitiate(this);
       isConnected = true;
     }
   }
 
+  public void reconnect(WorkflowConnectionEndPoint source,
+      WorkflowConnectionEndPoint target) {
+    if (source == null || target == null) {
+      throw new IllegalArgumentException();
+    }
+    disconnect();
+    this.source = source;
+    this.target = target;
+    reconnect();
+  }
+  
   public void reconnect(Node source, Node target,
       Terminal sourceTerminal, Terminal targetTerminal) {
     if (source == null || target == null
@@ -51,27 +63,33 @@ public class WorkflowConnection extends ModelElement {
       throw new IllegalArgumentException();
     }
     disconnect();
-    this.sourceNode = source;
-    this.targetNode = target;
-    this.sourceTerminal = sourceTerminal;
-    this.targetTerminal = targetTerminal;
+    this.source = new WorkflowConnectionEndPoint(source, sourceTerminal);
+    this.target = new WorkflowConnectionEndPoint(target, targetTerminal);
     reconnect();
   }
 
-  public Node getSource() {
-    return this.sourceNode;
+  public WorkflowConnectionEndPoint getSource() {
+    return source;
+  }
+  
+  public WorkflowConnectionEndPoint getTarget() {
+    return target;
+  }
+  
+  public Node getSourceNode() {
+    return source.getNode();
   }
 
-  public Node getTarget() {
-    return this.targetNode;
+  public Node getTargetNode() {
+    return target.getNode();
   }
   
   public Terminal getSourceTerminal() {
-    return sourceTerminal;
+    return source.getTerminal();
   }
   
   public Terminal getTargetTerminal() {
-    return targetTerminal;
+    return target.getTerminal();
   }
   
   @Override
@@ -85,10 +103,8 @@ public class WorkflowConnection extends ModelElement {
     }
     
     WorkflowConnection other = (WorkflowConnection) obj;
-    return this.sourceNode.equals(other.sourceNode)
-        && this.sourceTerminal.equals(other.sourceTerminal)
-        && this.targetNode.equals(other.targetNode)
-        && this.targetTerminal.equals(other.targetTerminal);
+    return this.source.equals(other.source)
+        && this.target.equals(other.target);
   }
   
 }

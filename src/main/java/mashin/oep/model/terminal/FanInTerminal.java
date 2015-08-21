@@ -11,7 +11,7 @@ public class FanInTerminal extends InputTerminal {
 
   @Override
   public boolean canAddConnection(WorkflowConnection connection) {
-    if (!connection.getTarget().equals(holderNode)
+    if (!connection.getTargetNode().equals(holderNode)
         || hasConnection(connection)) {
       return false;
     }

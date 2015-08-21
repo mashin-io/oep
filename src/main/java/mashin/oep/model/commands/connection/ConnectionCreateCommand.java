@@ -42,7 +42,7 @@ public class ConnectionCreateCommand extends Command {
     if (sourceNode.equals(targetNode)
         || !sourceNode.canConnectTo(targetNode)
         || !sourceTerminal.canAddConnection(connection)
-        || !targetNode.canConnectFrom(connection.getSource())
+        || !targetNode.canConnectFrom(connection.getSourceNode())
         || !targetTerminal.canAddConnection(connection)) {
       return false;
     }

@@ -1,6 +1,12 @@
 package mashin.oep.model.node.control;
 
+import java.util.List;
+
+import mashin.oep.hpdl.XMLUtils;
 import mashin.oep.model.Workflow;
+import mashin.oep.model.connection.WorkflowCaseConnection;
+import mashin.oep.model.connection.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.FanOutTerminal;
@@ -40,6 +46,25 @@ public class DecisionNode extends ControlNode {
   @Override
   public void read(org.dom4j.Node hpdlNode) {
     super.read(hpdlNode);
+    
+    // read connections
+    
+    @SuppressWarnings("unchecked")
+    List<org.dom4j.Node> caseConnNodes = hpdlNode.selectNodes("./switch/case");
+    if (caseConnNodes != null) {
+      for (org.dom4j.Node caseConnNode : caseConnNodes) {
+        WorkflowCaseConnection conn = new WorkflowCaseConnection(
+            new WorkflowConnectionEndPoint(this, caseFanOutTerminal),
+            new WorkflowConnectionEndPoint(XMLUtils.valueOf("@to", caseConnNode), TERMINAL_FANIN));
+        conn.setCondition(caseConnNode.getText().trim());
+        sourceConnections.add(conn);
+      }
+    }
+    
+    WorkflowConnection conn = new WorkflowConnection(
+        new WorkflowConnectionEndPoint(this, defaultSingleOutputTerminal),
+        new WorkflowConnectionEndPoint(XMLUtils.valueOf("./switch/default/@to", hpdlNode), TERMINAL_FANIN));
+    sourceConnections.add(conn);
   }
 
   @Override

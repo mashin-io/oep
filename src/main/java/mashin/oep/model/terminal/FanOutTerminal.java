@@ -11,7 +11,7 @@ public class FanOutTerminal extends OutputTerminal {
 
   @Override
   public boolean canAddConnection(WorkflowConnection connection) {
-    if (!connection.getSource().equals(holderNode)
+    if (!connection.getSourceNode().equals(holderNode)
         || hasConnection(connection)) {
       return false;
     }

@@ -136,13 +136,13 @@ public abstract class Node extends ModelElementWithSchema {
   }
   
   public boolean addConnectionInitiate(WorkflowConnection connection) {
-    if (connection.getSource() == connection.getTarget()) {
+    if (connection.getSourceNode() == connection.getTargetNode()) {
       
       return false;
       
-    } else if (connection.getSource() == this) {
+    } else if (connection.getSourceNode() == this) {
       
-      if (!canConnectTo(connection.getTarget())
+      if (!canConnectTo(connection.getTargetNode())
           || !connection.getSourceTerminal().canAddConnection(connection)) {
         return false;
       }
@@ -154,9 +154,9 @@ public abstract class Node extends ModelElementWithSchema {
       }
       return success;
       
-    } else if (connection.getTarget() == this) {
+    } else if (connection.getTargetNode() == this) {
       
-      if (!canConnectFrom(connection.getSource())
+      if (!canConnectFrom(connection.getSourceNode())
           || !connection.getTargetTerminal().canAddConnection(connection)) {
         return false;
       }
@@ -174,12 +174,12 @@ public abstract class Node extends ModelElementWithSchema {
   }
   
   public void addConnectionUpdate(WorkflowConnection connection) {
-    if (connection.getSource() == this) {
+    if (connection.getSourceNode() == this) {
       boolean success = sourceConnections.add(connection);
       if (success) {
         firePropertyChange(PROP_CONNECTION_SOURCE, null, connection);
       }
-    } else if (connection.getTarget() == this) {
+    } else if (connection.getTargetNode() == this) {
       boolean success = targetConnections.add(connection);
       if (success) {
         firePropertyChange(PROP_CONNECTION_TARGET, null, connection);
@@ -188,13 +188,13 @@ public abstract class Node extends ModelElementWithSchema {
   }
   
   public void removeConnectionInitiate(WorkflowConnection connection) {
-    if (connection.getSource() == this) {
+    if (connection.getSourceNode() == this) {
       boolean success = sourceConnections.remove(connection);
       if (success) {
         connection.getSourceTerminal().removeConnectionUpdate(connection);
         firePropertyChange(PROP_CONNECTION_SOURCE, connection, null);
       }
-    } else if (connection.getTarget() == this) {
+    } else if (connection.getTargetNode() == this) {
       boolean success = targetConnections.remove(connection);
       if (success) {
         connection.getTargetTerminal().removeConnectionUpdate(connection);
@@ -204,12 +204,12 @@ public abstract class Node extends ModelElementWithSchema {
   }
   
   public void removeConnectionUpdate(WorkflowConnection connection) {
-    if (connection.getSource() == this) {
+    if (connection.getSourceNode() == this) {
       boolean success = sourceConnections.remove(connection);
       if (success) {
         firePropertyChange(PROP_CONNECTION_SOURCE, connection, null);
       }
-    } else if (connection.getTarget() == this) {
+    } else if (connection.getTargetNode() == this) {
       boolean success = targetConnections.remove(connection);
       if (success) {
         firePropertyChange(PROP_CONNECTION_TARGET, connection, null);

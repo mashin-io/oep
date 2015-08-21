@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.model.connection.WorkflowConnection;
+import mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.node.action.basic.FSActionNode;
 import mashin.oep.model.node.action.basic.JavaActionNode;
@@ -224,6 +226,9 @@ public class Workflow extends ModelElementWithSchema {
       nodes.add(workflowNodeFromHPDLNode(hpdlChildNode, graphicalInfoMap));
     }
     
+    // connections
+    initConnections();
+    
   }
   
   private Node workflowNodeFromHPDLNode(org.dom4j.Node hpdlNode, HashMap<String, Point> graphicalInfoMap) {
@@ -282,6 +287,30 @@ public class Workflow extends ModelElementWithSchema {
     node.init();
     node.setPosition(graphicalInfoMap.get(node.getName()));
     return node;
+  }
+  
+  private void initConnections() {
+    HashMap<String, Node> nodeMap = new HashMap<String, Node>(nodes.size());
+    for (Node node : nodes) {
+      nodeMap.put(node.getName(), node);
+    }
+    
+    for (Node node : nodes) {
+      List<WorkflowConnection> sourceConns = new ArrayList<WorkflowConnection>(
+          node.getSourceConnections());
+      node.getSourceConnections().clear();
+      
+      for (WorkflowConnection sourceConn : sourceConns) {
+        WorkflowConnectionEndPoint target = sourceConn.getTarget();
+        Node targetNode = nodeMap.get(target.getNodeAsString());
+        target.setNode(targetNode);
+        if (targetNode != null) {
+          target.setTerminal(targetNode.getTerminal(target
+              .getTerminalAsString()));
+          sourceConn.reconnect();
+        }
+      }
+    }
   }
   
   @SuppressWarnings({ "rawtypes", "unused" })
