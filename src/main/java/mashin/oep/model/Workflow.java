@@ -32,6 +32,8 @@ import mashin.oep.model.node.control.ForkNode;
 import mashin.oep.model.node.control.JoinNode;
 import mashin.oep.model.node.control.KillNode;
 import mashin.oep.model.node.control.StartNode;
+import mashin.oep.model.node.sort.NodeSort;
+import mashin.oep.model.node.sort.TopologicalNodeSort;
 import mashin.oep.model.property.CredentialPropertyElement;
 import mashin.oep.model.property.GlobalPropertyElement;
 import mashin.oep.model.property.PropertyElementCollection;
@@ -83,6 +85,8 @@ public class Workflow extends ModelElementWithSchema {
   private StartNode   startNode;
   private EndNode     endNode;
   private List<Node>  nodes;
+  
+  private NodeSort    nodeSort;
   
   public Workflow() {
     this(null);
@@ -220,6 +224,8 @@ public class Workflow extends ModelElementWithSchema {
     // credentials
     XMLUtils.initCredentialsCollectionFrom(credentials, rootElement, "./credentials", "./credential");
     
+    nodeSort = new TopologicalNodeSort(this);
+    
     // nodes
     List<org.dom4j.Node> hpdlNodes = XMLUtils.nodesList(rootElement);
     for (org.dom4j.Node hpdlChildNode : hpdlNodes) {
@@ -229,6 +235,9 @@ public class Workflow extends ModelElementWithSchema {
     // connections
     initConnections();
     
+    if (nodeSort.needsSort()) {
+      nodeSort.sort();
+    }
   }
   
   private Node workflowNodeFromHPDLNode(org.dom4j.Node hpdlNode, HashMap<String, Point> graphicalInfoMap) {
@@ -285,7 +294,12 @@ public class Workflow extends ModelElementWithSchema {
       break;
     }
     node.init();
-    node.setPosition(graphicalInfoMap.get(node.getName()));
+    Point point = graphicalInfoMap.get(node.getName());
+    if (point != null) {
+      node.setPosition(point);
+    } else {
+      nodeSort.add(node);
+    }
     return node;
   }
   

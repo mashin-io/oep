@@ -15,6 +15,9 @@ import org.eclipse.draw2d.geometry.Point;
 
 public class NodeFigure extends Figure {
 
+  public static final int WIDTH  = 90;
+  public static final int HEIGHT = 60;
+  
   private RectangleFigure body;
   private Label label;
   private Label toolTipLabel;
@@ -25,12 +28,12 @@ public class NodeFigure extends Figure {
     FreeformLayout layout = new FreeformLayout();
     setLayoutManager(layout);
     
-    setSize(90, 60);
+    setSize(WIDTH, HEIGHT);
     
     body = new RectangleFigure();
-    body.setPreferredSize(30, 40);
+    body.setPreferredSize(WIDTH / 3, 2 * HEIGHT / 3);
     body.setSize(body.getPreferredSize());
-    body.setLocation(new Point(30, 0));
+    body.setLocation(new Point(WIDTH / 3, 0));
     body.setOpaque(true);
     body.setBackgroundColor(ColorConstants.lightGray);
     add(body);
@@ -38,9 +41,9 @@ public class NodeFigure extends Figure {
     label = new Label();
     label.setLabelAlignment(PositionConstants.CENTER);
     label.setTextAlignment(PositionConstants.CENTER);
-    label.setMaximumSize(new Dimension(90, 20));
-    label.setSize(90, 20);
-    label.setLocation(new Point(0, 40));
+    label.setMaximumSize(new Dimension(WIDTH, HEIGHT / 3));
+    label.setSize(WIDTH, HEIGHT / 3);
+    label.setLocation(new Point(0, 2 * HEIGHT / 3));
     add(label);
     
     toolTipLabel = new Label();
