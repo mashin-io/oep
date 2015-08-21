@@ -1,6 +1,6 @@
 package mashin.oep.model.node.control;
 
-import mashin.oep.XMLUtils;
+import mashin.oep.hpdl.XMLUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.property.TextPropertyElement;

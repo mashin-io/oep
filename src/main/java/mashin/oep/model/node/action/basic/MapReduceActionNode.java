@@ -3,7 +3,7 @@ package mashin.oep.model.node.action.basic;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.XMLUtils;
+import mashin.oep.hpdl.XMLUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PipesPropertyElement;
 import mashin.oep.model.property.PreparePropertyElement;

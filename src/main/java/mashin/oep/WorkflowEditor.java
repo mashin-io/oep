@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.EventObject;
 
+import mashin.oep.hpdl.XMLUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.parts.WorkflowEditPartFactory;
 

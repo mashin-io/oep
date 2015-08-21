@@ -3,7 +3,7 @@ package mashin.oep.model.node.action;
 import java.util.Arrays;
 import java.util.List;
 
-import mashin.oep.XMLUtils;
+import mashin.oep.hpdl.XMLUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.node.Node;

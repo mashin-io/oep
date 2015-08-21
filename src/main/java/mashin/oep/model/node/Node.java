@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import mashin.oep.XMLUtils;
+import mashin.oep.hpdl.XMLUtils;
 import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.connection.WorkflowConnection;
