@@ -26,8 +26,6 @@ public class SqoopActionNode extends ExtendedActionNode {
   public static final String PROP_JOBTRACKER = "prop.node.sqoop.job-tracker";
   public static final String PROP_NAMENODE = "prop.node.sqoop.name-ndoe";
   public static final String PROP_PREPARE = "prop.node.sqoop.prepare";
-  //public static final String PROP_PREPARE_DELETE = "prop.node.sqoop.prepare.delete";
-  //public static final String PROP_PREPARE_MKDIR = "prop.node.sqoop.prepare.mkdir";
   public static final String PROP_JOBXML = "prop.node.sqoop.job-xml";
   public static final String PROP_CONFIGURATION = "prop.node.sqoop.configuration";
   public static final String PROP_COMMAND = "prop.node.sqoop.command";
@@ -35,15 +33,11 @@ public class SqoopActionNode extends ExtendedActionNode {
   public static final String PROP_FILE = "prop.node.sqoop.file";
   public static final String PROP_ARCHIVE = "prop.node.sqoop.archive";
   
-  //public static final String CATEGORY_PREPARE = "Prepare";
-  
   protected TextPropertyElement jobTracker;//job-tracker
   protected TextPropertyElement nameNode;//name-node
 
   //prepare
   protected PreparePropertyElement prepare;
-  //protected PropertyElementCollection prepareDelete;//delete {path} 0-unbounded
-  //protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
 
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
   protected PropertyElementCollection configuration;//configuration
@@ -71,13 +65,6 @@ public class SqoopActionNode extends ExtendedActionNode {
     //prepare
     prepare = new PreparePropertyElement(PROP_PREPARE, "Prepare");
     addPropertyElement(prepare);
-    //prepareDelete = new PropertyElementCollection(CATEGORY_PREPARE,
-    //                  new TextPropertyElement(PROP_PREPARE_DELETE, "Delete"));
-    //addPropertyElement(prepareDelete);
-    //
-    //prepareMkdir = new PropertyElementCollection(CATEGORY_PREPARE,
-    //                  new TextPropertyElement(PROP_PREPARE_MKDIR, "Mkdir"));
-    //addPropertyElement(prepareMkdir);
     
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);

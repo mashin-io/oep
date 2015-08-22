@@ -27,8 +27,6 @@ public class ShellActionNode extends ExtendedActionNode {
   public static final String PROP_JOBTRACKER = "prop.node.shell.job-tracker";
   public static final String PROP_NAMENODE = "prop.node.shell.name-ndoe";
   public static final String PROP_PREPARE = "prop.node.shell.prepare";
-  //public static final String PROP_PREPARE_DELETE = "prop.node.shell.prepare.delete";
-  //public static final String PROP_PREPARE_MKDIR = "prop.node.shell.prepare.mkdir";
   public static final String PROP_JOBXML = "prop.node.shell.job-xml";
   public static final String PROP_CONFIGURATION = "prop.node.shell.configuration";
   public static final String PROP_EXEC = "prop.node.shell.exec";
@@ -38,15 +36,11 @@ public class ShellActionNode extends ExtendedActionNode {
   public static final String PROP_ARCHIVE = "prop.node.shell.archive";
   public static final String PROP_CAPTURE_OUTPUT = "prop.node.shell.capture-output";
   
-  //public static final String CATEGORY_PREPARE = "Prepare";
-  
   protected TextPropertyElement jobTracker;//job-tracker
   protected TextPropertyElement nameNode;//name-node
   
   //prepare
   protected PreparePropertyElement prepare;
-  //protected PropertyElementCollection prepareDelete;//delete {path} 0-unbounded
-  //protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
   
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
   protected PropertyElementCollection configuration;//configuration
@@ -73,13 +67,6 @@ public class ShellActionNode extends ExtendedActionNode {
     //prepare
     prepare = new PreparePropertyElement(PROP_PREPARE, "Prepare");
     addPropertyElement(prepare);
-    //prepareDelete = new PropertyElementCollection(CATEGORY_PREPARE,
-    //                  new TextPropertyElement(PROP_PREPARE_DELETE, "Delete"));
-    //addPropertyElement(prepareDelete);
-    //
-    //prepareMkdir = new PropertyElementCollection(CATEGORY_PREPARE,
-    //                  new TextPropertyElement(PROP_PREPARE_MKDIR, "Mkdir"));
-    //addPropertyElement(prepareMkdir);
     
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);

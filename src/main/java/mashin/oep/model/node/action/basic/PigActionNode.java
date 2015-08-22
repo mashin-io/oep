@@ -16,8 +16,6 @@ public class PigActionNode extends BasicActionNode {
   public static final String PROP_JOBTRACKER = "prop.node.pig.job-tracker";
   public static final String PROP_NAMENODE = "prop.node.pig.name-ndoe";
   public static final String PROP_PREPARE = "prop.node.pig.prepare";
-  //public static final String PROP_PREPARE_DELETE = "prop.node.pig.prepare.delete";
-  //public static final String PROP_PREPARE_MKDIR = "prop.node.pig.prepare.mkdir";
   public static final String PROP_JOBXML = "prop.node.pig.job-xml";
   public static final String PROP_CONFIGURATION = "prop.node.pig.configuration";
   public static final String PROP_SCRIPT = "prop.node.pig.script";
@@ -26,15 +24,11 @@ public class PigActionNode extends BasicActionNode {
   public static final String PROP_FILE = "prop.node.pig.file";
   public static final String PROP_ARCHIVE = "prop.node.pig.archive";
   
-  //public static final String CATEGORY_PREPARE = "Prepare";
-  
   protected TextPropertyElement jobTracker;//job-tracker
   protected TextPropertyElement nameNode;//name-node
   
   //prepare
   protected PreparePropertyElement prepare;
-  //protected PropertyElementCollection prepareDelete;//delete {path} 0-unbounded
-  //protected PropertyElementCollection prepareMkdir;//mkdir {path} 0-unbounded
 
   protected PropertyElementCollection jobXML;//job-xml 0-unbounded
   protected PropertyElementCollection configuration;//configuration
@@ -60,11 +54,6 @@ public class PigActionNode extends BasicActionNode {
     //prepare
     prepare = new PreparePropertyElement(PROP_PREPARE, "Prepare");
     addPropertyElement(prepare);
-    //prepareDelete = new PropertyElementCollection(CATEGORY_PREPARE, new TextPropertyElement(PROP_PREPARE_DELETE, "Delete"));
-    //addPropertyElement(prepareDelete);
-    //
-    //prepareMkdir = new PropertyElementCollection(CATEGORY_PREPARE, new TextPropertyElement(PROP_PREPARE_MKDIR, "Mkdir"));
-    //addPropertyElement(prepareMkdir);
 
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
     addPropertyElement(jobXML);

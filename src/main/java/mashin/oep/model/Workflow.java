@@ -63,26 +63,17 @@ public class Workflow extends ModelElementWithSchema {
   public static final String PROP_NAME           = "prop.workflow.name";
   public static final String PROP_PROPERTY       = "prop.workflow.property";
   public static final String PROP_GLOBAL         = "prop.workflow.global";
-  //public static final String PROP_JOBTRACKER     = "prop.workflow.global.job-tracker";
-  //public static final String PROP_NAMENDOE       = "prop.workflow.global.name-node";
-  //public static final String PROP_JOB_XML        = "prop.workflow.global.job-xml";
-  //public static final String PROP_CONFIGURATION  = "prop.workflow.global.configuration";
   public static final String PROP_CREDENTIALS    = "prop.workflow.credentials";
   
   public static final String PROP_NODE_ADDED     = "prop.workflow.node.added";
   public static final String PROP_NODE_REMOVED   = "prop.workflow.node.removed";
 
   private static final String CATEGORY_PARAMETERS   = "Parameters";
-  //private static final String CATEGORY_GLOBAL       = "Global";
   private static final String CATEGORY_CREDENTIALS  = "Credentials";
 
   private TextPropertyElement       name;
   private PropertyElementCollection parameters;
   private GlobalPropertyElement     global;
-  //private TextPropertyElement       jobtracker;
-  //private TextPropertyElement       namenode;
-  //private PropertyElementCollection jobxml;
-  //private PropertyElementCollection configuration;
   private PropertyElementCollection credentials;
 
   private StartNode   startNode;
@@ -107,22 +98,6 @@ public class Workflow extends ModelElementWithSchema {
     
     global = new GlobalPropertyElement(PROP_GLOBAL, "Global");
     addPropertyElement(global);
-    
-    //jobtracker = new TextPropertyElement(PROP_JOBTRACKER, "Jobtracker");
-    //jobtracker.setCategory(CATEGORY_GLOBAL);
-    //addPropertyElement(jobtracker);
-    //
-    //namenode = new TextPropertyElement(PROP_NAMENDOE, "Namenode");
-    //namenode.setCategory(CATEGORY_GLOBAL);
-    //addPropertyElement(namenode);
-    //
-    //jobxml = new PropertyElementCollection(CATEGORY_GLOBAL,
-    //                  new TextPropertyElement(PROP_JOB_XML, "Job XML"));
-    //addPropertyElement(jobxml);
-    //
-    //configuration = new PropertyElementCollection(CATEGORY_GLOBAL,
-    //                      new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
-    //addPropertyElement(configuration);
     
     credentials = new PropertyElementCollection(CATEGORY_CREDENTIALS,
                         new CredentialPropertyElement(PROP_CREDENTIALS, "Credential"));
@@ -157,12 +132,10 @@ public class Workflow extends ModelElementWithSchema {
 
   public void setJobtracker(String jobtracker) {
     global.setValueOfJobtracker(jobtracker);
-    //setPropertyValue(PROP_JOBTRACKER, jobtracker);
   }
 
   public void setNamenode(String namenode) {
     global.setValueOfNamenode(namenode);
-    //setPropertyValue(PROP_NAMENDOE, namenode);
   }
 
   @Override
