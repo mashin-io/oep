@@ -25,6 +25,14 @@ public class CheckBoxPropertyElement extends SingularPropertyElement {
     return propertyDescriptor;
   }
 
+  public void setBooleanValue(boolean value) {
+    isChecked = value;
+  }
+  
+  public boolean getBooleanValue() {
+    return isChecked;
+  }
+  
   @Override
   public void setValue(Object value) {
     isChecked = (Boolean) value;

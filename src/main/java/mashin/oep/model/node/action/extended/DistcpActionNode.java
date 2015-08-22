@@ -6,7 +6,8 @@ import java.util.List;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PreparePropertyElement;
@@ -87,20 +88,34 @@ public class DistcpActionNode extends ExtendedActionNode {
   }
   
   @Override
-  public void write(Element parentNode) {
+  public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element distcp = (Element) element.selectSingleNode("./distcp");
+    if (distcp == null) {
+      distcp = element.addElement("distcp");
+    }
+    
+    XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), distcp, getNodeType());
+    XMLWriteUtils.writeTextPropertyAsElement(jobTracker, distcp, "job-tracker");
+    XMLWriteUtils.writeTextPropertyAsElement(nameNode, distcp, "name-node");
+    XMLWriteUtils.writePrepareProperty(prepare, distcp, "prepare");
+    XMLWriteUtils.writePropertiesCollection(configuration, distcp, "configuration", "property");
+    XMLWriteUtils.writeTextPropertyAsElement(javaOpts, distcp, "java-opts");
+    XMLWriteUtils.writeTextCollectionAsElements(arg, distcp, "arg");
   }
 
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./distcp/job-tracker");
-    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./distcp/name-node");
-    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./distcp/prepare");
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./distcp/configuration", "./property");
-    XMLUtils.initTextPropertyFrom(javaOpts, hpdlNode, "./distcp/java-opts");
-    XMLUtils.initTextCollectionFrom(arg, hpdlNode, "./distcp/arg");
+    XMLReadUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./distcp/job-tracker");
+    XMLReadUtils.initTextPropertyFrom(nameNode, hpdlNode, "./distcp/name-node");
+    XMLReadUtils.initPreparePropertyFrom(prepare, hpdlNode, "./distcp/prepare");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./distcp/configuration", "./property");
+    XMLReadUtils.initTextPropertyFrom(javaOpts, hpdlNode, "./distcp/java-opts");
+    XMLReadUtils.initTextCollectionFrom(arg, hpdlNode, "./distcp/arg");
   }
   
   @Override

@@ -3,7 +3,8 @@ package mashin.oep.model.node.action.basic;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
 import mashin.oep.model.property.PreparePropertyElement;
@@ -107,24 +108,43 @@ public class JavaActionNode extends BasicActionNode {
   
   @Override
   public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element java = (Element) element.selectSingleNode("./java");
+    if (java == null) {
+      java = element.addElement("java");
+    }
+    
+    XMLWriteUtils.writeTextPropertyAsElement(jobTracker, java, "job-tracker");
+    XMLWriteUtils.writeTextPropertyAsElement(nameNode, java, "name-node");
+    XMLWriteUtils.writePrepareProperty(prepare, java, "prepare");
+    XMLWriteUtils.writeTextCollectionAsElements(jobXML, java, "job-xml");
+    XMLWriteUtils.writePropertiesCollection(configuration, java, "configuration", "property");
+    XMLWriteUtils.writeTextPropertyAsElement(mainClass, java, "main-class");
+    XMLWriteUtils.writeTextPropertyAsElement(javaOpts, java, "java-opts");
+    XMLWriteUtils.writeTextCollectionAsElements(javaOpt, java, "java-opt");
+    XMLWriteUtils.writeTextCollectionAsElements(arg, java, "arg");
+    XMLWriteUtils.writeTextCollectionAsElements(file, java, "file");
+    XMLWriteUtils.writeTextCollectionAsElements(archive, java, "archive");
+    XMLWriteUtils.writeCheckPropertyAsElement(captureOutput, java, "capture-output");
   }
   
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
-    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./java/job-tracker");
-    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./java/name-node");
-    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./java/prepare");
-    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./java/job-xml");
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./java/configuration", "./property");
-    XMLUtils.initTextPropertyFrom(mainClass, hpdlNode, "./java/main-class");
-    XMLUtils.initTextPropertyFrom(javaOpts, hpdlNode, "./java/java-opts");
-    XMLUtils.initTextCollectionFrom(javaOpt, hpdlNode, "./java/java-opt");
-    XMLUtils.initTextCollectionFrom(arg, hpdlNode, "./java/arg");
-    XMLUtils.initTextCollectionFrom(file, hpdlNode, "./java/file");
-    XMLUtils.initTextCollectionFrom(archive, hpdlNode, "./java/archive");
-    captureOutput.setValue(!XMLUtils.valueOf("./java/capture-output", hpdlNode).isEmpty());
+    XMLReadUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./java/job-tracker");
+    XMLReadUtils.initTextPropertyFrom(nameNode, hpdlNode, "./java/name-node");
+    XMLReadUtils.initPreparePropertyFrom(prepare, hpdlNode, "./java/prepare");
+    XMLReadUtils.initTextCollectionFrom(jobXML, hpdlNode, "./java/job-xml");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./java/configuration", "./property");
+    XMLReadUtils.initTextPropertyFrom(mainClass, hpdlNode, "./java/main-class");
+    XMLReadUtils.initTextPropertyFrom(javaOpts, hpdlNode, "./java/java-opts");
+    XMLReadUtils.initTextCollectionFrom(javaOpt, hpdlNode, "./java/java-opt");
+    XMLReadUtils.initTextCollectionFrom(arg, hpdlNode, "./java/arg");
+    XMLReadUtils.initTextCollectionFrom(file, hpdlNode, "./java/file");
+    XMLReadUtils.initTextCollectionFrom(archive, hpdlNode, "./java/archive");
+    XMLReadUtils.initCheckPropertyFrom(captureOutput, hpdlNode, "./java/capture-output");
   }
   
   @Override

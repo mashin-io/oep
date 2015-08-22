@@ -3,7 +3,8 @@ package mashin.oep.model.node.action.basic;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
 import mashin.oep.model.property.PropertyElementCollection;
@@ -46,16 +47,26 @@ public class SubWorkflowActionNode extends BasicActionNode {
   
   @Override
   public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element subWorkflow = (Element) element.selectSingleNode("./sub-workflow");
+    if (subWorkflow == null) {
+      subWorkflow = element.addElement("sub-workflow");
+    }
+    
+    XMLWriteUtils.writeTextPropertyAsElement(appPath, subWorkflow, "app-path");
+    XMLWriteUtils.writeCheckPropertyAsElement(propagateConfiguration, subWorkflow, "propagate-configuration");
+    XMLWriteUtils.writePropertiesCollection(configuration, subWorkflow, "configuration", "property");
   }
   
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(appPath, hpdlNode, "./sub-workflow/app-path");
-    propagateConfiguration.setValue(!XMLUtils.valueOf("./sub-workflow/propagate-configuration", hpdlNode).isEmpty());
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./sub-workflow/configuration", "./property");
+    XMLReadUtils.initTextPropertyFrom(appPath, hpdlNode, "./sub-workflow/app-path");
+    XMLReadUtils.initCheckPropertyFrom(propagateConfiguration, hpdlNode, "./sub-workflow/propagate-configuration");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./sub-workflow/configuration", "./property");
   }
   
   @Override

@@ -184,6 +184,12 @@ public class PropertyElementCollection extends PropertyElement {
     return PropertyElementCreationFactory.create(template);
   }
   
+  public List<PropertyElement> getPropertyElements() {
+    List<PropertyElement> list = new ArrayList<PropertyElement>(this.list);
+    list.remove(list.size() - 1);
+    return list;
+  }
+  
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();

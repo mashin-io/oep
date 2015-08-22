@@ -6,7 +6,8 @@ import java.util.List;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PreparePropertyElement;
@@ -106,23 +107,40 @@ public class SqoopActionNode extends ExtendedActionNode {
   }
   
   @Override
-  public void write(Element parentNode) {
+  public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element sqoop = (Element) element.selectSingleNode("./sqoop");
+    if (sqoop == null) {
+      sqoop = element.addElement("sqoop");
+    }
+    
+    XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), sqoop, getNodeType());
+    XMLWriteUtils.writeTextPropertyAsElement(jobTracker, sqoop, "job-tracker");
+    XMLWriteUtils.writeTextPropertyAsElement(nameNode, sqoop, "name-node");
+    XMLWriteUtils.writePrepareProperty(prepare, sqoop, "prepare");
+    XMLWriteUtils.writeTextCollectionAsElements(jobXML, sqoop, "job-xml");
+    XMLWriteUtils.writePropertiesCollection(configuration, sqoop, "configuration", "property");
+    XMLWriteUtils.writeTextPropertyAsElement(command, sqoop, "command");
+    XMLWriteUtils.writeTextCollectionAsElements(arg, sqoop, "arg");
+    XMLWriteUtils.writeTextCollectionAsElements(file, sqoop, "file");
+    XMLWriteUtils.writeTextCollectionAsElements(archive, sqoop, "archive");
   }
 
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./sqoop/job-tracker");
-    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./sqoop/name-node");
-    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./sqoop/prepare");
-    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./sqoop/job-xml");
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./sqoop/configuration", "./property");
-    XMLUtils.initTextPropertyFrom(command, hpdlNode, "./sqoop/command");
-    XMLUtils.initTextCollectionFrom(arg, hpdlNode, "./sqoop/arg");
-    XMLUtils.initTextCollectionFrom(file, hpdlNode, "./sqoop/file");
-    XMLUtils.initTextCollectionFrom(archive, hpdlNode, "./sqoop/archive");
+    XMLReadUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./sqoop/job-tracker");
+    XMLReadUtils.initTextPropertyFrom(nameNode, hpdlNode, "./sqoop/name-node");
+    XMLReadUtils.initPreparePropertyFrom(prepare, hpdlNode, "./sqoop/prepare");
+    XMLReadUtils.initTextCollectionFrom(jobXML, hpdlNode, "./sqoop/job-xml");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./sqoop/configuration", "./property");
+    XMLReadUtils.initTextPropertyFrom(command, hpdlNode, "./sqoop/command");
+    XMLReadUtils.initTextCollectionFrom(arg, hpdlNode, "./sqoop/arg");
+    XMLReadUtils.initTextCollectionFrom(file, hpdlNode, "./sqoop/file");
+    XMLReadUtils.initTextCollectionFrom(archive, hpdlNode, "./sqoop/archive");
   }
   
   @Override

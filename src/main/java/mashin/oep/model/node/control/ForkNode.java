@@ -2,13 +2,16 @@ package mashin.oep.model.node.control;
 
 import java.util.List;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.FanOutTerminal;
+
+import org.dom4j.Element;
 
 public class ForkNode extends ControlNode {
 
@@ -35,7 +38,12 @@ public class ForkNode extends ControlNode {
   
   @Override
   public void write(org.dom4j.Element parentNode) {
+    super.write(parentNode);
     
+    Element element = (Element) hpdlModel.get();
+    
+    XMLWriteUtils.writeConnectionsAsElementWithAttribute(
+        fanOutTerminal.getConnections(), element, "path", "start");
   }
 
   @Override
@@ -50,8 +58,9 @@ public class ForkNode extends ControlNode {
       for (org.dom4j.Node forkConnNode : forkConnNodes) {
         WorkflowConnection conn = new WorkflowConnection(
             new WorkflowConnectionEndPoint(this, fanOutTerminal),
-            new WorkflowConnectionEndPoint(XMLUtils.valueOf("@start", forkConnNode), TERMINAL_FANIN));
+            new WorkflowConnectionEndPoint(XMLReadUtils.valueOf("@start", forkConnNode), TERMINAL_FANIN));
         sourceConnections.add(conn);
+        forkConnNode.detach();
       }
     }
   }

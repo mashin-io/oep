@@ -11,6 +11,7 @@ import mashin.oep.model.ModelElement;
 import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.node.action.basic.FSActionNode;
+import mashin.oep.model.property.CheckBoxPropertyElement;
 import mashin.oep.model.property.ComboBoxPropertyElement;
 import mashin.oep.model.property.CredentialPropertyElement;
 import mashin.oep.model.property.GlobalPropertyElement;
@@ -32,7 +33,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultElement;
 import org.eclipse.draw2d.geometry.Point;
 
-public class XMLUtils {
+public class XMLReadUtils {
 
   public static final class NameSpaceCleaner extends VisitorSupport {
     public void visit(Document document) {
@@ -173,6 +174,11 @@ public class XMLUtils {
     pe.setStringValue(valueOf(pe.get()));
   }
   
+  public static void initCheckPropertyFrom(CheckBoxPropertyElement pe, Node node, String xpath) {
+    pe.set(node.selectSingleNode(xpath));
+    pe.setValue(!valueOf(xpath, node).isEmpty());
+  }
+  
   public static String valueOf(String xpath, Node node) {
     String value = "";
     if (node != null) {
@@ -206,9 +212,9 @@ public class XMLUtils {
         PropertyPropertyElement pe = (PropertyPropertyElement) pec.createAndAdd();
         pe.set(subNode);
         subNode.detach();
-        pe.setValueOfName(XMLUtils.valueOf("./name", subNode));
-        pe.setValueOfValue(XMLUtils.valueOf("./value", subNode));
-        pe.setValueOfDescription(XMLUtils.valueOf("./description", subNode));
+        pe.setValueOfName(XMLReadUtils.valueOf("./name", subNode));
+        pe.setValueOfValue(XMLReadUtils.valueOf("./value", subNode));
+        pe.setValueOfDescription(XMLReadUtils.valueOf("./description", subNode));
       }
     }
   }
@@ -257,27 +263,33 @@ public class XMLUtils {
   }
   
   public static void initGlobalPropertyFrom(GlobalPropertyElement gpe, Node node, String xpath) {
-    gpe.set(node.selectSingleNode(xpath));
-    
-    gpe.jobtracker.set(node.selectSingleNode(xpath + "/job-tracker"));
-    gpe.setValueOfJobtracker(valueOf(gpe.jobtracker.get()));
-    
-    gpe.namenode.set(node.selectSingleNode(xpath + "/name-node"));
-    gpe.setValueOfNamenode(valueOf(gpe.namenode.get()));
-    
-    initTextCollectionFrom(gpe.jobxml, node, xpath + "/job-xml");
-    
-    initPropertiesCollectionFrom(gpe.configuration, node, xpath + "/configuration", "./property");
+    Node globalNode = node.selectSingleNode(xpath);
+    if (globalNode != null) {
+      gpe.set(globalNode);
+      globalNode.detach();
+      initTextPropertyFrom(gpe.jobtracker, globalNode, "./job-tracker");
+      initTextPropertyFrom(gpe.namenode, globalNode, "./name-node");
+      initTextCollectionFrom(gpe.jobxml, globalNode, "./job-xml");
+      initPropertiesCollectionFrom(gpe.configuration, globalNode, "./configuration", "./property");
+    }
   }
   
   public static void initPreparePropertyFrom(PreparePropertyElement ppe, Node node, String xpath) {
-    ppe.set(node.selectSingleNode(xpath));
-    initTextCollectionFromAttribute(ppe.delete, node, xpath + "/delete", "@path");
-    initTextCollectionFromAttribute(ppe.mkdir, node, xpath + "/mkdir", "@path");
+    Node prepareNode = node.selectSingleNode(xpath);
+    if (prepareNode != null) {
+      ppe.set(prepareNode);
+      prepareNode.detach();
+      initTextCollectionFromAttribute(ppe.delete, prepareNode, "./delete", "@path");
+      initTextCollectionFromAttribute(ppe.mkdir, prepareNode, "./mkdir", "@path");
+    }
   }
   
   public static void initCredentialsCollectionFrom(PropertyElementCollection pec, Node node, String groupXPath, String childXPath) {
-    pec.set(node.selectSingleNode(groupXPath));
+    Node groupNode = node.selectSingleNode(groupXPath);
+    if (groupNode != null) {
+      groupNode.detach();
+    }
+    pec.set(groupNode);
     @SuppressWarnings("unchecked")
     List<Node> subNodes = pec.get().selectNodes(childXPath);
     if (subNodes != null) {
@@ -293,23 +305,31 @@ public class XMLUtils {
   }
   
   public static void initStreamingPropertyFrom(StreamingPropertyElement spe, Node node, String xpath) {
-    spe.set(node.selectSingleNode(xpath));
-    initTextPropertyFrom(spe.mapper, node, xpath + "/mapper");
-    initTextPropertyFrom(spe.reducer, node, xpath + "/reducer");
-    initTextPropertyFrom(spe.recordReader, node, xpath + "/record-reader");
-    initTextCollectionFrom(spe.recordReaderMapping, node, xpath + "/record-reader-mapping");
-    initTextCollectionFrom(spe.env, node, xpath + "/env");
+    Node streamingNode = node.selectSingleNode(xpath);
+    if (streamingNode != null) {
+      spe.set(streamingNode);
+      streamingNode.detach();
+      initTextPropertyFrom(spe.mapper, streamingNode, "./mapper");
+      initTextPropertyFrom(spe.reducer, streamingNode, "./reducer");
+      initTextPropertyFrom(spe.recordReader, streamingNode, "./record-reader");
+      initTextCollectionFrom(spe.recordReaderMapping, streamingNode, "./record-reader-mapping");
+      initTextCollectionFrom(spe.env, streamingNode, "./env");
+    }
   }
   
   public static void initPipesPropertyFrom(PipesPropertyElement ppe, Node node, String xpath) {
-    ppe.set(node.selectSingleNode(xpath));
-    initTextPropertyFrom(ppe.map, node, xpath + "/map");
-    initTextPropertyFrom(ppe.reduce, node, xpath + "/reduce");
-    initTextPropertyFrom(ppe.inputFormat, node, xpath + "/inputformat");
-    initTextPropertyFrom(ppe.outputFormat, node, xpath + "/outputformat");
-    initTextPropertyFrom(ppe.partitioner, node, xpath + "/partitioner");
-    initTextPropertyFrom(ppe.writer, node, xpath + "/writer");
-    initTextPropertyFrom(ppe.program, node, xpath + "/program");
+    Node pipesNode = node.selectSingleNode(xpath);
+    if (pipesNode != null) {
+      ppe.set(pipesNode);
+      pipesNode.detach();
+      initTextPropertyFrom(ppe.map, pipesNode, "./map");
+      initTextPropertyFrom(ppe.reduce, pipesNode, "./reduce");
+      initTextPropertyFrom(ppe.inputFormat, pipesNode, "./inputformat");
+      initTextPropertyFrom(ppe.outputFormat, pipesNode, "./outputformat");
+      initTextPropertyFrom(ppe.partitioner, pipesNode, "./partitioner");
+      initTextPropertyFrom(ppe.writer, pipesNode, "./writer");
+      initTextPropertyFrom(ppe.program, pipesNode, "./program");
+    }
   }
   
   public static PropertyElementCollection credentialsCollectionFrom(
@@ -463,7 +483,7 @@ public class XMLUtils {
         FSActionNode.FSOperationChmod chmod = (FSActionNode.FSOperationChmod) pec.createAndAdd();
         subNode.detach();
         chmod.set(subNode);
-        chmod.recursive.setValue(!valueOf("./recursive", subNode).isEmpty());
+        initCheckPropertyFrom(chmod.recursive, subNode, "./recursive");
         initTextPropertyFrom(chmod.path, subNode, "@path");
         initTextPropertyFrom(chmod.permissions, subNode, "@permissions");
         initTextPropertyFrom(chmod.dirFiles, subNode, "@dir-files");
@@ -494,7 +514,7 @@ public class XMLUtils {
         FSActionNode.FSOperationChgrp chgrp = (FSActionNode.FSOperationChgrp) pec.createAndAdd();
         subNode.detach();
         chgrp.set(subNode);
-        chgrp.recursive.setValue(!valueOf("./recursive", subNode).isEmpty());
+        initCheckPropertyFrom(chgrp.recursive, subNode, "./recursive");
         initTextPropertyFrom(chgrp.path, subNode, "@path");
         initTextPropertyFrom(chgrp.group, subNode, "@group");
         initTextPropertyFrom(chgrp.dirFiles, subNode, "@dir-files");

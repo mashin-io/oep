@@ -27,11 +27,19 @@ public class HPDLModel {
   }
   
   public org.dom4j.Node get() {
-    return get(0);
+    try {
+      return get(0);
+    } catch (Exception e) {
+      return null;
+    }
   }
   
   public org.dom4j.Node get(int i) {
-    return hpdlNodes.get(i);
+    try {
+      return hpdlNodes.get(i);
+    } catch (Exception e) {
+      return null;
+    }
   }
   
   public boolean isSet(int i) {

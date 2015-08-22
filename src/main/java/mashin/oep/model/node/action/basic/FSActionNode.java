@@ -3,7 +3,8 @@ package mashin.oep.model.node.action.basic;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
 import mashin.oep.model.property.PropertyElementCollection;
@@ -88,21 +89,37 @@ public class FSActionNode extends BasicActionNode {
   
   @Override
   public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element fs = (Element) element.selectSingleNode("./fs");
+    if (fs == null) {
+      fs = element.addElement("fs");
+    }
+    
+    XMLWriteUtils.writeTextPropertyAsElement(namenode, fs, "name-node");
+    XMLWriteUtils.writeTextCollectionAsElements(jobXML, fs, "job-xml");
+    XMLWriteUtils.writePropertiesCollection(jobXML, fs, "configuration", "property");
+    XMLWriteUtils.writeFSDeleteCollection(delete, fs);
+    XMLWriteUtils.writeFSMkdirCollection(mkdir, fs);
+    XMLWriteUtils.writeFSMoveCollection(move, fs);
+    XMLWriteUtils.writeFSChmodCollection(chmod, fs);
+    XMLWriteUtils.writeFSTouchzCollection(touchz, fs);
+    XMLWriteUtils.writeFSChgrpCollection(chgrp, fs);
   }
   
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
-    XMLUtils.initTextPropertyFrom(namenode, hpdlNode, "./fs/name-node");
-    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./fs/job-xml");
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./fs/configuration", "./property");
-    XMLUtils.initFSDeleteCollectionFrom(delete, hpdlNode, "./fs/delete");
-    XMLUtils.initFSMkdirCollectionFrom(mkdir, hpdlNode, "./fs/mkdir");
-    XMLUtils.initFSMoveCollectionFrom(move, hpdlNode, "./fs/move");
-    XMLUtils.initFSChmodCollectionFrom(chmod, hpdlNode, "./fs/chmod");
-    XMLUtils.initFSTouchzCollectionFrom(touchz, hpdlNode, "./fs/touchz");
-    XMLUtils.initFSChgrpCollectionFrom(chgrp, hpdlNode, "./fs/chgrp");
+    XMLReadUtils.initTextPropertyFrom(namenode, hpdlNode, "./fs/name-node");
+    XMLReadUtils.initTextCollectionFrom(jobXML, hpdlNode, "./fs/job-xml");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./fs/configuration", "./property");
+    XMLReadUtils.initFSDeleteCollectionFrom(delete, hpdlNode, "./fs/delete");
+    XMLReadUtils.initFSMkdirCollectionFrom(mkdir, hpdlNode, "./fs/mkdir");
+    XMLReadUtils.initFSMoveCollectionFrom(move, hpdlNode, "./fs/move");
+    XMLReadUtils.initFSChmodCollectionFrom(chmod, hpdlNode, "./fs/chmod");
+    XMLReadUtils.initFSTouchzCollectionFrom(touchz, hpdlNode, "./fs/touchz");
+    XMLReadUtils.initFSChgrpCollectionFrom(chgrp, hpdlNode, "./fs/chgrp");
   }
   
   @Override

@@ -3,7 +3,8 @@ package mashin.oep.model.node.action.basic;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PreparePropertyElement;
 import mashin.oep.model.property.PropertyElementCollection;
@@ -96,23 +97,40 @@ public class PigActionNode extends BasicActionNode {
   
   @Override
   public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element pig = (Element) element.selectSingleNode("./pig");
+    if (pig == null) {
+      pig = element.addElement("pig");
+    }
+    
+    XMLWriteUtils.writeTextPropertyAsElement(jobTracker, pig, "job-tracker");
+    XMLWriteUtils.writeTextPropertyAsElement(nameNode, pig, "name-node");
+    XMLWriteUtils.writePrepareProperty(prepare, pig, "prepare");
+    XMLWriteUtils.writeTextCollectionAsElements(jobXML, pig, "job-xml");
+    XMLWriteUtils.writePropertiesCollection(configuration, pig, "configuration", "property");
+    XMLWriteUtils.writeTextPropertyAsElement(script, pig, "script");
+    XMLWriteUtils.writeTextCollectionAsElements(param, pig, "param");
+    XMLWriteUtils.writeTextCollectionAsElements(argument, pig, "argument");
+    XMLWriteUtils.writeTextCollectionAsElements(file, pig, "file");
+    XMLWriteUtils.writeTextCollectionAsElements(archive, pig, "archive");
   }
   
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./pig/job-tracker");
-    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./pig/name-node");
-    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./pig/prepare");
-    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./pig/job-xml");
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./pig/configuration", "./property");
-    XMLUtils.initTextPropertyFrom(script, hpdlNode, "./pig/script");
-    XMLUtils.initTextCollectionFrom(param, hpdlNode, "./pig/param");
-    XMLUtils.initTextCollectionFrom(argument, hpdlNode, "./pig/argument");
-    XMLUtils.initTextCollectionFrom(file, hpdlNode, "./pig/file");
-    XMLUtils.initTextCollectionFrom(archive, hpdlNode, "./pig/archive");
+    XMLReadUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./pig/job-tracker");
+    XMLReadUtils.initTextPropertyFrom(nameNode, hpdlNode, "./pig/name-node");
+    XMLReadUtils.initPreparePropertyFrom(prepare, hpdlNode, "./pig/prepare");
+    XMLReadUtils.initTextCollectionFrom(jobXML, hpdlNode, "./pig/job-xml");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./pig/configuration", "./property");
+    XMLReadUtils.initTextPropertyFrom(script, hpdlNode, "./pig/script");
+    XMLReadUtils.initTextCollectionFrom(param, hpdlNode, "./pig/param");
+    XMLReadUtils.initTextCollectionFrom(argument, hpdlNode, "./pig/argument");
+    XMLReadUtils.initTextCollectionFrom(file, hpdlNode, "./pig/file");
+    XMLReadUtils.initTextCollectionFrom(archive, hpdlNode, "./pig/archive");
   }
   
   @Override

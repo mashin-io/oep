@@ -3,7 +3,10 @@ package mashin.oep.model.node.action;
 import java.util.Arrays;
 import java.util.List;
 
-import mashin.oep.hpdl.XMLUtils;
+import org.dom4j.Element;
+
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.connection.WorkflowConnection;
@@ -58,16 +61,30 @@ public abstract class ActionNode extends Node {
   }
   
   @Override
+  public void write(Element parent) {
+    super.write(parent);
+    
+    Element element = (Element) hpdlModel.get();
+    
+    element.addAttribute("name", "action");
+    XMLWriteUtils.writeTextPropertyAsAttribute(cred, element, "cred");
+    XMLWriteUtils.writeTextPropertyAsAttribute(retryMax, element, "retry-max");
+    XMLWriteUtils.writeTextPropertyAsAttribute(retryInterval, element, "retry-interval");
+    XMLWriteUtils.writeConnectionsAsElementWithAttribute(okSingleOutputTerminal.getConnections(), element, "ok", "to");
+    XMLWriteUtils.writeConnectionsAsElementWithAttribute(errSingleOutputTerminal.getConnections(), element, "error", "to");
+  }
+  
+  @Override
   public void read(org.dom4j.Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(cred, hpdlNode, "@cred");
-    XMLUtils.initTextPropertyFrom(retryMax, hpdlNode, "@retry-max");
-    XMLUtils.initTextPropertyFrom(retryInterval, hpdlNode, "@retry-interval");
+    XMLReadUtils.initTextPropertyFrom(cred, hpdlNode, "@cred");
+    XMLReadUtils.initTextPropertyFrom(retryMax, hpdlNode, "@retry-max");
+    XMLReadUtils.initTextPropertyFrom(retryInterval, hpdlNode, "@retry-interval");
     
     // read connections
     
-    String okConn = XMLUtils.valueOf("./ok/@to", hpdlNode);
+    String okConn = XMLReadUtils.valueOf("./ok/@to", hpdlNode);
     if (!okConn.isEmpty()) {
       WorkflowConnection conn = new WorkflowConnection(
           new WorkflowConnectionEndPoint(this, okSingleOutputTerminal),
@@ -75,7 +92,7 @@ public abstract class ActionNode extends Node {
       sourceConnections.add(conn);
     }
     
-    String errConn = XMLUtils.valueOf("./error/@to", hpdlNode);
+    String errConn = XMLReadUtils.valueOf("./error/@to", hpdlNode);
     if (!errConn.isEmpty()) {
       WorkflowConnection conn = new WorkflowConnection(
           new WorkflowConnectionEndPoint(this, errSingleOutputTerminal),

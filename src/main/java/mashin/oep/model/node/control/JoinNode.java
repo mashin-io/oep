@@ -1,12 +1,15 @@
 package mashin.oep.model.node.control;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.SingleOutputTerminal;
+
+import org.dom4j.Element;
 
 public class JoinNode extends ControlNode {
 
@@ -33,7 +36,12 @@ public class JoinNode extends ControlNode {
   
   @Override
   public void write(org.dom4j.Element parentNode) {
+    super.write(parentNode);
     
+    Element element = (Element) hpdlModel.get();
+    
+    XMLWriteUtils.writeConnectionsAsAttribute(
+        singleOutputTerminal.getConnections(), element, "to");
   }
 
   @Override
@@ -44,7 +52,7 @@ public class JoinNode extends ControlNode {
     
     WorkflowConnection conn = new WorkflowConnection(
         new WorkflowConnectionEndPoint(this, singleOutputTerminal),
-        new WorkflowConnectionEndPoint(XMLUtils.valueOf("@to", hpdlNode), TERMINAL_FANIN));
+        new WorkflowConnectionEndPoint(XMLReadUtils.valueOf("@to", hpdlNode), TERMINAL_FANIN));
     sourceConnections.add(conn);
   }
 

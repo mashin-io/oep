@@ -1,6 +1,7 @@
 package mashin.oep.model.node.control;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.connection.WorkflowConnectionEndPoint;
@@ -36,7 +37,14 @@ public class StartNode extends ControlNode {
   
   @Override
   public void write(Element parent) {
+    super.write(parent);
     
+    Element element = (Element) hpdlModel.get();
+    
+    element.selectSingleNode("@name").detach();
+    
+    XMLWriteUtils.writeConnectionsAsAttribute(
+        singleOutputTerminal.getConnections(), element, "to");
   }
   
   @Override
@@ -49,7 +57,7 @@ public class StartNode extends ControlNode {
     
     WorkflowConnection conn = new WorkflowConnection(
         new WorkflowConnectionEndPoint(this, singleOutputTerminal),
-        new WorkflowConnectionEndPoint(XMLUtils.valueOf("@to", hpdlNode), TERMINAL_FANIN));
+        new WorkflowConnectionEndPoint(XMLReadUtils.valueOf("@to", hpdlNode), TERMINAL_FANIN));
     sourceConnections.add(conn);
   }
   

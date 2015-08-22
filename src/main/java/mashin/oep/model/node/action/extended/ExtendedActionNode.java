@@ -1,6 +1,8 @@
 package mashin.oep.model.node.action.extended;
 
-import mashin.oep.hpdl.XMLUtils;
+import org.dom4j.Element;
+
+import mashin.oep.hpdl.XMLReadUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.node.action.ActionNode;
@@ -21,12 +23,17 @@ public abstract class ExtendedActionNode extends ActionNode {
   }
   
   @Override
+  public void write(Element parentNode) {
+    super.write(parentNode);
+  }
+  
+  @Override
   public void read(org.dom4j.Node hpdlNode) {
     super.read(hpdlNode);
     
-    org.dom4j.Node node = XMLUtils.schemaVersionParentNode(hpdlNode);
-    schemaVersion.set(XMLUtils.schemaVersionNode(node));
-    setSchemaVersion(XMLUtils.schemaVersion(node));
+    org.dom4j.Node node = XMLReadUtils.schemaVersionParentNode(hpdlNode);
+    schemaVersion.set(XMLReadUtils.schemaVersionNode(node));
+    setSchemaVersion(XMLReadUtils.schemaVersion(node));
   }
   
   @Override

@@ -6,7 +6,8 @@ import java.util.List;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PreparePropertyElement;
@@ -121,25 +122,45 @@ public class Hive2ActionNode extends ExtendedActionNode {
   
   @Override
   public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element hive2 = (Element) element.selectSingleNode("./hive2");
+    if (hive2 == null) {
+      hive2 = element.addElement("hive2");
+    }
+    
+    XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), hive2, getNodeType());
+    XMLWriteUtils.writeTextPropertyAsElement(jobTracker, hive2, "job-tracker");
+    XMLWriteUtils.writeTextPropertyAsElement(nameNode, hive2, "name-node");
+    XMLWriteUtils.writePrepareProperty(prepare, hive2, "prepare");
+    XMLWriteUtils.writeTextCollectionAsElements(jobXML, hive2, "job-xml");
+    XMLWriteUtils.writePropertiesCollection(configuration, hive2, "configuration", "property");
+    XMLWriteUtils.writeTextPropertyAsElement(jdbcURL, hive2, "jdbc-url");
+    XMLWriteUtils.writeTextPropertyAsElement(password, hive2, "password");
+    XMLWriteUtils.writeTextPropertyAsElement(script, hive2, "script");
+    XMLWriteUtils.writeTextCollectionAsElements(param, hive2, "param");
+    XMLWriteUtils.writeTextCollectionAsElements(argument, hive2, "argument");
+    XMLWriteUtils.writeTextCollectionAsElements(file, hive2, "file");
+    XMLWriteUtils.writeTextCollectionAsElements(archive, hive2, "archive");
   }
   
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./hive2/job-tracker");
-    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./hive2/name-node");
-    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./hive2/prepare");
-    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./hive2/job-xml");
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./hive2/configuration", "./property");
-    XMLUtils.initTextPropertyFrom(jdbcURL, hpdlNode, "./hive2/jdbc-url");
-    XMLUtils.initTextPropertyFrom(password, hpdlNode, "./hive2/password");
-    XMLUtils.initTextPropertyFrom(script, hpdlNode, "./hive2/script");
-    XMLUtils.initTextCollectionFrom(param, hpdlNode, "./hive2/param");
-    XMLUtils.initTextCollectionFrom(argument, hpdlNode, "./hive2/argument");
-    XMLUtils.initTextCollectionFrom(file, hpdlNode, "./hive2/file");
-    XMLUtils.initTextCollectionFrom(archive, hpdlNode, "./hive2/archive");
+    XMLReadUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./hive2/job-tracker");
+    XMLReadUtils.initTextPropertyFrom(nameNode, hpdlNode, "./hive2/name-node");
+    XMLReadUtils.initPreparePropertyFrom(prepare, hpdlNode, "./hive2/prepare");
+    XMLReadUtils.initTextCollectionFrom(jobXML, hpdlNode, "./hive2/job-xml");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./hive2/configuration", "./property");
+    XMLReadUtils.initTextPropertyFrom(jdbcURL, hpdlNode, "./hive2/jdbc-url");
+    XMLReadUtils.initTextPropertyFrom(password, hpdlNode, "./hive2/password");
+    XMLReadUtils.initTextPropertyFrom(script, hpdlNode, "./hive2/script");
+    XMLReadUtils.initTextCollectionFrom(param, hpdlNode, "./hive2/param");
+    XMLReadUtils.initTextCollectionFrom(argument, hpdlNode, "./hive2/argument");
+    XMLReadUtils.initTextCollectionFrom(file, hpdlNode, "./hive2/file");
+    XMLReadUtils.initTextCollectionFrom(archive, hpdlNode, "./hive2/archive");
   }
   
   @Override

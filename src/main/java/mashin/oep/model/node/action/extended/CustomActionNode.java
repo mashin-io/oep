@@ -3,7 +3,7 @@ package mashin.oep.model.node.action.extended;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.TextPropertyElement;
 
@@ -30,15 +30,22 @@ public class CustomActionNode extends ExtendedActionNode {
   }
   
   @Override
-  public void write(Element parent) {
+  public void write(Element parentNode) {
+    super.write(parentNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element customNode = (Element) xml.get();
+    if (customNode != null) {
+      customNode.detach();
+    }
+    element.setText(xml.getStringValue());
   }
   
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    Node node = XMLUtils.schemaVersionParentNode(hpdlNode);
+    Node node = XMLReadUtils.schemaVersionParentNode(hpdlNode);
     xml.setStringValue(node.asXML());
     xml.set(node);
   }

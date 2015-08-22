@@ -6,7 +6,8 @@ import java.util.List;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
@@ -66,19 +67,32 @@ public class SSHActionNode extends ExtendedActionNode {
   }
   
   @Override
-  public void write(Element parentNode) {
+  public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element ssh = (Element) element.selectSingleNode("./ssh");
+    if (ssh == null) {
+      ssh = element.addElement("ssh");
+    }
+    
+    XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), ssh, getNodeType());
+    XMLWriteUtils.writeTextPropertyAsElement(host, ssh, "host");
+    XMLWriteUtils.writeTextPropertyAsElement(command, ssh, "command");
+    XMLWriteUtils.writeTextCollectionAsElements(args, ssh, "args");
+    XMLWriteUtils.writeTextCollectionAsElements(arg, ssh, "arg");
+    XMLWriteUtils.writeCheckPropertyAsElement(captureOutput, ssh, "capture-output");
   }
 
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(host, hpdlNode, "./ssh/host");
-    XMLUtils.initTextPropertyFrom(command, hpdlNode, "./ssh/command");
-    XMLUtils.initTextCollectionFrom(args, hpdlNode, "./ssh/args");
-    XMLUtils.initTextCollectionFrom(arg, hpdlNode, "./ssh/arg");
-    captureOutput.setValue(!XMLUtils.valueOf("./ssh/capture-output", hpdlNode).isEmpty());
+    XMLReadUtils.initTextPropertyFrom(host, hpdlNode, "./ssh/host");
+    XMLReadUtils.initTextPropertyFrom(command, hpdlNode, "./ssh/command");
+    XMLReadUtils.initTextCollectionFrom(args, hpdlNode, "./ssh/args");
+    XMLReadUtils.initTextCollectionFrom(arg, hpdlNode, "./ssh/arg");
+    XMLReadUtils.initCheckPropertyFrom(captureOutput, hpdlNode, "./ssh/capture-output");
   }
   
   @Override

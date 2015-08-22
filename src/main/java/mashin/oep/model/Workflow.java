@@ -8,7 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import mashin.oep.model.node.Node;
@@ -40,8 +41,10 @@ import mashin.oep.model.property.PropertyElementCollection;
 import mashin.oep.model.property.PropertyPropertyElement;
 import mashin.oep.model.property.TextPropertyElement;
 
+import org.dom4j.Comment;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultElement;
@@ -197,7 +200,40 @@ public class Workflow extends ModelElementWithSchema {
 
   @Override
   public void write(org.dom4j.Element parent) {
+    Document document = parent.getDocument();
+    parent.detach();
     
+    Element rootElement = (Element) hpdlModel.get();
+    if (rootElement == null 
+        || rootElement.getParent() == null 
+        || !rootElement.getParent().equals(document)) {
+      rootElement = document.addElement("workflow-app");
+    }
+    
+    
+    Element graphicalInfoElement = DocumentHelper.createElement("workflow");
+    
+    XMLWriteUtils.writeWorkflowSchemaVersion(getSchemaVersion(), rootElement);
+    XMLWriteUtils.writeTextPropertyAsAttribute(name, rootElement, "name");
+    XMLWriteUtils.writePropertiesCollection(parameters, rootElement, "parameters", "property");
+    XMLWriteUtils.writeGlobalProperty(global, rootElement);
+    XMLWriteUtils.writeCredentialsCollection(credentials, rootElement);
+    
+    for (Node node : nodes) {
+      node.write(rootElement);
+      graphicalInfoElement.addElement("node")
+        .addAttribute("name", node.getName())
+        .addAttribute("x", node.getPosition().x + "")
+        .addAttribute("y", node.getPosition().y + "");
+    }
+    
+    Comment graphicalInfoNode = (Comment) hpdlModel.get(1);
+    if (graphicalInfoNode != null) {
+      graphicalInfoNode.detach();
+    }
+    graphicalInfoNode = DocumentHelper.createComment(graphicalInfoElement.asXML());
+    hpdlModel.set(1, graphicalInfoNode);
+    document.add(graphicalInfoNode);
   }
 
   @Override
@@ -207,27 +243,18 @@ public class Workflow extends ModelElementWithSchema {
     Element rootElement = document.getRootElement();
     hpdlModel.set(rootElement);
     
-    HashMap<String, Point> graphicalInfoMap = XMLUtils.graphicalInfoFrom(document);
+    HashMap<String, Point> graphicalInfoMap = XMLReadUtils.graphicalInfoFrom(document);
     
-    // schema version
-    XMLUtils.initSchemaVersionFrom(rootElement, this, schemaVersion);
-    
-    // name
-    XMLUtils.initTextPropertyFrom(this, PROP_NAME, name, "@name", rootElement);
-    
-    // parameters
-    XMLUtils.initPropertiesCollectionFrom(parameters, rootElement, "./parameters", "./property");
-    
-    // global
-    XMLUtils.initGlobalPropertyFrom(global, rootElement, "./global");
-    
-    // credentials
-    XMLUtils.initCredentialsCollectionFrom(credentials, rootElement, "./credentials", "./credential");
+    XMLReadUtils.initSchemaVersionFrom(rootElement, this, schemaVersion);
+    XMLReadUtils.initTextPropertyFrom(this, PROP_NAME, name, "@name", rootElement);
+    XMLReadUtils.initPropertiesCollectionFrom(parameters, rootElement, "./parameters", "./property");
+    XMLReadUtils.initGlobalPropertyFrom(global, rootElement, "./global");
+    XMLReadUtils.initCredentialsCollectionFrom(credentials, rootElement, "./credentials", "./credential");
     
     nodeSort = new TopologicalNodeSort(this);
     
     // nodes
-    List<org.dom4j.Node> hpdlNodes = XMLUtils.nodesList(rootElement);
+    List<org.dom4j.Node> hpdlNodes = XMLReadUtils.nodesList(rootElement);
     for (org.dom4j.Node hpdlChildNode : hpdlNodes) {
       nodes.add(workflowNodeFromHPDLNode(hpdlChildNode, graphicalInfoMap));
     }
@@ -288,11 +315,12 @@ public class Workflow extends ModelElementWithSchema {
         node = new SSHActionNode(this, hpdlNode);
       } else if (hpdlNode.selectSingleNode("./email") != null) {
         node = new EmailActionNode(this, hpdlNode);
-      } else if (XMLUtils.schemaVersionParentNode(hpdlNode) != null) {
+      } else if (XMLReadUtils.schemaVersionParentNode(hpdlNode) != null) {
         node = new CustomActionNode(this, hpdlNode);
       }
       break;
     }
+    hpdlNode.detach();
     node.init();
     Point point = graphicalInfoMap.get(node.getName());
     if (point != null) {
@@ -339,7 +367,7 @@ public class Workflow extends ModelElementWithSchema {
       Element rootElement;
       
       document = reader.read(new File(hpdlPath));
-      document.accept(new XMLUtils.NameSpaceCleaner());
+      document.accept(new XMLReadUtils.NameSpaceCleaner());
       rootElement = document.getRootElement();
       
       rootElement.selectNodes("./prepare/aa/@c");
@@ -350,7 +378,7 @@ public class Workflow extends ModelElementWithSchema {
       hpdlPath = "workflow1.workflow";
       
       document = reader.read(new File(hpdlPath));
-      document.accept(new XMLUtils.NameSpaceCleaner());
+      document.accept(new XMLReadUtils.NameSpaceCleaner());
       rootElement = document.getRootElement();
       
       ((DefaultElement) rootElement).getNamespace();

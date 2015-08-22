@@ -2,7 +2,8 @@ package mashin.oep.model.node.control;
 
 import java.util.List;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.connection.WorkflowCaseConnection;
 import mashin.oep.model.connection.WorkflowConnection;
@@ -11,6 +12,8 @@ import mashin.oep.model.node.Node;
 import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.FanOutTerminal;
 import mashin.oep.model.terminal.SingleOutputTerminal;
+
+import org.dom4j.Element;
 
 public class DecisionNode extends ControlNode {
 
@@ -40,7 +43,16 @@ public class DecisionNode extends ControlNode {
   
   @Override
   public void write(org.dom4j.Element parentNode) {
+    super.write(parentNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element switchElement = element.addElement("switch");
+    
+    XMLWriteUtils.writeCaseConnections(caseFanOutTerminal.getConnections(),
+        switchElement);
+    XMLWriteUtils.writeConnectionsAsElementWithAttribute(
+        defaultSingleOutputTerminal.getConnections(), switchElement, "default",
+        "to");
   }
 
   @Override
@@ -55,7 +67,7 @@ public class DecisionNode extends ControlNode {
       for (org.dom4j.Node caseConnNode : caseConnNodes) {
         WorkflowCaseConnection conn = new WorkflowCaseConnection(
             new WorkflowConnectionEndPoint(this, caseFanOutTerminal),
-            new WorkflowConnectionEndPoint(XMLUtils.valueOf("@to", caseConnNode), TERMINAL_FANIN));
+            new WorkflowConnectionEndPoint(XMLReadUtils.valueOf("@to", caseConnNode), TERMINAL_FANIN));
         conn.setCondition(caseConnNode.getText().trim());
         sourceConnections.add(conn);
       }
@@ -63,8 +75,10 @@ public class DecisionNode extends ControlNode {
     
     WorkflowConnection conn = new WorkflowConnection(
         new WorkflowConnectionEndPoint(this, defaultSingleOutputTerminal),
-        new WorkflowConnectionEndPoint(XMLUtils.valueOf("./switch/default/@to", hpdlNode), TERMINAL_FANIN));
+        new WorkflowConnectionEndPoint(XMLReadUtils.valueOf("./switch/default/@to", hpdlNode), TERMINAL_FANIN));
     sourceConnections.add(conn);
+    
+    hpdlNode.selectSingleNode("./switch").detach();
   }
 
   @Override

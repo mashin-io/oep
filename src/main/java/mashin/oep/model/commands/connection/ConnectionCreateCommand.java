@@ -4,6 +4,7 @@ import mashin.oep.model.connection.WorkflowCaseConnection;
 import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.node.control.DecisionNode;
+import mashin.oep.model.terminal.FanOutTerminal;
 import mashin.oep.model.terminal.Terminal;
 
 import org.eclipse.gef.commands.Command;
@@ -31,7 +32,8 @@ public class ConnectionCreateCommand extends Command {
       return false;
     }
     
-    if (sourceNode instanceof DecisionNode) {
+    if (sourceNode instanceof DecisionNode 
+        && sourceTerminal instanceof FanOutTerminal) {
       connection = new WorkflowCaseConnection(sourceNode, targetNode,
                                               sourceTerminal, targetTerminal);
     } else {

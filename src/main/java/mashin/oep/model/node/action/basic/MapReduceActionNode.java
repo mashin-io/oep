@@ -3,7 +3,8 @@ package mashin.oep.model.node.action.basic;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PipesPropertyElement;
 import mashin.oep.model.property.PreparePropertyElement;
@@ -176,30 +177,40 @@ public class MapReduceActionNode extends BasicActionNode {
   
   @Override
   public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element mapReduce = (Element) element.selectSingleNode("./map-reduce");
+    if (mapReduce == null) {
+      mapReduce = element.addElement("map-reduce");
+    }
+    
+    XMLWriteUtils.writeTextPropertyAsElement(jobTracker, mapReduce, "job-tracker");
+    XMLWriteUtils.writeTextPropertyAsElement(nameNode, mapReduce, "name-node");
+    XMLWriteUtils.writePrepareProperty(prepare, mapReduce, "prepare");
+    XMLWriteUtils.writeStreamingProperty(streaming, mapReduce);
+    XMLWriteUtils.writePipesProperty(pipes, mapReduce);
+    XMLWriteUtils.writeTextCollectionAsElements(jobXML, mapReduce, "job-xml");
+    XMLWriteUtils.writePropertiesCollection(configuration, mapReduce, "configuration", "property");
+    XMLWriteUtils.writeTextPropertyAsElement(configClass, mapReduce, "config-class");
+    XMLWriteUtils.writeTextCollectionAsElements(file, mapReduce, "file");
+    XMLWriteUtils.writeTextCollectionAsElements(archive, mapReduce, "archive");
   }
   
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./map-reduce/job-tracker");
-    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./map-reduce/name-node");
-    
-    //prepare
-    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./map-reduce/prepare");
-
-    //streaming
-    XMLUtils.initStreamingPropertyFrom(streaming, hpdlNode, "./map-reduce/streaming");
-    
-    //pipes
-    XMLUtils.initPipesPropertyFrom(pipes, hpdlNode, "./map-reduce/pipes");
-    
-    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./map-reduce/job-xml");
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./map-reduce/configuration", "./property");
-    XMLUtils.initTextPropertyFrom(configClass, hpdlNode, "./map-reduce/config-class");
-    XMLUtils.initTextCollectionFrom(file, hpdlNode, "./map-reduce/file");
-    XMLUtils.initTextCollectionFrom(archive, hpdlNode, "./map-reduce/archive");
+    XMLReadUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./map-reduce/job-tracker");
+    XMLReadUtils.initTextPropertyFrom(nameNode, hpdlNode, "./map-reduce/name-node");
+    XMLReadUtils.initPreparePropertyFrom(prepare, hpdlNode, "./map-reduce/prepare");
+    XMLReadUtils.initStreamingPropertyFrom(streaming, hpdlNode, "./map-reduce/streaming");
+    XMLReadUtils.initPipesPropertyFrom(pipes, hpdlNode, "./map-reduce/pipes");
+    XMLReadUtils.initTextCollectionFrom(jobXML, hpdlNode, "./map-reduce/job-xml");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./map-reduce/configuration", "./property");
+    XMLReadUtils.initTextPropertyFrom(configClass, hpdlNode, "./map-reduce/config-class");
+    XMLReadUtils.initTextCollectionFrom(file, hpdlNode, "./map-reduce/file");
+    XMLReadUtils.initTextCollectionFrom(archive, hpdlNode, "./map-reduce/archive");
   }
   
   @Override

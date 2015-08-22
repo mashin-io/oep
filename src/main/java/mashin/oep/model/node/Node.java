@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.ModelElementWithSchema;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.connection.WorkflowConnection;
@@ -15,6 +16,7 @@ import mashin.oep.model.terminal.InputTerminal;
 import mashin.oep.model.terminal.OutputTerminal;
 import mashin.oep.model.terminal.Terminal;
 
+import org.dom4j.Element;
 import org.eclipse.draw2d.geometry.Point;
 
 public abstract class Node extends ModelElementWithSchema {
@@ -92,8 +94,17 @@ public abstract class Node extends ModelElementWithSchema {
   }
   
   @Override
+  public void write(Element parent) {
+    if (hpdlModel.get() == null) {
+      hpdlModel.set(parent.addElement(getNodeType()));
+    }
+    
+    XMLWriteUtils.writeTextPropertyAsAttribute(name, (Element) hpdlModel.get(), "name");
+  }
+  
+  @Override
   public void read(org.dom4j.Node node) {
-    XMLUtils.initTextPropertyFrom(name, node, "@name");
+    XMLReadUtils.initTextPropertyFrom(name, node, "@name");
   }
   
   public Point getPosition() {

@@ -1,11 +1,14 @@
 package mashin.oep.model.node.control;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.node.Node;
 import mashin.oep.model.property.TextPropertyElement;
 import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.NoOutputTerminal;
+
+import org.dom4j.Element;
 
 public class KillNode extends ControlNode {
 
@@ -38,13 +41,16 @@ public class KillNode extends ControlNode {
   
   @Override
   public void write(org.dom4j.Element parentNode) {
+    super.write(parentNode);
     
+    Element element = (Element) hpdlModel.get();
+    XMLWriteUtils.writeTextPropertyAsElement(message, element, "message");
   }
 
   @Override
   public void read(org.dom4j.Node hpdlNode) {
     super.read(hpdlNode);
-    XMLUtils.initTextPropertyFrom(message, hpdlNode, "./message");
+    XMLReadUtils.initTextPropertyFrom(message, hpdlNode, "./message");
   }
   
   @Override

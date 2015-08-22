@@ -6,7 +6,8 @@ import java.util.List;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.PreparePropertyElement;
@@ -117,26 +118,46 @@ public class SparkActionNode extends ExtendedActionNode {
   }
   
   @Override
-  public void write(Element parentNode) {
+  public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element spark = (Element) element.selectSingleNode("./spark");
+    if (spark == null) {
+      spark = element.addElement("spark");
+    }
+    
+    XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), spark, getNodeType());
+    XMLWriteUtils.writeTextPropertyAsElement(jobTracker, spark, "job-tracker");
+    XMLWriteUtils.writeTextPropertyAsElement(nameNode, spark, "name-node");
+    XMLWriteUtils.writePrepareProperty(prepare, spark, "prepare");
+    XMLWriteUtils.writeTextCollectionAsElements(jobXML, spark, "job-xml");
+    XMLWriteUtils.writePropertiesCollection(configuration, spark, "configuration", "property");
+    XMLWriteUtils.writeTextPropertyAsElement(master, spark, "master");
+    XMLWriteUtils.writeTextPropertyAsElement(mode, spark, "mode");
+    XMLWriteUtils.writeTextPropertyAsElement(name, spark, "name");
+    XMLWriteUtils.writeTextPropertyAsElement(clazz, spark, "class");
+    XMLWriteUtils.writeTextPropertyAsElement(jar, spark, "jar");
+    XMLWriteUtils.writeTextPropertyAsElement(sparkOpts, spark, "spark-opts");
+    XMLWriteUtils.writeTextCollectionAsElements(arg, spark, "arg");
   }
 
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./spark/job-tracker");
-    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./spark/name-node");
-    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./spark/prepare");
-    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./spark/job-xml");
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./spark/configuration", "./property");
-    XMLUtils.initTextPropertyFrom(master, hpdlNode, "./spark/master");
-    XMLUtils.initTextPropertyFrom(mode, hpdlNode, "./spark/mode");
-    XMLUtils.initTextPropertyFrom(name, hpdlNode, "./spark/name");
-    XMLUtils.initTextPropertyFrom(clazz, hpdlNode, "./spark/class");
-    XMLUtils.initTextPropertyFrom(jar, hpdlNode, "./spark/jar");
-    XMLUtils.initTextPropertyFrom(sparkOpts, hpdlNode, "./spark/spark-opts");
-    XMLUtils.initTextCollectionFrom(arg, hpdlNode, "./spark/arg");
+    XMLReadUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./spark/job-tracker");
+    XMLReadUtils.initTextPropertyFrom(nameNode, hpdlNode, "./spark/name-node");
+    XMLReadUtils.initPreparePropertyFrom(prepare, hpdlNode, "./spark/prepare");
+    XMLReadUtils.initTextCollectionFrom(jobXML, hpdlNode, "./spark/job-xml");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./spark/configuration", "./property");
+    XMLReadUtils.initTextPropertyFrom(master, hpdlNode, "./spark/master");
+    XMLReadUtils.initTextPropertyFrom(mode, hpdlNode, "./spark/mode");
+    XMLReadUtils.initTextPropertyFrom(name, hpdlNode, "./spark/name");
+    XMLReadUtils.initTextPropertyFrom(clazz, hpdlNode, "./spark/class");
+    XMLReadUtils.initTextPropertyFrom(jar, hpdlNode, "./spark/jar");
+    XMLReadUtils.initTextPropertyFrom(sparkOpts, hpdlNode, "./spark/spark-opts");
+    XMLReadUtils.initTextCollectionFrom(arg, hpdlNode, "./spark/arg");
   }
   
   @Override

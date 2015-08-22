@@ -6,7 +6,8 @@ import java.util.List;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.TextPropertyElement;
@@ -66,19 +67,33 @@ public class EmailActionNode extends ExtendedActionNode {
   
   @Override
   public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element email = (Element) element.selectSingleNode("./email");
+    if (email == null) {
+      email = element.addElement("email");
+    }
+    
+    XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), email, getNodeType());
+    XMLWriteUtils.writeTextPropertyAsElement(to, email, "to");
+    XMLWriteUtils.writeTextPropertyAsElement(cc, email, "cc");
+    XMLWriteUtils.writeTextPropertyAsElement(subject, email, "subject");
+    XMLWriteUtils.writeTextPropertyAsElement(body, email, "body");
+    XMLWriteUtils.writeTextPropertyAsElement(contentType, email, "content_type");
+    XMLWriteUtils.writeTextPropertyAsElement(attachment, email, "attachment");
   }
   
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(to, hpdlNode, "./email/to");
-    XMLUtils.initTextPropertyFrom(cc, hpdlNode, "./email/cc");
-    XMLUtils.initTextPropertyFrom(subject, hpdlNode, "./email/subject");
-    XMLUtils.initTextPropertyFrom(body, hpdlNode, "./email/body");
-    XMLUtils.initTextPropertyFrom(contentType, hpdlNode, "./email/content_type");
-    XMLUtils.initTextPropertyFrom(attachment, hpdlNode, "./email/attachment");
+    XMLReadUtils.initTextPropertyFrom(to, hpdlNode, "./email/to");
+    XMLReadUtils.initTextPropertyFrom(cc, hpdlNode, "./email/cc");
+    XMLReadUtils.initTextPropertyFrom(subject, hpdlNode, "./email/subject");
+    XMLReadUtils.initTextPropertyFrom(body, hpdlNode, "./email/body");
+    XMLReadUtils.initTextPropertyFrom(contentType, hpdlNode, "./email/content_type");
+    XMLReadUtils.initTextPropertyFrom(attachment, hpdlNode, "./email/attachment");
   }
   
   @Override

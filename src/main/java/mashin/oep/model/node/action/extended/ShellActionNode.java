@@ -6,7 +6,8 @@ import java.util.List;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import mashin.oep.hpdl.XMLUtils;
+import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.hpdl.XMLWriteUtils;
 import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.CheckBoxPropertyElement;
@@ -118,24 +119,43 @@ public class ShellActionNode extends ExtendedActionNode {
   
   @Override
   public void write(Element paretNode) {
+    super.write(paretNode);
     
+    Element element = (Element) hpdlModel.get();
+    Element shell = (Element) element.selectSingleNode("./shell");
+    if (shell == null) {
+      shell = element.addElement("shell");
+    }
+    
+    XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), shell, getNodeType());
+    XMLWriteUtils.writeTextPropertyAsElement(jobTracker, shell, "job-tracker");
+    XMLWriteUtils.writeTextPropertyAsElement(nameNode, shell, "name-node");
+    XMLWriteUtils.writePrepareProperty(prepare, shell, "prepare");
+    XMLWriteUtils.writeTextCollectionAsElements(jobXML, shell, "job-xml");
+    XMLWriteUtils.writePropertiesCollection(configuration, shell, "configuration", "property");
+    XMLWriteUtils.writeTextPropertyAsElement(exec, shell, "exec");
+    XMLWriteUtils.writeTextCollectionAsElements(argument, shell, "argument");
+    XMLWriteUtils.writeTextCollectionAsElements(envVar, shell, "env-var");
+    XMLWriteUtils.writeTextCollectionAsElements(file, shell, "file");
+    XMLWriteUtils.writeTextCollectionAsElements(archive, shell, "archive");
+    XMLWriteUtils.writeCheckPropertyAsElement(captureOutput, shell, "capture-output");
   }
   
   @Override
   public void read(Node hpdlNode) {
     super.read(hpdlNode);
     
-    XMLUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./shell/job-tracker");
-    XMLUtils.initTextPropertyFrom(nameNode, hpdlNode, "./shell/name-node");
-    XMLUtils.initPreparePropertyFrom(prepare, hpdlNode, "./shell/prepare");
-    XMLUtils.initTextCollectionFrom(jobXML, hpdlNode, "./shell/job-xml");
-    XMLUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./shell/configuration", "./property");
-    XMLUtils.initTextPropertyFrom(exec, hpdlNode, "./shell/exec");
-    XMLUtils.initTextCollectionFrom(argument, hpdlNode, "./shell/argument");
-    XMLUtils.initTextCollectionFrom(envVar, hpdlNode, "./shell/env-var");
-    XMLUtils.initTextCollectionFrom(file, hpdlNode, "./shell/file");
-    XMLUtils.initTextCollectionFrom(archive, hpdlNode, "./shell/archive");
-    captureOutput.setValue(!XMLUtils.valueOf("./shell/capture-output", hpdlNode).isEmpty());
+    XMLReadUtils.initTextPropertyFrom(jobTracker, hpdlNode, "./shell/job-tracker");
+    XMLReadUtils.initTextPropertyFrom(nameNode, hpdlNode, "./shell/name-node");
+    XMLReadUtils.initPreparePropertyFrom(prepare, hpdlNode, "./shell/prepare");
+    XMLReadUtils.initTextCollectionFrom(jobXML, hpdlNode, "./shell/job-xml");
+    XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./shell/configuration", "./property");
+    XMLReadUtils.initTextPropertyFrom(exec, hpdlNode, "./shell/exec");
+    XMLReadUtils.initTextCollectionFrom(argument, hpdlNode, "./shell/argument");
+    XMLReadUtils.initTextCollectionFrom(envVar, hpdlNode, "./shell/env-var");
+    XMLReadUtils.initTextCollectionFrom(file, hpdlNode, "./shell/file");
+    XMLReadUtils.initTextCollectionFrom(archive, hpdlNode, "./shell/archive");
+    XMLReadUtils.initCheckPropertyFrom(captureOutput, hpdlNode, "./shell/capture-output");
   }
   
   @Override

@@ -32,7 +32,7 @@ public class EndNode extends ControlNode {
   
   @Override
   public void write(Element parent) {
-    
+    super.write(parent);
   }
   
   @Override
