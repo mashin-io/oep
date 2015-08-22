@@ -1,6 +1,7 @@
 package mashin.oep.model;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,7 +47,9 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.dom4j.tree.DefaultElement;
 import org.eclipse.draw2d.geometry.Point;
 
@@ -176,14 +179,7 @@ public class Workflow extends ModelElementWithSchema {
     Document document = parent.getDocument();
     parent.detach();
     
-    Element rootElement = (Element) hpdlModel.get();
-    if (rootElement == null 
-        || rootElement.getParent() == null 
-        || !rootElement.getParent().equals(document)) {
-      rootElement = document.addElement("workflow-app");
-    }
-    
-    
+    Element rootElement = document.addElement("workflow-app");
     Element graphicalInfoElement = DocumentHelper.createElement("workflow");
     
     XMLWriteUtils.writeWorkflowSchemaVersion(getSchemaVersion(), rootElement);
@@ -200,12 +196,16 @@ public class Workflow extends ModelElementWithSchema {
         .addAttribute("y", node.getPosition().y + "");
     }
     
-    Comment graphicalInfoNode = (Comment) hpdlModel.get(1);
-    if (graphicalInfoNode != null) {
-      graphicalInfoNode.detach();
+    Comment graphicalInfoNode = null;
+    try {
+      StringWriter stringWriter = new StringWriter();
+      XMLWriter writer = new XMLWriter(stringWriter, OutputFormat.createPrettyPrint());
+      writer.write(graphicalInfoElement);
+      writer.flush();
+      graphicalInfoNode = DocumentHelper.createComment(stringWriter.toString());
+    } catch (Exception e) {
+      graphicalInfoNode = DocumentHelper.createComment(graphicalInfoElement.asXML());
     }
-    graphicalInfoNode = DocumentHelper.createComment(graphicalInfoElement.asXML());
-    hpdlModel.set(1, graphicalInfoNode);
     document.add(graphicalInfoNode);
   }
 
@@ -214,7 +214,6 @@ public class Workflow extends ModelElementWithSchema {
     Document document = (Document) hpdlNode;
     
     Element rootElement = document.getRootElement();
-    hpdlModel.set(rootElement);
     
     HashMap<String, Point> graphicalInfoMap = XMLReadUtils.graphicalInfoFrom(document);
     
@@ -293,8 +292,7 @@ public class Workflow extends ModelElementWithSchema {
       }
       break;
     }
-    hpdlNode.detach();
-    node.init();
+    node.init(hpdlNode);
     Point point = graphicalInfoMap.get(node.getName());
     if (point != null) {
       node.setPosition(point);

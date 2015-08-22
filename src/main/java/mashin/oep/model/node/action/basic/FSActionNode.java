@@ -92,10 +92,7 @@ public class FSActionNode extends BasicActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element fs = (Element) element.selectSingleNode("./fs");
-    if (fs == null) {
-      fs = element.addElement("fs");
-    }
+    Element fs = element.addElement("fs");
     
     XMLWriteUtils.writeTextPropertyAsElement(namenode, fs, "name-node");
     XMLWriteUtils.writeTextCollectionAsElements(jobXML, fs, "job-xml");

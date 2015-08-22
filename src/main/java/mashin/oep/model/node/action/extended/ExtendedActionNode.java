@@ -20,6 +20,7 @@ public abstract class ExtendedActionNode extends ActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
+    this.setSchemaVersion(getDefaultSchemaVersion());
   }
   
   @Override
@@ -32,7 +33,6 @@ public abstract class ExtendedActionNode extends ActionNode {
     super.read(hpdlNode);
     
     org.dom4j.Node node = XMLReadUtils.schemaVersionParentNode(hpdlNode);
-    schemaVersion.set(XMLReadUtils.schemaVersionNode(node));
     setSchemaVersion(XMLReadUtils.schemaVersion(node));
   }
   

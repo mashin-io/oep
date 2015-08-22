@@ -36,7 +36,6 @@ public abstract class ActionNode extends Node {
 
   public ActionNode(Workflow workflow, org.dom4j.Node hpdlNode) {
     super(workflow, hpdlNode);
-    this.setSchemaVersion(workflow.getSchemaVersion());
     
     fanInTerminal           = new FanInTerminal(TERMINAL_FANIN, this);
     okSingleOutputTerminal  = new SingleOutputTerminal(TERMINAL_OK, this);
@@ -66,7 +65,7 @@ public abstract class ActionNode extends Node {
     
     Element element = (Element) hpdlModel.get();
     
-    element.addAttribute("name", "action");
+    element.setName("action");
     XMLWriteUtils.writeTextPropertyAsAttribute(cred, element, "cred");
     XMLWriteUtils.writeTextPropertyAsAttribute(retryMax, element, "retry-max");
     XMLWriteUtils.writeTextPropertyAsAttribute(retryInterval, element, "retry-interval");

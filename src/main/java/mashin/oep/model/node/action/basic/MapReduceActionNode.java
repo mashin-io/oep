@@ -100,10 +100,7 @@ public class MapReduceActionNode extends BasicActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element mapReduce = (Element) element.selectSingleNode("./map-reduce");
-    if (mapReduce == null) {
-      mapReduce = element.addElement("map-reduce");
-    }
+    Element mapReduce = element.addElement("map-reduce");
     
     XMLWriteUtils.writeTextPropertyAsElement(jobTracker, mapReduce, "job-tracker");
     XMLWriteUtils.writeTextPropertyAsElement(nameNode, mapReduce, "name-node");

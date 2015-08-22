@@ -70,10 +70,7 @@ public class EmailActionNode extends ExtendedActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element email = (Element) element.selectSingleNode("./email");
-    if (email == null) {
-      email = element.addElement("email");
-    }
+    Element email = element.addElement("email");
     
     XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), email, getNodeType());
     XMLWriteUtils.writeTextPropertyAsElement(to, email, "to");

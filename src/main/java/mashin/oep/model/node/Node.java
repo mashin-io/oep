@@ -76,12 +76,14 @@ public abstract class Node extends ModelElementWithSchema {
     sourceConnections = new ArrayList<WorkflowConnection>();
     targetConnections = new ArrayList<WorkflowConnection>();
     
-    hpdlModel.set(hpdlNode);
     setNodeType();
   }
   
   public void init() {
-    org.dom4j.Node hpdlNode = hpdlModel.get();
+    init(null);
+  }
+  
+  public void init(org.dom4j.Node hpdlNode) {
     if (hpdlNode == null) {
       initDefaults();
     } else {
@@ -95,11 +97,9 @@ public abstract class Node extends ModelElementWithSchema {
   
   @Override
   public void write(Element parent) {
-    if (hpdlModel.get() == null) {
-      hpdlModel.set(parent.addElement(getNodeType()));
-    }
-    
-    XMLWriteUtils.writeTextPropertyAsAttribute(name, (Element) hpdlModel.get(), "name");
+    Element element = parent.addElement(getNodeType());
+    hpdlModel.set(element);
+    XMLWriteUtils.writeTextPropertyAsAttribute(name, element, "name");
   }
   
   @Override

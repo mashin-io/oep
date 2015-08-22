@@ -89,10 +89,7 @@ public class PigActionNode extends BasicActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element pig = (Element) element.selectSingleNode("./pig");
-    if (pig == null) {
-      pig = element.addElement("pig");
-    }
+    Element pig = element.addElement("pig");
     
     XMLWriteUtils.writeTextPropertyAsElement(jobTracker, pig, "job-tracker");
     XMLWriteUtils.writeTextPropertyAsElement(nameNode, pig, "name-node");

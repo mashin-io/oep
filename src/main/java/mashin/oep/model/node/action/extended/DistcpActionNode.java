@@ -79,10 +79,7 @@ public class DistcpActionNode extends ExtendedActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element distcp = (Element) element.selectSingleNode("./distcp");
-    if (distcp == null) {
-      distcp = element.addElement("distcp");
-    }
+    Element distcp =  element.addElement("distcp");
     
     XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), distcp, getNodeType());
     XMLWriteUtils.writeTextPropertyAsElement(jobTracker, distcp, "job-tracker");

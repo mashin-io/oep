@@ -12,6 +12,7 @@ public abstract class BasicActionNode extends ActionNode {
 
   public BasicActionNode(Workflow workflow, org.dom4j.Node hpdlNode) {
     super(workflow, hpdlNode);
+    this.setSchemaVersion(workflow.getSchemaVersion());
   }
   
   @Override

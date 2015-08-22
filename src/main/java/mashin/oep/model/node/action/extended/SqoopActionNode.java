@@ -98,10 +98,7 @@ public class SqoopActionNode extends ExtendedActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element sqoop = (Element) element.selectSingleNode("./sqoop");
-    if (sqoop == null) {
-      sqoop = element.addElement("sqoop");
-    }
+    Element sqoop = element.addElement("sqoop");
     
     XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), sqoop, getNodeType());
     XMLWriteUtils.writeTextPropertyAsElement(jobTracker, sqoop, "job-tracker");

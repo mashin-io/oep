@@ -112,10 +112,7 @@ public class Hive2ActionNode extends ExtendedActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element hive2 = (Element) element.selectSingleNode("./hive2");
-    if (hive2 == null) {
-      hive2 = element.addElement("hive2");
-    }
+    Element hive2 = element.addElement("hive2");
     
     XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), hive2, getNodeType());
     XMLWriteUtils.writeTextPropertyAsElement(jobTracker, hive2, "job-tracker");

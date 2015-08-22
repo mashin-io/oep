@@ -3,6 +3,7 @@ package mashin.oep;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +17,6 @@ import mashin.oep.parts.WorkflowEditPartFactory;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -230,20 +230,26 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     }
     
     if (hpdl.isEmpty()) {
+      
       workflow = new Workflow();
+      workflow.setName(input.getName());
+      
     } else {
+      
       try {
+        
         SAXReader reader = new SAXReader();
         Document document = reader.read(new StringReader(hpdl));
         document.accept(new XMLReadUtils.NameSpaceCleaner());
         
         workflow = new Workflow(document);
+        
       } catch(Exception e) {
         e.printStackTrace();
       }
+      
     }
     
-    workflow.setName(input.getName());
     setPartName(input.getName());
   }
   
@@ -256,21 +262,43 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
         String hpdl = writeModel();
         
         IEditorInput input = getEditorInput();
-        IFile file = null;
+        //IFile file = null;
         
         if (input instanceof FileStoreEditorInput) {
-          IWorkspace workspace = ResourcesPlugin.getWorkspace();
-          file = workspace.getRoot().getFile(new Path(((FileStoreEditorInput) input).getURI().getPath()));
+          
+          //IWorkspace workspace = ResourcesPlugin.getWorkspace();
+          //file = workspace.getRoot().getFile(new Path(((FileStoreEditorInput) input).getURI().getPath()));
+          
+          File file = new File(((FileStoreEditorInput) input).getURI());
+          if (file.canWrite()) {
+            byte[] bytes = hpdl.getBytes();
+            progressMonitor.beginTask("Saving " + file.getAbsolutePath(), bytes.length);
+            FileOutputStream fos = new FileOutputStream(file);
+            for (int i = 0; i < bytes.length; i += 64) {
+              int work = Math.min(64, bytes.length - i);
+              fos.write(bytes, i, work);
+              progressMonitor.worked(work);
+            }
+            fos.flush();
+            fos.close();
+            getCommandStack().markSaveLocation();
+            progressMonitor.done();
+          }
+          
         } else if (input instanceof IFileEditorInput) {
-          file = ((IFileEditorInput) input).getFile();
-        }
-        
-        if (file != null) {
+          
+          IFile file = ((IFileEditorInput) input).getFile();
           file.setContents(new ByteArrayInputStream(hpdl.getBytes()),
               true, false, progressMonitor);
           getCommandStack().markSaveLocation();
-          setInput(input);
+          
         }
+        
+        //if (file != null) {
+        //  file.setContents(new ByteArrayInputStream(hpdl.getBytes()),
+        //      true, false, progressMonitor);
+        //  getCommandStack().markSaveLocation();
+        //}
       }
     });
     editorSaving = false;

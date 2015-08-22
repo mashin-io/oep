@@ -1,11 +1,16 @@
 package mashin.oep.model.node.action.extended;
 
-import org.dom4j.Element;
-import org.dom4j.Node;
+import java.util.Arrays;
+import java.util.List;
 
 import mashin.oep.hpdl.XMLReadUtils;
+import mashin.oep.model.SchemaVersion;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.property.TextPropertyElement;
+
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.Node;
 
 public class CustomActionNode extends ExtendedActionNode {
 
@@ -34,11 +39,15 @@ public class CustomActionNode extends ExtendedActionNode {
     super.write(parentNode);
     
     Element element = (Element) hpdlModel.get();
-    Element customNode = (Element) xml.get();
-    if (customNode != null) {
-      customNode.detach();
+    String xmlContent = xml.getStringValue();
+    if (xmlContent.isEmpty()) {
+      xmlContent = "<EMPTY_CUSTOM_NODE xmlns=\"uri:oozie:EMPTY_CUSTOM_NODE:0.1\"/>";
     }
-    element.setText(xml.getStringValue());
+    try {
+      element.add(DocumentHelper.parseText(xmlContent).getRootElement());
+    } catch (Throwable t) {
+      element.setText(xmlContent);
+    }
   }
   
   @Override
@@ -47,12 +56,26 @@ public class CustomActionNode extends ExtendedActionNode {
     
     Node node = XMLReadUtils.schemaVersionParentNode(hpdlNode);
     xml.setStringValue(node.asXML());
-    xml.set(node);
   }
   
   @Override
   public String getNodeType() {
     return "custom-action";
+  }
+  
+  @Override
+  public List<SchemaVersion> getPossibleSchemaVersions() {
+    return Arrays.asList(SchemaVersion.V_ANY);
+  }
+  
+  @Override
+  public SchemaVersion getLatestSchemaVersion() {
+    return SchemaVersion.V_ANY;
+  }
+  
+  @Override
+  public SchemaVersion getDefaultSchemaVersion() {
+    return SchemaVersion.V_ANY;
   }
   
   @Override

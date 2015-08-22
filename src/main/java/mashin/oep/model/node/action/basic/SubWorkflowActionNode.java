@@ -50,10 +50,7 @@ public class SubWorkflowActionNode extends BasicActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element subWorkflow = (Element) element.selectSingleNode("./sub-workflow");
-    if (subWorkflow == null) {
-      subWorkflow = element.addElement("sub-workflow");
-    }
+    Element subWorkflow = element.addElement("sub-workflow");
     
     XMLWriteUtils.writeTextPropertyAsElement(appPath, subWorkflow, "app-path");
     XMLWriteUtils.writeCheckPropertyAsElement(propagateConfiguration, subWorkflow, "propagate-configuration");

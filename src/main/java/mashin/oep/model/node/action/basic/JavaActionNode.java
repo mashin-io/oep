@@ -100,10 +100,7 @@ public class JavaActionNode extends BasicActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element java = (Element) element.selectSingleNode("./java");
-    if (java == null) {
-      java = element.addElement("java");
-    }
+    Element java = element.addElement("java");
     
     XMLWriteUtils.writeTextPropertyAsElement(jobTracker, java, "job-tracker");
     XMLWriteUtils.writeTextPropertyAsElement(nameNode, java, "name-node");

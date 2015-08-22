@@ -114,12 +114,10 @@ public class XMLReadUtils {
   }
   
   public static void initSchemaVersionFrom(Node node, ModelElementWithSchema model, ComboBoxPropertyElement pe) {
-    pe.set(schemaVersionNode(node));
     model.setSchemaVersion(schemaVersion(node));
   }
   
   public static void setSchemaVersion(String xpath, Node node, ModelElementWithSchema model, ComboBoxPropertyElement pe) {
-    pe.set(schemaVersionNode(xpath, node));
     model.setSchemaVersion(schemaVersion(xpath, node));
   }
   
@@ -150,7 +148,6 @@ public class XMLReadUtils {
   
   public static String schemaVersion(String xpath, Node node) {
     String xmlns = node.valueOf(xpath + "@schema-version");
-    //String xmlns = element.getNamespaceURI();
     return schemaVersion(xmlns);
   }
   
@@ -165,17 +162,14 @@ public class XMLReadUtils {
   }
   
   public static void initTextPropertyFrom(ModelElement model, String prop, TextPropertyElement pe, String xpath, Node node) {
-    pe.set(node.selectSingleNode(xpath));
-    model.setPropertyValue(prop, valueOf(pe.get()));
+    model.setPropertyValue(prop, valueOf(node.selectSingleNode(xpath)));
   }
   
   public static void initTextPropertyFrom(TextPropertyElement pe, Node node, String xpath) {
-    pe.set(node.selectSingleNode(xpath));
-    pe.setStringValue(valueOf(pe.get()));
+    pe.setStringValue(valueOf(node.selectSingleNode(xpath)));
   }
   
   public static void initCheckPropertyFrom(CheckBoxPropertyElement pe, Node node, String xpath) {
-    pe.set(node.selectSingleNode(xpath));
     pe.setValue(!valueOf(xpath, node).isEmpty());
   }
   
@@ -199,10 +193,12 @@ public class XMLReadUtils {
   public static void initPropertiesCollectionFrom(
       PropertyElementCollection pec, Node node, String groupXPath,
       String propertyXPath) {
-    List<Node> subNodes;
+    List<Node> subNodes = null;
     if (groupXPath != null && !groupXPath.isEmpty()) {
-      pec.set(node.selectSingleNode(groupXPath));
-      subNodes = pec.get().selectNodes(propertyXPath);
+      if (node.selectSingleNode(groupXPath) != null) {
+        subNodes = node.selectSingleNode(groupXPath)
+                        .selectNodes(propertyXPath);
+      }
     } else {
       subNodes = node.selectNodes(propertyXPath);
     }
@@ -210,8 +206,6 @@ public class XMLReadUtils {
     if (subNodes != null) {
       for (Node subNode : subNodes) {
         PropertyPropertyElement pe = (PropertyPropertyElement) pec.createAndAdd();
-        pe.set(subNode);
-        subNode.detach();
         pe.setValueOfName(XMLReadUtils.valueOf("./name", subNode));
         pe.setValueOfValue(XMLReadUtils.valueOf("./value", subNode));
         pe.setValueOfDescription(XMLReadUtils.valueOf("./description", subNode));
@@ -265,8 +259,6 @@ public class XMLReadUtils {
   public static void initGlobalPropertyFrom(GlobalPropertyElement gpe, Node node, String xpath) {
     Node globalNode = node.selectSingleNode(xpath);
     if (globalNode != null) {
-      gpe.set(globalNode);
-      globalNode.detach();
       initTextPropertyFrom(gpe.jobtracker, globalNode, "./job-tracker");
       initTextPropertyFrom(gpe.namenode, globalNode, "./name-node");
       initTextCollectionFrom(gpe.jobxml, globalNode, "./job-xml");
@@ -277,8 +269,6 @@ public class XMLReadUtils {
   public static void initPreparePropertyFrom(PreparePropertyElement ppe, Node node, String xpath) {
     Node prepareNode = node.selectSingleNode(xpath);
     if (prepareNode != null) {
-      ppe.set(prepareNode);
-      prepareNode.detach();
       initTextCollectionFromAttribute(ppe.delete, prepareNode, "./delete", "@path");
       initTextCollectionFromAttribute(ppe.mkdir, prepareNode, "./mkdir", "@path");
     }
@@ -287,19 +277,15 @@ public class XMLReadUtils {
   public static void initCredentialsCollectionFrom(PropertyElementCollection pec, Node node, String groupXPath, String childXPath) {
     Node groupNode = node.selectSingleNode(groupXPath);
     if (groupNode != null) {
-      groupNode.detach();
-    }
-    pec.set(groupNode);
-    @SuppressWarnings("unchecked")
-    List<Node> subNodes = pec.get().selectNodes(childXPath);
-    if (subNodes != null) {
-      for (Node subNode : subNodes) {
-        CredentialPropertyElement cpe = (CredentialPropertyElement) pec.createAndAdd();
-        cpe.set(subNode);
-        subNode.detach();
-        cpe.setValueOfName(valueOf("@name", subNode));
-        cpe.setValueOfType(valueOf("@type", subNode));
-        initPropertiesCollectionFrom(cpe.credential, subNode, null, "./property");
+      @SuppressWarnings("unchecked")
+      List<Node> subNodes = groupNode.selectNodes(childXPath);
+      if (subNodes != null) {
+        for (Node subNode : subNodes) {
+          CredentialPropertyElement cpe = (CredentialPropertyElement) pec.createAndAdd();
+          cpe.setValueOfName(valueOf("@name", subNode));
+          cpe.setValueOfType(valueOf("@type", subNode));
+          initPropertiesCollectionFrom(cpe.credential, subNode, null, "./property");
+        }
       }
     }
   }
@@ -307,8 +293,6 @@ public class XMLReadUtils {
   public static void initStreamingPropertyFrom(StreamingPropertyElement spe, Node node, String xpath) {
     Node streamingNode = node.selectSingleNode(xpath);
     if (streamingNode != null) {
-      spe.set(streamingNode);
-      streamingNode.detach();
       initTextPropertyFrom(spe.mapper, streamingNode, "./mapper");
       initTextPropertyFrom(spe.reducer, streamingNode, "./reducer");
       initTextPropertyFrom(spe.recordReader, streamingNode, "./record-reader");
@@ -320,8 +304,6 @@ public class XMLReadUtils {
   public static void initPipesPropertyFrom(PipesPropertyElement ppe, Node node, String xpath) {
     Node pipesNode = node.selectSingleNode(xpath);
     if (pipesNode != null) {
-      ppe.set(pipesNode);
-      pipesNode.detach();
       initTextPropertyFrom(ppe.map, pipesNode, "./map");
       initTextPropertyFrom(ppe.reduce, pipesNode, "./reduce");
       initTextPropertyFrom(ppe.inputFormat, pipesNode, "./inputformat");
@@ -365,9 +347,7 @@ public class XMLReadUtils {
     if (subNodes != null) {
       for (Node subNode : subNodes) {
         TextPropertyElement tpe = (TextPropertyElement) pec.createAndAdd();
-        tpe.set(subNode);
         tpe.setStringValue(valueOf(subNode));
-        subNode.detach();
       }
     }
   }
@@ -378,9 +358,7 @@ public class XMLReadUtils {
     if (subNodes != null) {
       for (Node subNode : subNodes) {
         TextPropertyElement tpe = (TextPropertyElement) pec.createAndAdd();
-        tpe.set(subNode);
         tpe.setStringValue(valueOf(attributeXPath, subNode));
-        subNode.detach();
       }
     }
   }
@@ -438,8 +416,6 @@ public class XMLReadUtils {
     if (subNodes != null) {
       for (Node subNode : subNodes) {
         FSActionNode.FSOperationDelete delete = (FSActionNode.FSOperationDelete) pec.createAndAdd();
-        subNode.detach();
-        delete.set(subNode);
         initTextPropertyFrom(delete.path, subNode, "@path");
       }
     }
@@ -452,8 +428,6 @@ public class XMLReadUtils {
     if (subNodes != null) {
       for (Node subNode : subNodes) {
         FSActionNode.FSOperationMkdir mkdir = (FSActionNode.FSOperationMkdir) pec.createAndAdd();
-        subNode.detach();
-        mkdir.set(subNode);
         initTextPropertyFrom(mkdir.path, subNode, "@path");
       }
     }
@@ -466,8 +440,6 @@ public class XMLReadUtils {
     if (subNodes != null) {
       for (Node subNode : subNodes) {
         FSActionNode.FSOperationMove move = (FSActionNode.FSOperationMove) pec.createAndAdd();
-        subNode.detach();
-        move.set(subNode);
         initTextPropertyFrom(move.source, subNode, "@source");
         initTextPropertyFrom(move.target, subNode, "@target");
       }
@@ -481,8 +453,6 @@ public class XMLReadUtils {
     if (subNodes != null) {
       for (Node subNode : subNodes) {
         FSActionNode.FSOperationChmod chmod = (FSActionNode.FSOperationChmod) pec.createAndAdd();
-        subNode.detach();
-        chmod.set(subNode);
         initCheckPropertyFrom(chmod.recursive, subNode, "./recursive");
         initTextPropertyFrom(chmod.path, subNode, "@path");
         initTextPropertyFrom(chmod.permissions, subNode, "@permissions");
@@ -498,8 +468,6 @@ public class XMLReadUtils {
     if (subNodes != null) {
       for (Node subNode : subNodes) {
         FSActionNode.FSOperationTouchz touchz = (FSActionNode.FSOperationTouchz) pec.createAndAdd();
-        subNode.detach();
-        touchz.set(subNode);
         initTextPropertyFrom(touchz.path, subNode, "@path");
       }
     }
@@ -512,8 +480,6 @@ public class XMLReadUtils {
     if (subNodes != null) {
       for (Node subNode : subNodes) {
         FSActionNode.FSOperationChgrp chgrp = (FSActionNode.FSOperationChgrp) pec.createAndAdd();
-        subNode.detach();
-        chgrp.set(subNode);
         initCheckPropertyFrom(chgrp.recursive, subNode, "./recursive");
         initTextPropertyFrom(chgrp.path, subNode, "@path");
         initTextPropertyFrom(chgrp.group, subNode, "@group");

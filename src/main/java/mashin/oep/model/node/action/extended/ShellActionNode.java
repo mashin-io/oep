@@ -109,10 +109,7 @@ public class ShellActionNode extends ExtendedActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element shell = (Element) element.selectSingleNode("./shell");
-    if (shell == null) {
-      shell = element.addElement("shell");
-    }
+    Element shell = element.addElement("shell");
     
     XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), shell, getNodeType());
     XMLWriteUtils.writeTextPropertyAsElement(jobTracker, shell, "job-tracker");

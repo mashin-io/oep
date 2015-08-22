@@ -109,10 +109,7 @@ public class SparkActionNode extends ExtendedActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element spark = (Element) element.selectSingleNode("./spark");
-    if (spark == null) {
-      spark = element.addElement("spark");
-    }
+    Element spark = element.addElement("spark");
     
     XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), spark, getNodeType());
     XMLWriteUtils.writeTextPropertyAsElement(jobTracker, spark, "job-tracker");

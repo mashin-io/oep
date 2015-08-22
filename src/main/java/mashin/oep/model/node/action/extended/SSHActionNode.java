@@ -71,10 +71,7 @@ public class SSHActionNode extends ExtendedActionNode {
     super.write(paretNode);
     
     Element element = (Element) hpdlModel.get();
-    Element ssh = (Element) element.selectSingleNode("./ssh");
-    if (ssh == null) {
-      ssh = element.addElement("ssh");
-    }
+    Element ssh = element.addElement("ssh");
     
     XMLWriteUtils.writeSchemaVersion(getSchemaVersion(), ssh, getNodeType());
     XMLWriteUtils.writeTextPropertyAsElement(host, ssh, "host");
