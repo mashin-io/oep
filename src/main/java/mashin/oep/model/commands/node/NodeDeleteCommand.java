@@ -6,6 +6,7 @@ import java.util.List;
 import mashin.oep.model.Workflow;
 import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.node.Node;
+import mashin.oep.model.node.control.EndNode;
 import mashin.oep.model.node.control.StartNode;
 
 import org.eclipse.gef.commands.Command;
@@ -51,7 +52,8 @@ public class NodeDeleteCommand extends Command {
 
 	@Override
 	public boolean canExecute() {
-	  if (node instanceof StartNode) {
+	  if (node instanceof StartNode
+	      || node instanceof EndNode) {
 	    return false;
 	  }
 	  return true;
