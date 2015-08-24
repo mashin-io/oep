@@ -4,14 +4,17 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import mashin.oep.editor.XMLEditor;
 import mashin.oep.figures.NodeFigure;
 import mashin.oep.figures.TerminalConnectionAnchor;
 import mashin.oep.model.ModelElement;
+import mashin.oep.model.commands.node.CustomActionNodeXMLEditCommand;
 import mashin.oep.model.connection.WorkflowConnection;
 import mashin.oep.model.editPolicies.NodeComponentEditPolicy;
 import mashin.oep.model.editPolicies.NodeGraphicalNodeEditPolicy;
 import mashin.oep.model.editPolicies.NodeLabelDirectEditPolicy;
 import mashin.oep.model.node.Node;
+import mashin.oep.model.node.action.extended.CustomActionNode;
 import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.FanOutTerminal;
 import mashin.oep.model.terminal.SingleOutputTerminal;
@@ -64,6 +67,8 @@ public class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
   public void performRequest(Request req) {
     if (req.getType() == RequestConstants.REQ_DIRECT_EDIT) {
       performDirectEditing();
+    } else if (req.getType() == RequestConstants.REQ_OPEN) {
+      performOpen();
     } else {
       super.performRequest(req);
     }
@@ -74,6 +79,21 @@ public class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     NodeLabelDirectEditManager manager = new NodeLabelDirectEditManager(this,
         TextCellEditor.class, new NodeLabelCellEditorLocator(label), label);
     manager.show();
+  }
+  
+  private void performOpen() {
+    if (getCastedModel() instanceof CustomActionNode) {
+      CustomActionNode customActionNode = (CustomActionNode) getCastedModel();
+      XMLEditor.getInstance().open(
+              customActionNode,
+              (String) customActionNode.getPropertyValue(CustomActionNode.PROP_XML),
+              customActionNode.getName(),
+              xml -> getViewer()
+                  .getEditDomain()
+                  .getCommandStack()
+                  .execute(
+                      new CustomActionNodeXMLEditCommand(customActionNode, xml)));
+    }
   }
   
   @Override

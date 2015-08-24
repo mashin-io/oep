@@ -1,4 +1,4 @@
-package mashin.oep;
+package mashin.oep.editor;
 
 import java.lang.reflect.InvocationTargetException;
 

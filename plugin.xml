@@ -5,7 +5,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="mashin.oep.WorkflowEditor"
+            class="mashin.oep.editor.WorkflowEditor"
             contributorClass="mashin.oep.actions.WorkflowActionBarContributor"
             default="false"
             extensions="xml, workflow"

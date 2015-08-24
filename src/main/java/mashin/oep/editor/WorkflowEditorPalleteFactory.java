@@ -1,5 +1,6 @@
-package mashin.oep;
+package mashin.oep.editor;
 
+import mashin.oep.Activator;
 import mashin.oep.model.node.action.basic.FSActionNode;
 import mashin.oep.model.node.action.basic.JavaActionNode;
 import mashin.oep.model.node.action.basic.MapReduceActionNode;

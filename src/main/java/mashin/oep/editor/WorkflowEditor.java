@@ -1,4 +1,4 @@
-package mashin.oep;
+package mashin.oep.editor;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
