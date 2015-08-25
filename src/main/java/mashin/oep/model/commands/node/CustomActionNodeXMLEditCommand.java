@@ -18,6 +18,11 @@ public class CustomActionNodeXMLEditCommand extends Command {
   }
   
   @Override
+  public boolean canExecute() {
+    return !oldXmlContent.equals(newXmlContent);
+  }
+  
+  @Override
   public void execute() {
     customActionNode.setPropertyValue(CustomActionNode.PROP_XML, newXmlContent);
   }
