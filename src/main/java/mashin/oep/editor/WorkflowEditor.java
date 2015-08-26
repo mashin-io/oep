@@ -11,6 +11,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.EventObject;
 
+import mashin.oep.figures.NodeFigure;
 import mashin.oep.hpdl.XMLReadUtils;
 import mashin.oep.model.Workflow;
 import mashin.oep.parts.WorkflowEditPartFactory;
@@ -49,9 +50,13 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.SaveAsDialog;
@@ -193,6 +198,18 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
 
     // listen for dropped parts
     viewer.addDropTargetListener(createTransferDropTargetListener());
+    
+    getSite().getWorkbenchWindow().getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
+      @Override
+      public boolean preShutdown(IWorkbench workbench, boolean forced) {
+        return true;
+      }
+      
+      @Override
+      public void postShutdown(IWorkbench workbench) {
+        NodeFigure.nodeImagesMap.values().forEach(Image::dispose);
+      }
+    });
   }
   
   @Override

@@ -60,7 +60,7 @@ public class CustomActionNode extends ExtendedActionNode {
   
   @Override
   public String getNodeType() {
-    return "custom-action";
+    return TYPE_CUSTOM_ACTION;
   }
   
   @Override

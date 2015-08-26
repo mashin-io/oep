@@ -58,7 +58,7 @@ public class JoinNode extends ControlNode {
 
   @Override
   public String getNodeType() {
-    return "join";
+    return TYPE_JOIN;
   }
   
   @Override

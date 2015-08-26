@@ -4,7 +4,7 @@ import mashin.oep.model.node.Node;
 
 import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -14,6 +14,8 @@ public class TerminalConnectionAnchor extends AbstractConnectionAnchor {
   public static final int TYPE_FANIN  = 1;
   public static final int TYPE_FANOUT = 2;
   public static final int TYPE_OUT    = 3;
+  public static final int TYPE_NOIN   = 4;
+  public static final int TYPE_NOOUT  = 5;
   
   private int type;
   private int verticalOffsetPercentage;
@@ -26,6 +28,8 @@ public class TerminalConnectionAnchor extends AbstractConnectionAnchor {
     case TYPE_FANIN:
     case TYPE_FANOUT:
     case TYPE_OUT:
+    case TYPE_NOIN:
+    case TYPE_NOOUT:
       this.type = type;
       break;
     default:
@@ -38,6 +42,9 @@ public class TerminalConnectionAnchor extends AbstractConnectionAnchor {
   
   private int getConnectionAnchorVerticalOffset() {
     switch (getLabel()) {
+    case Node.TERMINAL_NOIN:
+    case Node.TERMINAL_NOOUT:
+      return 0;
     case Node.TERMINAL_FANIN:
     case Node.TERMINAL_CASE:
     case Node.TERMINAL_FANOUT:
@@ -75,10 +82,10 @@ public class TerminalConnectionAnchor extends AbstractConnectionAnchor {
   }
   
   public Point getLocalLocation() {
-    RectangleFigure body = getCastedOwner().getBodyFigure();
+    RoundedRectangle body = getCastedOwner().getBodyFigure();
     Rectangle r = body.getBounds();
     
-    int x = type == TYPE_FANIN ? r.x - 5 : r.right() + 5;
+    int x = (type == TYPE_FANIN || type == TYPE_NOIN) ? r.x - 5 : r.right() + 5;
     int y = (int) (r.y + verticalOffsetPercentage * r.height / 100.0);
 
     return new Point(x, y);
@@ -91,13 +98,15 @@ public class TerminalConnectionAnchor extends AbstractConnectionAnchor {
   
   public boolean isSource() {
     switch (type) {
+    case TYPE_NOOUT:
     case TYPE_FANOUT:
     case TYPE_OUT:
       return true;
+    case TYPE_NOIN:
     case TYPE_FANIN:
       return false;
     }
     return false;
   }
-
+  
 }

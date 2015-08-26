@@ -26,7 +26,7 @@ public class KillNode extends ControlNode {
   public KillNode(Workflow workflow, org.dom4j.Node hpdlNode) {
     super(workflow, hpdlNode);
     fanInTerminal     = new FanInTerminal(TERMINAL_FANIN, this);
-    noOutputTerminal  = new NoOutputTerminal(TERMINAL_NONE, this);
+    noOutputTerminal  = new NoOutputTerminal(TERMINAL_NOOUT, this);
     terminals.add(fanInTerminal);
     terminals.add(noOutputTerminal);
     message = new TextPropertyElement(PROP_NODE_KILL_MESSAGE, "Message");
@@ -55,7 +55,7 @@ public class KillNode extends ControlNode {
   
   @Override
   public String getNodeType() {
-    return "kill";
+    return TYPE_KILL;
   }
   
   public void setMessage(String message) {

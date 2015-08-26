@@ -146,7 +146,7 @@ public class SparkActionNode extends ExtendedActionNode {
   
   @Override
   public String getNodeType() {
-    return "spark";
+    return TYPE_SPARK;
   }
   
   @Override

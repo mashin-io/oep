@@ -121,7 +121,7 @@ public class FSActionNode extends BasicActionNode {
   
   @Override
   public String getNodeType() {
-    return "fs";
+    return TYPE_FS;
   }
   
   public void setNamenode(String namenode) {

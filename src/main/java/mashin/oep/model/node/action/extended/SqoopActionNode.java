@@ -129,7 +129,7 @@ public class SqoopActionNode extends ExtendedActionNode {
   
   @Override
   public String getNodeType() {
-    return "sqoop";
+    return TYPE_SQOOP;
   }
   
   @Override

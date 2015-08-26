@@ -67,7 +67,7 @@ public class ForkNode extends ControlNode {
 
   @Override
   public String getNodeType() {
-    return "fork";
+    return TYPE_FORK;
   }
   
   @Override

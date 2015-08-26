@@ -135,7 +135,7 @@ public class JavaActionNode extends BasicActionNode {
   
   @Override
   public String getNodeType() {
-    return "java";
+    return TYPE_JAVA;
   }
   
 }

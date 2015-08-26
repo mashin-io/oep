@@ -121,7 +121,7 @@ public class PigActionNode extends BasicActionNode {
   
   @Override
   public String getNodeType() {
-    return "pig";
+    return TYPE_PIG;
   }
   
 }

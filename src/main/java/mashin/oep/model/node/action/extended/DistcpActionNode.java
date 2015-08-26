@@ -104,7 +104,7 @@ public class DistcpActionNode extends ExtendedActionNode {
   
   @Override
   public String getNodeType() {
-    return "distcp";
+    return TYPE_DISTCP;
   }
   
   @Override

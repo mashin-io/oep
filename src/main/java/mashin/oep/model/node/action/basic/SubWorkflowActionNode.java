@@ -68,7 +68,7 @@ public class SubWorkflowActionNode extends BasicActionNode {
   
   @Override
   public String getNodeType() {
-    return "sub-workflow";
+    return TYPE_SUBWORKFLOW;
   }
   
 }

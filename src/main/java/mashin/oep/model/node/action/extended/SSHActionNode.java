@@ -94,7 +94,7 @@ public class SSHActionNode extends ExtendedActionNode {
   
   @Override
   public String getNodeType() {
-    return "ssh";
+    return TYPE_SSH;
   }
   
   @Override

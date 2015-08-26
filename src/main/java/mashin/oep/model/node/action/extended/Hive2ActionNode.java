@@ -149,7 +149,7 @@ public class Hive2ActionNode extends ExtendedActionNode {
   
   @Override
   public String getNodeType() {
-    return "hive2";
+    return TYPE_HIVE2;
   }
   
   @Override

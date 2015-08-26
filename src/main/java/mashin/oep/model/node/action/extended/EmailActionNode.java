@@ -95,7 +95,7 @@ public class EmailActionNode extends ExtendedActionNode {
   
   @Override
   public String getNodeType() {
-    return "email";
+    return TYPE_EMAIL;
   }
   
   @Override

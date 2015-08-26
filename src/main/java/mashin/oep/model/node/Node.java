@@ -23,6 +23,27 @@ public abstract class Node extends ModelElementWithSchema {
   
   public static final AtomicLong ID_SEQ = new AtomicLong(0);
   
+  public static final String TYPE_START         = "start";
+  public static final String TYPE_END           = "end";
+  public static final String TYPE_KILL          = "kill";
+  public static final String TYPE_FORK          = "fork";
+  public static final String TYPE_JOIN          = "join";
+  public static final String TYPE_DECISION      = "decision";
+  public static final String TYPE_CUSTOM_ACTION = "custom-action";
+  public static final String TYPE_FS            = "fs";
+  public static final String TYPE_JAVA          = "java";
+  public static final String TYPE_MAPREDUCE     = "map-reduce";
+  public static final String TYPE_PIG           = "pig";
+  public static final String TYPE_SUBWORKFLOW   = "sub-workflow";
+  public static final String TYPE_DISTCP        = "distcp";
+  public static final String TYPE_EMAIL         = "email";
+  public static final String TYPE_HIVE          = "hive";
+  public static final String TYPE_HIVE2         = "hive2";
+  public static final String TYPE_SHELL         = "shell";
+  public static final String TYPE_SPARK         = "spark";
+  public static final String TYPE_SQOOP         = "sqoop";
+  public static final String TYPE_SSH           = "ssh";
+  
   public static final String TERMINAL_NONE    = "";
   public static final String TERMINAL_FANIN   = "fan-in";
   public static final String TERMINAL_FANOUT  = "fan-out";
@@ -31,6 +52,8 @@ public abstract class Node extends ModelElementWithSchema {
   public static final String TERMINAL_OUT     = "out";
   public static final String TERMINAL_OK      = "ok";
   public static final String TERMINAL_ERROR   = "error";
+  public static final String TERMINAL_NOIN    = "no-in";
+  public static final String TERMINAL_NOOUT   = "no-out";
   
   public static final String PROP_CONNECTION_SOURCE  = "prop.node.connection.source";
   public static final String PROP_CONNECTION_TARGET  = "prop.node.connection.target";

@@ -19,7 +19,7 @@ public class EndNode extends ControlNode {
   public EndNode(Workflow workflow, org.dom4j.Node hpdlNode) {
     super(workflow, hpdlNode);
     fanInTerminal     = new FanInTerminal(TERMINAL_FANIN, this);
-    noOutputTerminal  = new NoOutputTerminal(TERMINAL_NONE, this);
+    noOutputTerminal  = new NoOutputTerminal(TERMINAL_NOOUT, this);
     terminals.add(fanInTerminal);
     terminals.add(noOutputTerminal);
   }
@@ -42,7 +42,7 @@ public class EndNode extends ControlNode {
   
   @Override
   public String getNodeType() {
-    return "end";
+    return TYPE_END;
   }
   
   @Override

@@ -83,7 +83,7 @@ public class DecisionNode extends ControlNode {
 
   @Override
   public String getNodeType() {
-    return "decision";
+    return TYPE_DECISION;
   }
   
   @Override

@@ -132,7 +132,7 @@ public class MapReduceActionNode extends BasicActionNode {
   
   @Override
   public String getNodeType() {
-    return "map-reduce";
+    return TYPE_MAPREDUCE;
   }
   
 }

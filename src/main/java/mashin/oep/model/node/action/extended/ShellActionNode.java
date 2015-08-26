@@ -144,7 +144,7 @@ public class ShellActionNode extends ExtendedActionNode {
   
   @Override
   public String getNodeType() {
-    return "shell";
+    return TYPE_SHELL;
   }
   
   @Override

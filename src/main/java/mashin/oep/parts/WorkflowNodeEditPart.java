@@ -17,6 +17,8 @@ import mashin.oep.model.node.Node;
 import mashin.oep.model.node.action.extended.CustomActionNode;
 import mashin.oep.model.terminal.FanInTerminal;
 import mashin.oep.model.terminal.FanOutTerminal;
+import mashin.oep.model.terminal.NoInputTerminal;
+import mashin.oep.model.terminal.NoOutputTerminal;
 import mashin.oep.model.terminal.SingleOutputTerminal;
 import mashin.oep.model.terminal.Terminal;
 
@@ -104,22 +106,22 @@ public class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     
     List<Terminal> terminals = node.getTerminals();
     for (Terminal terminal : terminals) {
+      int terminalConnectionAnchorType = TerminalConnectionAnchor.TYPE_FANIN;
       if (terminal instanceof FanInTerminal) {
-        nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
-            nodeFigure,
-            TerminalConnectionAnchor.TYPE_FANIN,
-            terminal.getLabel()));
+        terminalConnectionAnchorType = TerminalConnectionAnchor.TYPE_FANIN;
       } else if (terminal instanceof SingleOutputTerminal) {
-        nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
-            nodeFigure,
-            TerminalConnectionAnchor.TYPE_OUT,
-            terminal.getLabel()));
+        terminalConnectionAnchorType = TerminalConnectionAnchor.TYPE_OUT;
       } else if (terminal instanceof FanOutTerminal) {
-        nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
-            nodeFigure,
-            TerminalConnectionAnchor.TYPE_FANOUT,
-            terminal.getLabel()));
+        terminalConnectionAnchorType = TerminalConnectionAnchor.TYPE_FANOUT;
+      } else if (terminal instanceof NoInputTerminal) {
+        terminalConnectionAnchorType = TerminalConnectionAnchor.TYPE_NOIN;
+      } else if (terminal instanceof NoOutputTerminal) {
+        terminalConnectionAnchorType = TerminalConnectionAnchor.TYPE_NOOUT;
       }
+      nodeFigure.addConnectionAnchor(new TerminalConnectionAnchor(
+          nodeFigure,
+          terminalConnectionAnchorType,
+          terminal.getLabel()));
     }
     
     return nodeFigure;

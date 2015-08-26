@@ -22,7 +22,7 @@ public class StartNode extends ControlNode {
 
   public StartNode(Workflow workflow, org.dom4j.Node hpdlNode) {
     super(workflow, hpdlNode);
-    noInputTerminal       = new NoInputTerminal(TERMINAL_NONE, this);
+    noInputTerminal       = new NoInputTerminal(TERMINAL_NOIN, this);
     singleOutputTerminal  = new SingleOutputTerminal(TERMINAL_OUT, this);
     terminals.add(noInputTerminal);
     terminals.add(singleOutputTerminal);
@@ -63,7 +63,7 @@ public class StartNode extends ControlNode {
   
   @Override
   public String getNodeType() {
-    return "start";
+    return TYPE_START;
   }
   
   @Override
