@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Display;
 public class NodeFigure extends Figure {
 
   public static Map<String, Image> nodeImagesMap;
+  public static Image nodeBgImage;
   
   static {
     nodeImagesMap = new HashMap<String, Image>();
@@ -71,12 +72,15 @@ public class NodeFigure extends Figure {
         Activator.class.getResourceAsStream("icons/Sqoop-24.png")));
     nodeImagesMap.put(Node.TYPE_SSH, new Image(Display.getCurrent(),
         Activator.class.getResourceAsStream("icons/SSH-24.png")));
+    nodeBgImage = new Image(Display.getCurrent(),
+        Activator.class.getResourceAsStream("icons/Node.png"));
   }
   
   public static final int WIDTH  = 100;
   public static final int HEIGHT = 60;
   
   private RoundedRectangle body;
+  private ImageFigure bodyBg;
   private ImageFigure image;
   private Label label;
   private Label toolTipLabel;
@@ -97,6 +101,12 @@ public class NodeFigure extends Figure {
     body.setOpaque(true);
     body.setBackgroundColor(ColorConstants.white);
     add(body);
+    
+    bodyBg = new ImageFigure(nodeBgImage);
+    bodyBg.setPreferredSize(WIDTH / 3, 2 * HEIGHT / 3);
+    bodyBg.setSize(body.getPreferredSize());
+    bodyBg.setLocation(new Point(WIDTH / 3, 0));
+    add(bodyBg);
     
     image = new ImageFigure(nodeImagesMap.get(nodeType));
     image.setBounds(body.getBounds());
@@ -155,7 +165,7 @@ public class NodeFigure extends Figure {
     case TerminalConnectionAnchor.TYPE_NOOUT:
       RoundedRectangle noout = new RoundedRectangle();
       noout.setSize(5, body.getSize().height);
-      noout.setBackgroundColor(ColorConstants.orange);
+      noout.setBackgroundColor(ColorConstants.lightGray);
       noout.setLocation(new Point(p.x - 5, p.y));
       noout.setCornerDimensions(new Dimension(2, 2));
       anchor = noout;

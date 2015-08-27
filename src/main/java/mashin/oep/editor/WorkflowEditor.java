@@ -207,6 +207,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
       @Override
       public void postShutdown(IWorkbench workbench) {
         NodeFigure.nodeImagesMap.values().forEach(Image::dispose);
+        NodeFigure.nodeBgImage.dispose();
       }
     });
   }
