@@ -5,7 +5,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="mashin.oep.editor.WorkflowEditor"
+            class="mashin.oep.ui.editor.WorkflowEditor"
             contributorClass="mashin.oep.actions.WorkflowActionBarContributor"
             default="false"
             extensions="xml, workflow"
@@ -33,5 +33,22 @@
             </parameter>
          </describer>
       </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="com.mashin.oep.category"
+            name="Oozie">
+      </category>
+      <wizard
+            category="com.mashin.oep.category"
+            class="mashin.oep.ui.wizard.WorkflowCreationWizard"
+            icon="oozie-o-16.gif"
+            id="com.mashin.oep.WorkflowCreationWizard"
+            name="Oozie Workflow">
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
    </extension>
 </plugin>

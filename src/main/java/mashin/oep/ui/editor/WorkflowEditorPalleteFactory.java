@@ -1,4 +1,4 @@
-package mashin.oep.editor;
+package mashin.oep.ui.editor;
 
 import mashin.oep.Activator;
 import mashin.oep.model.node.action.basic.FSActionNode;

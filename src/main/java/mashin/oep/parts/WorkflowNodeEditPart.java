@@ -4,7 +4,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import mashin.oep.editor.XMLEditor;
 import mashin.oep.figures.NodeFigure;
 import mashin.oep.figures.TerminalConnectionAnchor;
 import mashin.oep.model.ModelElement;
@@ -21,6 +20,7 @@ import mashin.oep.model.terminal.NoInputTerminal;
 import mashin.oep.model.terminal.NoOutputTerminal;
 import mashin.oep.model.terminal.SingleOutputTerminal;
 import mashin.oep.model.terminal.Terminal;
+import mashin.oep.ui.editor.XMLEditor;
 
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
