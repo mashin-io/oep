@@ -11,7 +11,7 @@
             extensions="xml, workflow"
             icon="oozie-o-16.gif"
             id="mashin.oep.editor.flow"
-            name="Workflow Editor">
+            name="Oozie Workflow Editor">
             <contentTypeBinding
                   contentTypeId="mashin.oep.oozie.workflow">
             </contentTypeBinding>
