@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Oep
-Bundle-SymbolicName: oep;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Name: Oozie Eclipse Plugin
+Bundle-SymbolicName: com.mashin.oep;singleton:=true
+Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: mashin.oep.Activator
 Bundle-Vendor: mashin
 Require-Bundle: org.eclipse.gef;bundle-version="3.10.0",
@@ -10,10 +10,7 @@ Require-Bundle: org.eclipse.gef;bundle-version="3.10.0",
  org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.9.0",
  org.eclipse.ui.views;bundle-version="3.7.0",
- org.eclipse.ui.workbench,
  org.eclipse.ui.ide;bundle-version="3.10.0",
- org.eclipse.jface.text;bundle-version="3.9.0",
- org.eclipse.ui.editors;bundle-version="3.8.200",
  org.eclipse.core.filesystem;bundle-version="1.4.100"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

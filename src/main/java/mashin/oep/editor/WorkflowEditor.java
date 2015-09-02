@@ -50,7 +50,6 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -206,8 +205,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
       
       @Override
       public void postShutdown(IWorkbench workbench) {
-        NodeFigure.nodeImagesMap.values().forEach(Image::dispose);
-        NodeFigure.nodeBgImage.dispose();
+        NodeFigure.disposeImages();
       }
     });
   }

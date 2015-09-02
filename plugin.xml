@@ -9,7 +9,7 @@
             contributorClass="mashin.oep.actions.WorkflowActionBarContributor"
             default="false"
             extensions="xml, workflow"
-            icon="src/main/java/mashin/oep/icons/oozie-o-16.gif"
+            icon="oozie-o-16.gif"
             id="mashin.oep.editor.flow"
             name="Workflow Editor">
             <contentTypeBinding

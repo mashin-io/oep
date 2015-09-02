@@ -27,8 +27,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class NodeFigure extends Figure {
 
-  public static Map<String, Image> nodeImagesMap;
-  public static Image nodeBgImage;
+  private static Map<String, Image> nodeImagesMap;
+  private static Image nodeBgImage;
   
   static {
     nodeImagesMap = new HashMap<String, Image>();
@@ -74,6 +74,11 @@ public class NodeFigure extends Figure {
         Activator.class.getResourceAsStream("icons/SSH-24.png")));
     nodeBgImage = new Image(Display.getCurrent(),
         Activator.class.getResourceAsStream("icons/Node.png"));
+  }
+  
+  public static void disposeImages() {
+    nodeImagesMap.values().forEach(Image::dispose);
+    nodeBgImage.dispose();
   }
   
   public static final int WIDTH  = 100;
