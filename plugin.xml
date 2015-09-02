@@ -8,7 +8,6 @@
             class="mashin.oep.ui.editor.WorkflowEditor"
             contributorClass="mashin.oep.actions.WorkflowActionBarContributor"
             default="false"
-            extensions="xml, workflow"
             icon="oozie-o-16.gif"
             id="mashin.oep.editor.flow"
             name="Oozie Workflow Editor">
