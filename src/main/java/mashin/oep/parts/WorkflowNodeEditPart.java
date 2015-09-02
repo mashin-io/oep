@@ -2,6 +2,7 @@ package mashin.oep.parts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.StringWriter;
 import java.util.List;
 
 import mashin.oep.figures.NodeFigure;
@@ -22,6 +23,9 @@ import mashin.oep.model.terminal.SingleOutputTerminal;
 import mashin.oep.model.terminal.Terminal;
 import mashin.oep.ui.editor.XMLEditor;
 
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
@@ -86,9 +90,26 @@ public class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
   private void performOpen() {
     if (getCastedModel() instanceof CustomActionNode) {
       CustomActionNode customActionNode = (CustomActionNode) getCastedModel();
+      String customActionNodeXML = "";
+      
+      try {
+        StringWriter stringWriter = new StringWriter();
+        XMLWriter writer = new XMLWriter(stringWriter,
+            OutputFormat.createPrettyPrint());
+        writer.write(DocumentHelper.parseText(
+            (String) customActionNode
+                .getPropertyValue(CustomActionNode.PROP_XML)).getRootElement());
+        writer.flush();
+        customActionNodeXML = stringWriter.toString();
+      } catch (Exception e) {
+        e.printStackTrace();
+        customActionNodeXML = (String) customActionNode
+            .getPropertyValue(CustomActionNode.PROP_XML);
+      }
+      
       XMLEditor.getInstance().open(
               customActionNode,
-              (String) customActionNode.getPropertyValue(CustomActionNode.PROP_XML),
+              customActionNodeXML,
               customActionNode.getName(),
               xml -> getViewer()
                   .getEditDomain()
