@@ -39,7 +39,7 @@ public class XMLReadUtils {
     public void visit(Document document) {
       Element rootElement = document.getRootElement();
       if (rootElement.getNamespaceURI() != null && !rootElement.getNamespaceURI().isEmpty()) {
-        rootElement.addAttribute("schema-version", rootElement.getNamespaceURI());
+        rootElement.addAttribute(XMLUtils.SCHEMA_VERSION_TAG, rootElement.getNamespaceURI());
       }
       ((DefaultElement) document.getRootElement())
           .setNamespace(Namespace.NO_NAMESPACE);
@@ -51,8 +51,8 @@ public class XMLReadUtils {
     }
 
     public void visit(Attribute node) {
-      if (node.getName().contains("xmlns")) {
-        node.setName("schema-version");
+      if (node.getName().contains(XMLUtils.XMLNS_TAG)) {
+        node.setName(XMLUtils.SCHEMA_VERSION_TAG);
       } else if (node.getName().contains("xsi:")) {
         node.detach();
       }
@@ -126,7 +126,7 @@ public class XMLReadUtils {
   }
   
   public static Node schemaVersionNode(String xpath, Node node) {
-    return node.selectSingleNode(xpath + "@schema-version");
+    return node.selectSingleNode(xpath + "@" + XMLUtils.SCHEMA_VERSION_TAG);
   }
   
   public static Node schemaVersionParentNode(Node node) {
@@ -134,7 +134,7 @@ public class XMLReadUtils {
     node.accept(new VisitorSupport() {
       @Override
       public void visit(Attribute node) {
-        if (node.getName().equalsIgnoreCase("schema-version")) {
+        if (node.getName().equalsIgnoreCase(XMLUtils.SCHEMA_VERSION_TAG)) {
           parentNode[0] = node.getParent();
         }
       }
@@ -147,7 +147,7 @@ public class XMLReadUtils {
   }
   
   public static String schemaVersion(String xpath, Node node) {
-    String xmlns = node.valueOf(xpath + "@schema-version");
+    String xmlns = node.valueOf(xpath + "@" + XMLUtils.SCHEMA_VERSION_TAG);
     return schemaVersion(xmlns);
   }
   

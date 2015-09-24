@@ -2,6 +2,7 @@ package io.mashin.oep.ui.editor;
 
 import io.mashin.oep.figures.NodeFigure;
 import io.mashin.oep.hpdl.XMLReadUtils;
+import io.mashin.oep.hpdl.XMLUtils;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.parts.WorkflowEditPartFactory;
 
@@ -236,12 +237,12 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
           sb.append(line);
         }
         hpdl = sb.toString().trim();
-        hpdl = hpdl.replaceAll("xmlns=", "schema-version=");
+        hpdl = XMLUtils.xmlnsToSchemaVersion(hpdl);
         
         br.close();
       }
     } catch(Exception e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
     
     if (hpdl.isEmpty()) {
@@ -260,7 +261,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
         workflow = new Workflow(document);
         
       } catch(Exception e) {
-        e.printStackTrace();
+        throw new RuntimeException(e);
       }
       
     }
@@ -389,7 +390,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
       writer.write(document);
       stringWriter.flush();
       String hpdl = stringWriter.toString();
-      hpdl = hpdl.replaceAll("schema-version=", "xmlns=");
+      hpdl = XMLUtils.schemaVersionToXmlns(hpdl);
       return hpdl;
     } catch (IOException e) {
       e.printStackTrace();

@@ -108,14 +108,9 @@ public class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
       }
       
       XMLEditor.getInstance().open(
-              customActionNode,
-              customActionNodeXML,
-              customActionNode.getName(),
-              xml -> getViewer()
-                  .getEditDomain()
-                  .getCommandStack()
-                  .execute(
-                      new CustomActionNodeXMLEditCommand(customActionNode, xml)));
+          customActionNode, customActionNodeXML, customActionNode.getName(),
+          xml -> getViewer().getEditDomain().getCommandStack().execute(
+                  new CustomActionNodeXMLEditCommand(customActionNode, xml)));
     }
   }
   

@@ -22,11 +22,11 @@ import org.dom4j.Element;
 public class XMLWriteUtils {
 
   public static void writeSchemaVersion(SchemaVersion schemaVersion, Element element, String nodeType) {
-    element.addAttribute("schema-version", "uri:oozie:" + nodeType + "-action:" + schemaVersion);
+    element.addAttribute(XMLUtils.SCHEMA_VERSION_TAG, "uri:oozie:" + nodeType + "-action:" + schemaVersion);
   }
   
   public static void writeWorkflowSchemaVersion(SchemaVersion schemaVersion, Element element) {
-    element.addAttribute("schema-version", "uri:oozie:workflow:" + schemaVersion);
+    element.addAttribute(XMLUtils.SCHEMA_VERSION_TAG, "uri:oozie:workflow:" + schemaVersion);
   }
   
   public static void writeConnectionsAsAttribute(

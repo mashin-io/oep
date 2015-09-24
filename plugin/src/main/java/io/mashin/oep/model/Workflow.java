@@ -289,9 +289,18 @@ public class Workflow extends ModelElementWithSchema {
         node = new EmailActionNode(this, hpdlNode);
       } else if (XMLReadUtils.schemaVersionParentNode(hpdlNode) != null) {
         node = new CustomActionNode(this, hpdlNode);
+      } else {
+        throw new RuntimeException(
+            "Unrecognized action node; may be 'xmlns' is not provided: "
+                + hpdlNode.asXML());
       }
       break;
     }
+    
+    if (node == null) {
+      throw new RuntimeException("Couldn't parse node: " + hpdlNode.asXML());
+    }
+    
     node.init(hpdlNode);
     Point point = graphicalInfoMap.get(node.getName());
     if (point != null) {

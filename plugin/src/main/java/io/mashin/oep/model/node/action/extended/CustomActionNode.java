@@ -1,6 +1,7 @@
 package io.mashin.oep.model.node.action.extended;
 
 import io.mashin.oep.hpdl.XMLReadUtils;
+import io.mashin.oep.hpdl.XMLUtils;
 import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.property.TextPropertyElement;
@@ -55,7 +56,7 @@ public class CustomActionNode extends ExtendedActionNode {
     super.read(hpdlNode);
     
     Node node = XMLReadUtils.schemaVersionParentNode(hpdlNode);
-    xml.setStringValue(node.asXML());
+    xml.setStringValue(XMLUtils.schemaVersionToXmlns(node.asXML()));
   }
   
   @Override
