@@ -1,0 +1,15 @@
+/target/
+/plugin/plugins/
+/plugin/target/
+/plugin/oepkeystore
+/plugin/bin/
+/feature/artifacts.jar
+/feature/content.jar
+/feature/features/
+/feature/plugins/
+/feature/target/
+/updatesite/*.jar
+/updatesite/features/
+/updatesite/oepkeystore
+/updatesite/plugins/
+/updatesite/target/
