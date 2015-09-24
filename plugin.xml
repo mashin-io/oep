@@ -5,14 +5,14 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="mashin.oep.ui.editor.WorkflowEditor"
-            contributorClass="mashin.oep.actions.WorkflowActionBarContributor"
+            class="io.mashin.oep.ui.editor.WorkflowEditor"
+            contributorClass="io.mashin.oep.actions.WorkflowActionBarContributor"
             default="false"
             icon="oozie-o-16.gif"
-            id="mashin.oep.editor.flow"
+            id="io.mashin.oep.editor.flow"
             name="Oozie Workflow Editor">
             <contentTypeBinding
-                  contentTypeId="mashin.oep.oozie.workflow">
+                  contentTypeId="io.mashin.oep.oozie.workflow">
             </contentTypeBinding>
       </editor>
    </extension>
@@ -21,8 +21,8 @@
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="xml, workflow"
-            id="mashin.oep.oozie.workflow"
-            name="Oozie Workflow"
+            id="io.mashin.oep.oozie.workflow"
+            name="Apache Oozie Workflow"
             priority="normal">
          <describer
                class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
@@ -36,15 +36,15 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <category
-            id="com.mashin.oep.category"
-            name="Oozie">
+            id="io.mashin.oep.category"
+            name="Apache Oozie">
       </category>
       <wizard
-            category="com.mashin.oep.category"
-            class="mashin.oep.ui.wizard.WorkflowCreationWizard"
+            category="io.mashin.oep.category"
+            class="io.mashin.oep.ui.wizard.WorkflowCreationWizard"
             icon="oozie-o-16.gif"
-            id="com.mashin.oep.WorkflowCreationWizard"
-            name="Oozie Workflow">
+            id="io.mashin.oep.WorkflowCreationWizard"
+            name="Apache Oozie Workflow">
          <selection
                class="org.eclipse.core.resources.IResource">
          </selection>
