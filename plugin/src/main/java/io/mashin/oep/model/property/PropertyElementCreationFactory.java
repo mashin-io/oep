@@ -34,7 +34,8 @@ public class PropertyElementCreationFactory {
           template.getName(), template.getPropertyFilter());
     } else if (template instanceof FSActionNode.FSOperationChmod) {
       return new FSActionNode.FSOperationChmod(template.getId() + "." + ID_SEQ.incrementAndGet(),
-          template.getName(), template.getPropertyFilter());
+          template.getName(), template.getPropertyFilter(),
+          ((FSActionNode.FSOperationChmod) template).getModelElementWithSchema());
     } else if (template instanceof FSActionNode.FSOperationTouchz) {
       return new FSActionNode.FSOperationTouchz(template.getId() + "." + ID_SEQ.incrementAndGet(),
           template.getName(), template.getPropertyFilter());

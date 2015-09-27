@@ -54,7 +54,7 @@ public abstract class PropertyElement /*extends HPDLModel*/ {
     return this.id.equals(id);
   }
   
-  protected boolean filter() {
+  public boolean filter() {
     return filter.filter(this);
   }
   

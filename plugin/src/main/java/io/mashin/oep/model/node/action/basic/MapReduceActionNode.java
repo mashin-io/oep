@@ -2,6 +2,7 @@ package io.mashin.oep.model.node.action.basic;
 
 import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLWriteUtils;
+import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.property.ComboBoxPropertyElement;
 import io.mashin.oep.model.property.PipesPropertyElement;
@@ -10,6 +11,7 @@ import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyPropertyElement;
 import io.mashin.oep.model.property.StreamingPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -94,7 +96,8 @@ public class MapReduceActionNode extends BasicActionNode {
                       new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
     addPropertyElement(configuration);
     
-    configClass = new TextPropertyElement(PROP_CONFIGCLASS, "Config Class");
+    configClass = new TextPropertyElement(PROP_CONFIGCLASS, "Config Class",
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_5, SchemaVersion.V_ANY, workflow));
     addPropertyElement(configClass);
     
     file = new PropertyElementCollection("File", new TextPropertyElement(PROP_FILE, "File"));
@@ -120,11 +123,8 @@ public class MapReduceActionNode extends BasicActionNode {
     XMLWriteUtils.writeTextPropertyAsElement(jobTracker, mapReduce, "job-tracker");
     XMLWriteUtils.writeTextPropertyAsElement(nameNode, mapReduce, "name-node");
     XMLWriteUtils.writePrepareProperty(prepare, mapReduce, "prepare");
-    if (jobType.getValue() == JOB_TYPE_STREAMING) {
-      XMLWriteUtils.writeStreamingProperty(streaming, mapReduce);
-    } else if (jobType.getValue() == JOB_TYPE_PIPES) {
-      XMLWriteUtils.writePipesProperty(pipes, mapReduce);
-    }
+    XMLWriteUtils.writeStreamingProperty(streaming, mapReduce);
+    XMLWriteUtils.writePipesProperty(pipes, mapReduce);
     XMLWriteUtils.writeTextCollectionAsElements(jobXML, mapReduce, "job-xml");
     XMLWriteUtils.writePropertiesCollection(configuration, mapReduce, "configuration", "property");
     XMLWriteUtils.writeTextPropertyAsElement(configClass, mapReduce, "config-class");

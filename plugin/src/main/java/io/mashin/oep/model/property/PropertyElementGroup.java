@@ -212,8 +212,10 @@ public abstract class PropertyElementGroup extends PropertyElement {
     StringBuffer sb = new StringBuffer();
     sb.append("{");
     for(PropertyElement propertyElement: propertyElements) {
-      sb.append(propertyElement.toString());
-      sb.append(", ");
+      if (propertyElement.filter()) {
+        sb.append(propertyElement.toString());
+        sb.append(", ");
+      }
     }
     sb.delete(sb.length() - 2, sb.length());
     sb.append("}");

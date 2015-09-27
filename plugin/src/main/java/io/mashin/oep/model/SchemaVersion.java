@@ -62,11 +62,19 @@ public class SchemaVersion implements Comparable<SchemaVersion> {
     return this.version.equals(((SchemaVersion) obj).version);
   }
   
-  public boolean isBefore(SchemaVersion other) {
+  public boolean isLessThanOrEqual(SchemaVersion other) {
+    return this.compareTo(other) <= 0;
+  }
+  
+  public boolean isLessThan(SchemaVersion other) {
     return this.compareTo(other) < 0;
   }
   
-  public boolean isAfter(SchemaVersion other) {
+  public boolean isGreaterThanOrEqual(SchemaVersion other) {
+    return this.compareTo(other) >= 0;
+  }
+  
+  public boolean isGreaterThan(SchemaVersion other) {
     return this.compareTo(other) > 0;
   }
   

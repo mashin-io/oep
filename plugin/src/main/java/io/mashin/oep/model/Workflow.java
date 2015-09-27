@@ -32,6 +32,7 @@ import io.mashin.oep.model.property.GlobalPropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -96,14 +97,17 @@ public class Workflow extends ModelElementWithSchema {
     addPropertyElement(name);
     
     parameters = new PropertyElementCollection(CATEGORY_PARAMETERS,
-                        new PropertyPropertyElement(PROP_PROPERTY, "Property"));
+                        new PropertyPropertyElement(PROP_PROPERTY, "Property"),
+                        new SchemaVersionRangeFilter(SchemaVersion.V_0_4, SchemaVersion.V_ANY, this));
     addPropertyElement(parameters);
     
-    global = new GlobalPropertyElement(PROP_GLOBAL, "Global");
+    global = new GlobalPropertyElement(PROP_GLOBAL, "Global",
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_4, SchemaVersion.V_ANY, this));
     addPropertyElement(global);
     
     credentials = new PropertyElementCollection(CATEGORY_CREDENTIALS,
-                        new CredentialPropertyElement(PROP_CREDENTIALS, "Credential"));
+                        new CredentialPropertyElement(PROP_CREDENTIALS, "Credential"),
+                        new SchemaVersionRangeFilter(SchemaVersion.V_0_2_5, SchemaVersion.V_ANY, this));
     addPropertyElement(credentials);
     
     nodes = new ArrayList<Node>();

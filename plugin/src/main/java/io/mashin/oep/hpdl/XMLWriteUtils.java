@@ -61,7 +61,7 @@ public class XMLWriteUtils {
   }
   
   public static void writeTextPropertyAsElement(TextPropertyElement pe, Element parent, String name) {
-    if (pe.isSet()) {
+    if (pe.isSet() && pe.filter()) {
       Element node = parent.addElement(name);
       node.setText(pe.getStringValue());
     }
@@ -69,20 +69,20 @@ public class XMLWriteUtils {
   
   public static void writeTextPropertyAsElementWithAttribute(
       TextPropertyElement pe, Element parent, String elementName, String attributeName) {
-    if (pe.isSet()) {
+    if (pe.isSet() && pe.filter()) {
       Element node = parent.addElement(elementName);
       node.addAttribute(attributeName, pe.getStringValue());
     }
   }
   
   public static void writeCheckPropertyAsElement(CheckBoxPropertyElement pe, Element parent, String name) {
-    if (pe.getBooleanValue()) {
+    if (pe.getBooleanValue() && pe.filter()) {
       parent.addElement(name);
     }
   }
   
   public static void writeTextCollectionAsElements(PropertyElementCollection pec, Element parent, String name) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
         writeTextPropertyAsElement((TextPropertyElement) pe, parent, name);
@@ -92,7 +92,7 @@ public class XMLWriteUtils {
   
   public static void writeTextCollectionAsElementsWithAttribute(
       PropertyElementCollection pec, Element parent, String elementName, String attributeName) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
         writeTextPropertyAsElementWithAttribute((TextPropertyElement) pe, parent, elementName, attributeName);
@@ -102,7 +102,7 @@ public class XMLWriteUtils {
   
   public static void writePropertiesCollection(PropertyElementCollection pec,
       Element parent, String groupName, String elementName) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       Element groupElement = null;
       if (groupName != null && !groupName.isEmpty()) {
         groupElement = parent.addElement(groupName);
@@ -112,7 +112,7 @@ public class XMLWriteUtils {
       
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
-        if (pe.isSet()) {
+        if (pe.isSet() && pe.filter()) {
           PropertyPropertyElement ppe = (PropertyPropertyElement) pe;
           Element node = groupElement.addElement(elementName);
           writeTextPropertyAsElement(ppe.name, node, "name");
@@ -124,10 +124,10 @@ public class XMLWriteUtils {
   }
   
   public static void writeFSDeleteCollection(PropertyElementCollection pec, Element parent) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
-        if (pe.isSet()) {
+        if (pe.isSet() && pe.filter()) {
           FSActionNode.FSOperationDelete delete = (FSActionNode.FSOperationDelete) pe;
           Element node = parent.addElement("delete");
           writeTextPropertyAsAttribute(delete.path, node, "path");
@@ -137,10 +137,10 @@ public class XMLWriteUtils {
   }
   
   public static void writeFSMkdirCollection(PropertyElementCollection pec, Element parent) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
-        if (pe.isSet()) {
+        if (pe.isSet() && pe.filter()) {
           FSActionNode.FSOperationMkdir mkdir = (FSActionNode.FSOperationMkdir) pe;
           Element node = parent.addElement("mkdir");
           writeTextPropertyAsAttribute(mkdir.path, node, "path");
@@ -150,10 +150,10 @@ public class XMLWriteUtils {
   }
   
   public static void writeFSMoveCollection(PropertyElementCollection pec, Element parent) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
-        if (pe.isSet()) {
+        if (pe.isSet() && pe.filter()) {
           FSActionNode.FSOperationMove move = (FSActionNode.FSOperationMove) pe;
           Element node = parent.addElement("move");
           writeTextPropertyAsAttribute(move.source, node, "source");
@@ -164,10 +164,10 @@ public class XMLWriteUtils {
   }
   
   public static void writeFSChmodCollection(PropertyElementCollection pec, Element parent) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
-        if (pe.isSet()) {
+        if (pe.isSet() && pe.filter()) {
           FSActionNode.FSOperationChmod chmod = (FSActionNode.FSOperationChmod) pe;
           Element node = parent.addElement("chmod");
           writeCheckPropertyAsElement(chmod.recursive, node, "recursive");
@@ -180,10 +180,10 @@ public class XMLWriteUtils {
   }
   
   public static void writeFSTouchzCollection(PropertyElementCollection pec, Element parent) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
-        if (pe.isSet()) {
+        if (pe.isSet() && pe.filter()) {
           FSActionNode.FSOperationTouchz touchz = (FSActionNode.FSOperationTouchz) pe;
           Element node = parent.addElement("touchz");
           writeTextPropertyAsAttribute(touchz.path, node, "path");
@@ -193,10 +193,10 @@ public class XMLWriteUtils {
   }
   
   public static void writeFSChgrpCollection(PropertyElementCollection pec, Element parent) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
-        if (pe.isSet()) {
+        if (pe.isSet() && pe.filter()) {
           FSActionNode.FSOperationChgrp chgrp = (FSActionNode.FSOperationChgrp) pe;
           Element node = parent.addElement("chgrp");
           writeCheckPropertyAsElement(chgrp.recursive, node, "recursive");
@@ -209,7 +209,7 @@ public class XMLWriteUtils {
   }
   
   public static void writePrepareProperty(PreparePropertyElement ppe, Element parent, String groupName) {
-    if (ppe.isSet()) {
+    if (ppe.isSet() && ppe.filter()) {
       Element groupElement = parent.addElement(groupName);
       writeTextCollectionAsElementsWithAttribute(ppe.delete, groupElement, "delete", "path");
       writeTextCollectionAsElementsWithAttribute(ppe.mkdir, groupElement, "mkdir", "path");
@@ -217,7 +217,7 @@ public class XMLWriteUtils {
   }
   
   public static void writeStreamingProperty(StreamingPropertyElement spe, Element parent) {
-    if (spe.isSet()) {
+    if (spe.isSet() && spe.filter()) {
       Element streamingNode = parent.addElement("streaming");
       writeTextPropertyAsElement(spe.mapper, streamingNode, "mapper");
       writeTextPropertyAsElement(spe.reducer, streamingNode, "reducer");
@@ -228,7 +228,7 @@ public class XMLWriteUtils {
   }
   
   public static void writePipesProperty(PipesPropertyElement ppe, Element parent) {
-    if (ppe.isSet()) {
+    if (ppe.isSet() && ppe.filter()) {
       Element pipesNode = parent.addElement("pipes");
       writeTextPropertyAsElement(ppe.map, pipesNode, "map");
       writeTextPropertyAsElement(ppe.reduce, pipesNode, "reduce");
@@ -241,7 +241,7 @@ public class XMLWriteUtils {
   }
   
   public static void writeGlobalProperty(GlobalPropertyElement gpe, Element parent) {
-    if (gpe.isSet()) {
+    if (gpe.isSet() && gpe.filter()) {
       Element element = parent.addElement("global");
       writeTextPropertyAsElement(gpe.jobtracker, element, "job-tracker");
       writeTextPropertyAsElement(gpe.namenode, element, "name-node");
@@ -251,12 +251,12 @@ public class XMLWriteUtils {
   }
   
   public static void writeCredentialsCollection(PropertyElementCollection pec, Element parent) {
-    if (pec.isSet()) {
+    if (pec.isSet() && pec.filter()) {
       Element element = parent.addElement("credentials");
       
       List<PropertyElement> list = pec.getPropertyElements();
       for (PropertyElement pe : list) {
-        if (pe.isSet()) {
+        if (pe.isSet() && pe.filter()) {
           CredentialPropertyElement cpe = (CredentialPropertyElement) pe;
           Element node = element.addElement("credential");
           writeTextPropertyAsAttribute(cpe.name, node, "name");

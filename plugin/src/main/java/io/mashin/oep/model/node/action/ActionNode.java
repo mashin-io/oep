@@ -8,6 +8,7 @@ import io.mashin.oep.model.connection.WorkflowConnection;
 import io.mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import io.mashin.oep.model.node.Node;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 import io.mashin.oep.model.terminal.FanInTerminal;
 import io.mashin.oep.model.terminal.SingleOutputTerminal;
 
@@ -44,13 +45,16 @@ public abstract class ActionNode extends Node {
     terminals.add(okSingleOutputTerminal);
     terminals.add(errSingleOutputTerminal);
     
-    cred = new TextPropertyElement(PROP_NODE_CRED, "Cred");
+    cred = new TextPropertyElement(PROP_NODE_CRED, "Cred",
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_2_5, SchemaVersion.V_ANY, workflow));
     addPropertyElement(cred);
     
-    retryMax = new TextPropertyElement(PROP_NODE_RETRYMAX, "Retry Max");
+    retryMax = new TextPropertyElement(PROP_NODE_RETRYMAX, "Retry Max",
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_3, SchemaVersion.V_ANY, workflow));
     addPropertyElement(retryMax);
     
-    retryInterval = new TextPropertyElement(PROP_NODE_RETRYINTERVAL, "Retry Interval");
+    retryInterval = new TextPropertyElement(PROP_NODE_RETRYINTERVAL, "Retry Interval",
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_3, SchemaVersion.V_ANY, workflow));
     addPropertyElement(retryInterval);
   }
   
