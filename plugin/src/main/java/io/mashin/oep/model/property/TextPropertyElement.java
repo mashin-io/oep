@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -10,7 +13,11 @@ public class TextPropertyElement extends SingularPropertyElement {
   private String text;
   
   public TextPropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public TextPropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
     text = "";
   }
   

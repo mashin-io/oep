@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 public class PipesPropertyElement extends PropertyElementGroup {
 
   public TextPropertyElement map;//map
@@ -14,7 +17,11 @@ public class PipesPropertyElement extends PropertyElementGroup {
       writerId, programId;
   
   public PipesPropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public PipesPropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
     
     mapId = id + ".map";
     reduceId = id + ".reduce";

@@ -1,6 +1,8 @@
 package io.mashin.oep.model.property;
 
 import io.mashin.oep.Utils;
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,11 @@ public abstract class PropertyElementGroup extends PropertyElement {
   private IPropertySource value;
 
   public PropertyElementGroup(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public PropertyElementGroup(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
     propertyElements = new ArrayList<PropertyElement>();
   }
 
@@ -184,7 +190,7 @@ public abstract class PropertyElementGroup extends PropertyElement {
 
   @Override
   public IPropertyDescriptor[] getPropertyDescriptors() {
-    if (!isEditable()) {
+    if (!isEditable() || !filter()) {
       return null;
     }
     PropertyDescriptor groupPropertyDescriptor = new PropertyDescriptor(

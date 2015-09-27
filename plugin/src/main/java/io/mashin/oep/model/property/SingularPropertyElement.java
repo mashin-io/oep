@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
@@ -9,7 +12,11 @@ public abstract class SingularPropertyElement extends PropertyElement {
   protected IPropertyDescriptor[] descriptor;
   
   public SingularPropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public SingularPropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
   }
 
   @Override
@@ -41,7 +48,7 @@ public abstract class SingularPropertyElement extends PropertyElement {
   public IPropertyDescriptor[] getPropertyDescriptors() {
     if (descriptor == null) {
       IPropertyDescriptor desc = getPropertyDescriptor();
-      if (desc != null && isEditable()) {
+      if (desc != null && isEditable() && filter()) {
         if (category != null && !category.isEmpty()) {
           ((PropertyDescriptor) desc).setCategory(category);
         }

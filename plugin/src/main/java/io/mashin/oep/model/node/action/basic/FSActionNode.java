@@ -8,6 +8,8 @@ import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyElementGroup;
 import io.mashin.oep.model.property.PropertyPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -139,7 +141,11 @@ public class FSActionNode extends BasicActionNode {
     String pathId;
     
     public FSOperationDelete(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationDelete(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       pathId = id + ".path";
       path = new TextPropertyElement(pathId, "Path");
       this.propertyElements.add(path);
@@ -165,7 +171,11 @@ public class FSActionNode extends BasicActionNode {
     String pathId;
     
     public FSOperationMkdir(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationMkdir(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       pathId = id + ".path";
       path = new TextPropertyElement(pathId, "Path");
       this.propertyElements.add(path);
@@ -192,7 +202,11 @@ public class FSActionNode extends BasicActionNode {
     String sourceId, targetId;
     
     public FSOperationMove(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationMove(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       
       sourceId = id + ".source";
       targetId = id + ".target";
@@ -235,7 +249,11 @@ public class FSActionNode extends BasicActionNode {
     String recursiveId, pathId, permissionsId, dirFilesId;
     
     public FSOperationChmod(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationChmod(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       
       recursiveId = id + ".recursive";
       pathId = id + ".path";
@@ -297,7 +315,11 @@ public class FSActionNode extends BasicActionNode {
     String pathId;
     
     public FSOperationTouchz(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationTouchz(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       pathId = id + ".path";
       path = new TextPropertyElement(pathId, "Path");
       this.propertyElements.add(path);
@@ -326,7 +348,11 @@ public class FSActionNode extends BasicActionNode {
     String recursiveId, pathId, groupId, dirFilesId;
     
     public FSOperationChgrp(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationChgrp(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       
       recursiveId = id + ".recursive";
       pathId = id + ".path";

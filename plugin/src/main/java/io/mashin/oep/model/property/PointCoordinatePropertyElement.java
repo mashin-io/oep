@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -12,7 +15,11 @@ public class PointCoordinatePropertyElement extends SingularPropertyElement {
   private Integer coordinate;
   
   public PointCoordinatePropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public PointCoordinatePropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
     coordinate = 0;
   }
 
