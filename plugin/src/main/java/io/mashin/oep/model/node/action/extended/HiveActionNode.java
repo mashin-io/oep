@@ -8,6 +8,7 @@ import io.mashin.oep.model.property.PreparePropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -82,7 +83,8 @@ public class HiveActionNode extends ExtendedActionNode {
     addPropertyElement(param);
     
     argument = new PropertyElementCollection("Argument",
-                new TextPropertyElement(PROP_ARGUMENT, "Argument"));
+                new TextPropertyElement(PROP_ARGUMENT, "Argument"),
+                new SchemaVersionRangeFilter(SchemaVersion.V_0_5, SchemaVersion.V_ANY, this));
     addPropertyElement(argument);
     
     file = new PropertyElementCollection("File",

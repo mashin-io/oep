@@ -5,6 +5,7 @@ import io.mashin.oep.hpdl.XMLWriteUtils;
 import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,10 +53,12 @@ public class EmailActionNode extends ExtendedActionNode {
     body = new TextPropertyElement(PROP_BODY, "Body");
     addPropertyElement(body);
     
-    contentType = new TextPropertyElement(PROP_CONTENT_TYPE, "Content Type");
+    contentType = new TextPropertyElement(PROP_CONTENT_TYPE, "Content Type",
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_2, SchemaVersion.V_ANY, this));
     addPropertyElement(contentType);
     
-    attachment = new TextPropertyElement(PROP_ATTACHMENT, "Attachment");
+    attachment = new TextPropertyElement(PROP_ATTACHMENT, "Attachment",
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_2, SchemaVersion.V_ANY, this));
     addPropertyElement(attachment);
   }
 

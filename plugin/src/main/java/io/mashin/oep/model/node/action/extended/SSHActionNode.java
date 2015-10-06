@@ -7,6 +7,8 @@ import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.property.CheckBoxPropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,11 +52,15 @@ public class SSHActionNode extends ExtendedActionNode {
     addPropertyElement(command);
     
     args = new PropertyElementCollection("Args",
-              new TextPropertyElement(PROP_ARGS, "Args"));
+              new TextPropertyElement(PROP_ARGS, "Args"),
+              ((PropertyFilter) pe -> !arg.isSet() || (arg.isSet() && args.isSet()))
+              .or(new SchemaVersionRangeFilter(SchemaVersion.V_0_1, SchemaVersion.V_0_1, this)));
     addPropertyElement(args);
     
     arg = new PropertyElementCollection("Arg",
-              new TextPropertyElement(PROP_ARG, "Arg"));
+              new TextPropertyElement(PROP_ARG, "Arg"),
+              ((PropertyFilter) pe -> !args.isSet())
+              .and(new SchemaVersionRangeFilter(SchemaVersion.V_0_2, SchemaVersion.V_ANY, this)));
     addPropertyElement(arg);
     
     captureOutput = new CheckBoxPropertyElement(PROP_CAPTURE_OUTPUT, "Capture Output");
