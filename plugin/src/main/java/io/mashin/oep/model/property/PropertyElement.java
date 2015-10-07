@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 public abstract class PropertyElement /*extends HPDLModel*/ {
@@ -10,10 +13,17 @@ public abstract class PropertyElement /*extends HPDLModel*/ {
   protected boolean isEditable;
   protected String category;
   
+  protected PropertyFilter filter;
+  
   public PropertyElement(String id, String name) {
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public PropertyElement(String id, String name, PropertyFilter filter) {
     this.id = id;
     this.name = name;
     this.isEditable = true;
+    this.filter = filter;
   }
   
   public String getId() {
@@ -42,6 +52,14 @@ public abstract class PropertyElement /*extends HPDLModel*/ {
   
   public boolean hasId(String id) {
     return this.id.equals(id);
+  }
+  
+  public boolean filter() {
+    return filter.filter(this);
+  }
+  
+  protected PropertyFilter getPropertyFilter() {
+    return filter;
   }
   
   public abstract void setValue(Object value);

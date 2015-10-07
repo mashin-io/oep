@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 public class GlobalPropertyElement extends PropertyElementGroup {
 
   public TextPropertyElement jobtracker;
@@ -10,7 +13,11 @@ public class GlobalPropertyElement extends PropertyElementGroup {
   String jobtrackerId, namenodeId, jobxmlId, configurationId;
   
   public GlobalPropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public GlobalPropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
     
     jobtrackerId = id + ".job-tracker";
     namenodeId = id + ".name-node";

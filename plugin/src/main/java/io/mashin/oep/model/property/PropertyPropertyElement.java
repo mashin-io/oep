@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 
 public class PropertyPropertyElement extends PropertyElementGroup {
 
@@ -10,7 +13,11 @@ public class PropertyPropertyElement extends PropertyElementGroup {
   String nameId, valueId, descriptionId;
   
   public PropertyPropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public PropertyPropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
     
     nameId = id + ".name";
     valueId = id + ".value";

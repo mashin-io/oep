@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 public class PreparePropertyElement extends PropertyElementGroup {
 
   public PropertyElementCollection delete;
@@ -8,7 +11,11 @@ public class PreparePropertyElement extends PropertyElementGroup {
   String deleteId, mkdirId;
   
   public PreparePropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public PreparePropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
     
     deleteId = id + ".delete";
     mkdirId = id + ".mkdir";

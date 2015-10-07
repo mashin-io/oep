@@ -2,11 +2,13 @@ package io.mashin.oep.model.node.action.basic;
 
 import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLWriteUtils;
+import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.property.PreparePropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -68,7 +70,8 @@ public class PigActionNode extends BasicActionNode {
     param = new PropertyElementCollection("Param", new TextPropertyElement(PROP_PARAM, "Param"));
     addPropertyElement(param);
     
-    argument = new PropertyElementCollection("Argument", new TextPropertyElement(PROP_ARGUMENT, "Argument"));
+    argument = new PropertyElementCollection("Argument", new TextPropertyElement(PROP_ARGUMENT, "Argument"),
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_2, SchemaVersion.V_ANY, workflow));
     addPropertyElement(argument);
     
     file = new PropertyElementCollection("File", new TextPropertyElement(PROP_FILE, "File"));

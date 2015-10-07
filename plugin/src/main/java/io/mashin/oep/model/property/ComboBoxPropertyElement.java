@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
@@ -13,7 +16,11 @@ public class ComboBoxPropertyElement extends SingularPropertyElement {
   private int valueIndex;
   
   public ComboBoxPropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public ComboBoxPropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
     valueIndex = 0;
   }
   

@@ -2,12 +2,14 @@ package io.mashin.oep.model.node.action.basic;
 
 import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLWriteUtils;
+import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.property.CheckBoxPropertyElement;
 import io.mashin.oep.model.property.PreparePropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -73,7 +75,8 @@ public class JavaActionNode extends BasicActionNode {
     javaOpts = new TextPropertyElement(PROP_JAVA_OPTS, "Java Opts");
     addPropertyElement(javaOpts);
     
-    javaOpt = new PropertyElementCollection("Java Opt", new TextPropertyElement(PROP_JAVA_OPT, "Java Opt"));
+    javaOpt = new PropertyElementCollection("Java Opt", new TextPropertyElement(PROP_JAVA_OPT, "Java Opt"),
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_4, SchemaVersion.V_ANY, workflow));
     addPropertyElement(javaOpt);
     
     arg = new PropertyElementCollection("Arg", new TextPropertyElement(PROP_ARG, "Arg"));

@@ -1,6 +1,8 @@
 package io.mashin.oep.model.property;
 
 import io.mashin.oep.Utils;
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,11 @@ public class PropertyElementCollection extends PropertyElement {
   private PropertyElement empty;
 
   public PropertyElementCollection(String category, PropertyElement template) {
-    super(template.getId(), category);
+    this(category, template, new DefaultPropertyFilter());
+  }
+  
+  public PropertyElementCollection(String category, PropertyElement template, PropertyFilter filter) {
+    super(template.getId(), category, filter);
     this.category = category;
     list = new ArrayList<PropertyElement>();
     this.template = template;
@@ -174,7 +180,7 @@ public class PropertyElementCollection extends PropertyElement {
   }
   
   public IPropertyDescriptor[] getPropertyDescriptors() {
-    if (!isEditable()) {
+    if (!isEditable() || !filter()) {
       return new IPropertyDescriptor[0];
     }
     return Utils.getPropertyDescriptors(list, category);

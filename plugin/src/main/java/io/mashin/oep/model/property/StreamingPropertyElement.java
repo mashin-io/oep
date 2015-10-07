@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 public class StreamingPropertyElement extends PropertyElementGroup {
 
   public TextPropertyElement mapper;//mapper
@@ -11,7 +14,11 @@ public class StreamingPropertyElement extends PropertyElementGroup {
   String mapperId, reducerId, recordReaderId, recordReaderMappingId, envId;
   
   public StreamingPropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public StreamingPropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
     
     mapperId = id + ".mapper";
     reducerId = id + ".reducer";

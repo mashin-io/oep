@@ -1,5 +1,8 @@
 package io.mashin.oep.model.property;
 
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.swt.SWT;
@@ -14,7 +17,11 @@ public class CheckBoxPropertyElement extends SingularPropertyElement {
   private boolean isChecked = false;
   
   public CheckBoxPropertyElement(String id, String name) {
-    super(id, name);
+    this(id, name, new DefaultPropertyFilter());
+  }
+  
+  public CheckBoxPropertyElement(String id, String name, PropertyFilter filter) {
+    super(id, name, filter);
   }
 
   @Override

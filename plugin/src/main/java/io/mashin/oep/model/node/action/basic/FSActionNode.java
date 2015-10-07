@@ -2,12 +2,17 @@ package io.mashin.oep.model.node.action.basic;
 
 import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLWriteUtils;
+import io.mashin.oep.model.ModelElementWithSchema;
+import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.property.CheckBoxPropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyElementGroup;
 import io.mashin.oep.model.property.PropertyPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.DefaultPropertyFilter;
+import io.mashin.oep.model.property.filter.PropertyFilter;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -45,14 +50,17 @@ public class FSActionNode extends BasicActionNode {
   public FSActionNode(Workflow workflow, org.dom4j.Node hpdlNode) {
     super(workflow, hpdlNode);
     
-    namenode = new TextPropertyElement(PROP_NAMENODE, "Namenode");
+    namenode = new TextPropertyElement(PROP_NAMENODE, "Namenode",
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_4, SchemaVersion.V_ANY, workflow));
     addPropertyElement(namenode);
     
-    jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
+    jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"),
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_4, SchemaVersion.V_ANY, workflow));
     addPropertyElement(jobXML);
     
     configuration = new PropertyElementCollection("Configuration",
-                      new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
+                      new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"),
+                      new SchemaVersionRangeFilter(SchemaVersion.V_0_4, SchemaVersion.V_ANY, workflow));
     addPropertyElement(configuration);
     
     //operations
@@ -69,15 +77,17 @@ public class FSActionNode extends BasicActionNode {
     addPropertyElement(move);
     
     chmod = new PropertyElementCollection(CATEGORY_OPERATIONS,
-              new FSOperationChmod(PROP_OP_CHMOD, "Chmod"));
+              new FSOperationChmod(PROP_OP_CHMOD, "Chmod", workflow));
     addPropertyElement(chmod);
     
     touchz = new PropertyElementCollection(CATEGORY_OPERATIONS,
-                new FSOperationTouchz(PROP_OP_TOUCHZ, "Touchz"));
+                new FSOperationTouchz(PROP_OP_TOUCHZ, "Touchz"),
+                new SchemaVersionRangeFilter(SchemaVersion.V_0_4, SchemaVersion.V_ANY, workflow));
     addPropertyElement(touchz);
     
     chgrp = new PropertyElementCollection(CATEGORY_OPERATIONS,
-              new FSOperationChgrp(PROP_OP_CHGRP, "Chgrp"));
+              new FSOperationChgrp(PROP_OP_CHGRP, "Chgrp"),
+              new SchemaVersionRangeFilter(SchemaVersion.V_0_4_5, SchemaVersion.V_ANY, workflow));
     addPropertyElement(chgrp);
   }
   
@@ -139,7 +149,11 @@ public class FSActionNode extends BasicActionNode {
     String pathId;
     
     public FSOperationDelete(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationDelete(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       pathId = id + ".path";
       path = new TextPropertyElement(pathId, "Path");
       this.propertyElements.add(path);
@@ -165,7 +179,11 @@ public class FSActionNode extends BasicActionNode {
     String pathId;
     
     public FSOperationMkdir(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationMkdir(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       pathId = id + ".path";
       path = new TextPropertyElement(pathId, "Path");
       this.propertyElements.add(path);
@@ -192,7 +210,11 @@ public class FSActionNode extends BasicActionNode {
     String sourceId, targetId;
     
     public FSOperationMove(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationMove(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       
       sourceId = id + ".source";
       targetId = id + ".target";
@@ -227,6 +249,8 @@ public class FSActionNode extends BasicActionNode {
   
   public static class FSOperationChmod extends PropertyElementGroup {
     
+    public ModelElementWithSchema modelElementWithSchema;
+    
     public CheckBoxPropertyElement recursive;
     public TextPropertyElement path;
     public TextPropertyElement permissions;
@@ -234,15 +258,22 @@ public class FSActionNode extends BasicActionNode {
     
     String recursiveId, pathId, permissionsId, dirFilesId;
     
-    public FSOperationChmod(String id, String name) {
-      super(id, name);
+    public FSOperationChmod(String id, String name, ModelElementWithSchema modelElementWithSchema) {
+      this(id, name, new DefaultPropertyFilter(), modelElementWithSchema);
+    }
+    
+    public FSOperationChmod(String id, String name, PropertyFilter filter, ModelElementWithSchema modelElementWithSchema) {
+      super(id, name, filter);
+      
+      this.modelElementWithSchema = modelElementWithSchema;
       
       recursiveId = id + ".recursive";
       pathId = id + ".path";
       permissionsId = id + ".permissions";
       dirFilesId = id + ".dir-files";
       
-      recursive = new CheckBoxPropertyElement(recursiveId, "Recursive");
+      recursive = new CheckBoxPropertyElement(recursiveId, "Recursive",
+          new SchemaVersionRangeFilter(SchemaVersion.V_0_4, SchemaVersion.V_ANY, modelElementWithSchema));
       path = new TextPropertyElement(pathId, "Path");
       permissions = new TextPropertyElement(permissionsId, "Permissions");
       dirFiles = new TextPropertyElement(dirFilesId, "Dir Files");
@@ -288,6 +319,10 @@ public class FSActionNode extends BasicActionNode {
       return (String) getValue(dirFilesId);
     }
     
+    public ModelElementWithSchema getModelElementWithSchema() {
+      return modelElementWithSchema;
+    }
+    
   }
   
   public static class FSOperationTouchz extends PropertyElementGroup {
@@ -297,7 +332,11 @@ public class FSActionNode extends BasicActionNode {
     String pathId;
     
     public FSOperationTouchz(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationTouchz(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       pathId = id + ".path";
       path = new TextPropertyElement(pathId, "Path");
       this.propertyElements.add(path);
@@ -326,7 +365,11 @@ public class FSActionNode extends BasicActionNode {
     String recursiveId, pathId, groupId, dirFilesId;
     
     public FSOperationChgrp(String id, String name) {
-      super(id, name);
+      this(id, name, new DefaultPropertyFilter());
+    }
+    
+    public FSOperationChgrp(String id, String name, PropertyFilter filter) {
+      super(id, name, filter);
       
       recursiveId = id + ".recursive";
       pathId = id + ".path";

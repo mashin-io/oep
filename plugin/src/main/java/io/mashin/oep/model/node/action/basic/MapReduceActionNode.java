@@ -2,13 +2,16 @@ package io.mashin.oep.model.node.action.basic;
 
 import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLWriteUtils;
+import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.Workflow;
+import io.mashin.oep.model.property.ComboBoxPropertyElement;
 import io.mashin.oep.model.property.PipesPropertyElement;
 import io.mashin.oep.model.property.PreparePropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyPropertyElement;
 import io.mashin.oep.model.property.StreamingPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
+import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -18,6 +21,7 @@ public class MapReduceActionNode extends BasicActionNode {
   public static final String PROP_JOBTRACKER = "prop.node.map-reduce.job-tracker";
   public static final String PROP_NAMENODE = "prop.node.map-reduce.name-ndoe";
   public static final String PROP_PREPARE = "prop.node.map-reduce.prepare";
+  public static final String PROP_JOB_TYPE = "prop.node.map-reduce.job-type";
   public static final String PROP_STREAMING = "prop.node.map-reduce.streaming";
   public static final String PROP_PIPES = "prop.node.map-reduce.pipes";
   public static final String PROP_JOBXML = "prop.node.map-reduce.job-xml";
@@ -25,6 +29,10 @@ public class MapReduceActionNode extends BasicActionNode {
   public static final String PROP_CONFIGCLASS = "prop.node.map-reduce.config-class";
   public static final String PROP_FILE = "prop.node.map-reduce.file";
   public static final String PROP_ARCHIVE = "prop.node.map-reduce.archive";
+  
+  private static final Integer JOB_TYPE_NA = 0;
+  private static final Integer JOB_TYPE_STREAMING = 1;
+  private static final Integer JOB_TYPE_PIPES = 2;
   
   public static final String CATEGORY_STREAMING = "Streaming";
   public static final String CATEGORY_PIPES = "Pipes";
@@ -34,6 +42,8 @@ public class MapReduceActionNode extends BasicActionNode {
   
   //prepare
   protected PreparePropertyElement prepare;
+  
+  protected ComboBoxPropertyElement jobType;
   
   //streaming
   protected StreamingPropertyElement streaming;
@@ -64,12 +74,19 @@ public class MapReduceActionNode extends BasicActionNode {
     prepare = new PreparePropertyElement(PROP_PREPARE, "Prepare");
     addPropertyElement(prepare);
 
+    jobType = new ComboBoxPropertyElement(PROP_JOB_TYPE, "Job Type");
+    jobType.setLabelsArray(new String[] { " ", "Streaming", "Pipes" });
+    jobType.setValuesArray(new Integer[] { JOB_TYPE_NA, JOB_TYPE_STREAMING, JOB_TYPE_PIPES });
+    addPropertyElement(jobType);
+    
     //streaming
-    streaming = new StreamingPropertyElement(PROP_STREAMING, "Streaming");
+    streaming = new StreamingPropertyElement(PROP_STREAMING, "Streaming",
+        pe -> jobType.getValue() == JOB_TYPE_STREAMING);
     addPropertyElement(streaming);
 
     //pipes
-    pipes = new PipesPropertyElement(PROP_PIPES, "Pipes");
+    pipes = new PipesPropertyElement(PROP_PIPES, "Pipes",
+        pe -> jobType.getValue() == JOB_TYPE_PIPES);
     addPropertyElement(pipes);
         
     jobXML = new PropertyElementCollection("Job XML", new TextPropertyElement(PROP_JOBXML, "Job XML"));
@@ -79,7 +96,8 @@ public class MapReduceActionNode extends BasicActionNode {
                       new PropertyPropertyElement(PROP_CONFIGURATION, "Configuration"));
     addPropertyElement(configuration);
     
-    configClass = new TextPropertyElement(PROP_CONFIGCLASS, "Config Class");
+    configClass = new TextPropertyElement(PROP_CONFIGCLASS, "Config Class",
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_5, SchemaVersion.V_ANY, workflow));
     addPropertyElement(configClass);
     
     file = new PropertyElementCollection("File", new TextPropertyElement(PROP_FILE, "File"));
@@ -123,6 +141,13 @@ public class MapReduceActionNode extends BasicActionNode {
     XMLReadUtils.initPreparePropertyFrom(prepare, hpdlNode, "./map-reduce/prepare");
     XMLReadUtils.initStreamingPropertyFrom(streaming, hpdlNode, "./map-reduce/streaming");
     XMLReadUtils.initPipesPropertyFrom(pipes, hpdlNode, "./map-reduce/pipes");
+    if (streaming.isSet()) {
+      jobType.setValue(JOB_TYPE_STREAMING);
+    } else if (pipes.isSet()) {
+      jobType.setValue(JOB_TYPE_PIPES);
+    } else {
+      jobType.setValue(JOB_TYPE_NA);
+    }
     XMLReadUtils.initTextCollectionFrom(jobXML, hpdlNode, "./map-reduce/job-xml");
     XMLReadUtils.initPropertiesCollectionFrom(configuration, hpdlNode, "./map-reduce/configuration", "./property");
     XMLReadUtils.initTextPropertyFrom(configClass, hpdlNode, "./map-reduce/config-class");
