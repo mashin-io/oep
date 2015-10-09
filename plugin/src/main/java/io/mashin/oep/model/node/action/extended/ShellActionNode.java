@@ -123,6 +123,8 @@ public class ShellActionNode extends ExtendedActionNode {
     XMLWriteUtils.writeTextCollectionAsElements(file, shell, "file");
     XMLWriteUtils.writeTextCollectionAsElements(archive, shell, "archive");
     XMLWriteUtils.writeCheckPropertyAsElement(captureOutput, shell, "capture-output");
+    
+    writeConnections(element);
   }
   
   @Override

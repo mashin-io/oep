@@ -49,6 +49,8 @@ public class CustomActionNode extends ExtendedActionNode {
     } catch (Throwable t) {
       element.setText(xmlContent);
     }
+    
+    writeConnections(element);
   }
   
   @Override

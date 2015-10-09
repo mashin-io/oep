@@ -88,6 +88,8 @@ public class DistcpActionNode extends ExtendedActionNode {
     XMLWriteUtils.writePropertiesCollection(configuration, distcp, "configuration", "property");
     XMLWriteUtils.writeTextPropertyAsElement(javaOpts, distcp, "java-opts");
     XMLWriteUtils.writeTextCollectionAsElements(arg, distcp, "arg");
+    
+    writeConnections(element);
   }
 
   @Override

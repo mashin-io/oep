@@ -55,6 +55,8 @@ public class SubWorkflowActionNode extends BasicActionNode {
     XMLWriteUtils.writeTextPropertyAsElement(appPath, subWorkflow, "app-path");
     XMLWriteUtils.writeCheckPropertyAsElement(propagateConfiguration, subWorkflow, "propagate-configuration");
     XMLWriteUtils.writePropertiesCollection(configuration, subWorkflow, "configuration", "property");
+    
+    writeConnections(element);
   }
   
   @Override

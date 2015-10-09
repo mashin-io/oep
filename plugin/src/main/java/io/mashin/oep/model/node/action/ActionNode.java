@@ -73,8 +73,16 @@ public abstract class ActionNode extends Node {
     XMLWriteUtils.writeTextPropertyAsAttribute(cred, element, "cred");
     XMLWriteUtils.writeTextPropertyAsAttribute(retryMax, element, "retry-max");
     XMLWriteUtils.writeTextPropertyAsAttribute(retryInterval, element, "retry-interval");
-    XMLWriteUtils.writeConnectionsAsElementWithAttribute(okSingleOutputTerminal.getConnections(), element, "ok", "to");
-    XMLWriteUtils.writeConnectionsAsElementWithAttribute(errSingleOutputTerminal.getConnections(), element, "error", "to");
+  }
+  
+  @Override
+  protected void writeConnections(Element nodeElement) {
+    super.writeConnections(nodeElement);
+    
+    XMLWriteUtils.writeConnectionsAsElementWithAttribute(
+        okSingleOutputTerminal.getConnections(), nodeElement, "ok", "to");
+    XMLWriteUtils.writeConnectionsAsElementWithAttribute(
+        errSingleOutputTerminal.getConnections(), nodeElement, "error", "to");
   }
   
   @Override

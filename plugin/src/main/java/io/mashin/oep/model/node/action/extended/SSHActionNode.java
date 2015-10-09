@@ -85,6 +85,8 @@ public class SSHActionNode extends ExtendedActionNode {
     XMLWriteUtils.writeTextCollectionAsElements(args, ssh, "args");
     XMLWriteUtils.writeTextCollectionAsElements(arg, ssh, "arg");
     XMLWriteUtils.writeCheckPropertyAsElement(captureOutput, ssh, "capture-output");
+    
+    writeConnections(element);
   }
 
   @Override

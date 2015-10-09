@@ -130,6 +130,8 @@ public class MapReduceActionNode extends BasicActionNode {
     XMLWriteUtils.writeTextPropertyAsElement(configClass, mapReduce, "config-class");
     XMLWriteUtils.writeTextCollectionAsElements(file, mapReduce, "file");
     XMLWriteUtils.writeTextCollectionAsElements(archive, mapReduce, "archive");
+    
+    writeConnections(element);
   }
   
   @Override

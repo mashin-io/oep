@@ -40,10 +40,17 @@ public class JoinNode extends ControlNode {
     
     Element element = (Element) hpdlModel.get();
     
-    XMLWriteUtils.writeConnectionsAsAttribute(
-        singleOutputTerminal.getConnections(), element, "to");
+    writeConnections(element);
   }
 
+  @Override
+  protected void writeConnections(Element nodeElement) {
+    super.writeConnections(nodeElement);
+    
+    XMLWriteUtils.writeConnectionsAsAttribute(
+        singleOutputTerminal.getConnections(), nodeElement, "to");
+  }
+  
   @Override
   public void read(org.dom4j.Node hpdlNode) {
     super.read(hpdlNode);

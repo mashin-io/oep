@@ -43,8 +43,15 @@ public class StartNode extends ControlNode {
     
     element.selectSingleNode("@name").detach();
     
+    writeConnections(element);
+  }
+  
+  @Override
+  protected void writeConnections(Element nodeElement) {
+    super.writeConnections(nodeElement);
+    
     XMLWriteUtils.writeConnectionsAsAttribute(
-        singleOutputTerminal.getConnections(), element, "to");
+        singleOutputTerminal.getConnections(), nodeElement, "to");
   }
   
   @Override

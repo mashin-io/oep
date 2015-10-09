@@ -82,6 +82,8 @@ public class EmailActionNode extends ExtendedActionNode {
     XMLWriteUtils.writeTextPropertyAsElement(body, email, "body");
     XMLWriteUtils.writeTextPropertyAsElement(contentType, email, "content_type");
     XMLWriteUtils.writeTextPropertyAsElement(attachment, email, "attachment");
+    
+    writeConnections(element);
   }
   
   @Override

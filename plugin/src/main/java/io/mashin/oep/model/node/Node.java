@@ -125,6 +125,8 @@ public abstract class Node extends ModelElementWithSchema {
     XMLWriteUtils.writeTextPropertyAsAttribute(name, element, "name");
   }
   
+  protected void writeConnections(Element nodeElement) {}
+  
   @Override
   public void read(org.dom4j.Node node) {
     XMLReadUtils.initTextPropertyFrom(name, node, "@name");

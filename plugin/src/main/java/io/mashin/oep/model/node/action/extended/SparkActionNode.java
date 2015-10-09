@@ -124,6 +124,8 @@ public class SparkActionNode extends ExtendedActionNode {
     XMLWriteUtils.writeTextPropertyAsElement(jar, spark, "jar");
     XMLWriteUtils.writeTextPropertyAsElement(sparkOpts, spark, "spark-opts");
     XMLWriteUtils.writeTextCollectionAsElements(arg, spark, "arg");
+    
+    writeConnections(element);
   }
 
   @Override
