@@ -113,6 +113,8 @@ public class FSActionNode extends BasicActionNode {
     XMLWriteUtils.writeFSChmodCollection(chmod, fs);
     XMLWriteUtils.writeFSTouchzCollection(touchz, fs);
     XMLWriteUtils.writeFSChgrpCollection(chgrp, fs);
+    
+    writeConnections(element);
   }
   
   @Override

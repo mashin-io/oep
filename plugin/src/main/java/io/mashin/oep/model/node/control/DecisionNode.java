@@ -48,13 +48,20 @@ public class DecisionNode extends ControlNode {
     Element element = (Element) hpdlModel.get();
     Element switchElement = element.addElement("switch");
     
-    XMLWriteUtils.writeCaseConnections(caseFanOutTerminal.getConnections(),
-        switchElement);
-    XMLWriteUtils.writeConnectionsAsElementWithAttribute(
-        defaultSingleOutputTerminal.getConnections(), switchElement, "default",
-        "to");
+    writeConnections(switchElement);
   }
 
+  @Override
+  protected void writeConnections(Element nodeElement) {
+    super.writeConnections(nodeElement);
+    
+    XMLWriteUtils.writeCaseConnections(caseFanOutTerminal.getConnections(),
+        nodeElement);
+    XMLWriteUtils.writeConnectionsAsElementWithAttribute(
+        defaultSingleOutputTerminal.getConnections(), nodeElement, "default",
+        "to");
+  }
+  
   @Override
   public void read(org.dom4j.Node hpdlNode) {
     super.read(hpdlNode);

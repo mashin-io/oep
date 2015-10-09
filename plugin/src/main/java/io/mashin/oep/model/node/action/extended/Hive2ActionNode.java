@@ -127,6 +127,8 @@ public class Hive2ActionNode extends ExtendedActionNode {
     XMLWriteUtils.writeTextCollectionAsElements(argument, hive2, "argument");
     XMLWriteUtils.writeTextCollectionAsElements(file, hive2, "file");
     XMLWriteUtils.writeTextCollectionAsElements(archive, hive2, "archive");
+    
+    writeConnections(element);
   }
   
   @Override

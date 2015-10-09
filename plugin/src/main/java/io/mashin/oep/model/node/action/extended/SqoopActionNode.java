@@ -110,6 +110,8 @@ public class SqoopActionNode extends ExtendedActionNode {
     XMLWriteUtils.writeTextCollectionAsElements(arg, sqoop, "arg");
     XMLWriteUtils.writeTextCollectionAsElements(file, sqoop, "file");
     XMLWriteUtils.writeTextCollectionAsElements(archive, sqoop, "archive");
+    
+    writeConnections(element);
   }
 
   @Override

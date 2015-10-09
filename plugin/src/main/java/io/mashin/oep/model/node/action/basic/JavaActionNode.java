@@ -117,6 +117,8 @@ public class JavaActionNode extends BasicActionNode {
     XMLWriteUtils.writeTextCollectionAsElements(file, java, "file");
     XMLWriteUtils.writeTextCollectionAsElements(archive, java, "archive");
     XMLWriteUtils.writeCheckPropertyAsElement(captureOutput, java, "capture-output");
+    
+    writeConnections(element);
   }
   
   @Override

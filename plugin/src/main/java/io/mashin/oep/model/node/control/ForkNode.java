@@ -42,10 +42,17 @@ public class ForkNode extends ControlNode {
     
     Element element = (Element) hpdlModel.get();
     
-    XMLWriteUtils.writeConnectionsAsElementWithAttribute(
-        fanOutTerminal.getConnections(), element, "path", "start");
+    writeConnections(element);
   }
 
+  @Override
+  protected void writeConnections(Element nodeElement) {
+    super.writeConnections(nodeElement);
+    
+    XMLWriteUtils.writeConnectionsAsElementWithAttribute(
+        fanOutTerminal.getConnections(), nodeElement, "path", "start");
+  }
+  
   @Override
   public void read(org.dom4j.Node hpdlNode) {
     super.read(hpdlNode);

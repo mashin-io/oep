@@ -104,6 +104,8 @@ public class PigActionNode extends BasicActionNode {
     XMLWriteUtils.writeTextCollectionAsElements(argument, pig, "argument");
     XMLWriteUtils.writeTextCollectionAsElements(file, pig, "file");
     XMLWriteUtils.writeTextCollectionAsElements(archive, pig, "archive");
+    
+    writeConnections(element);
   }
   
   @Override
