@@ -46,6 +46,7 @@ import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
+import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.util.SafeRunnable;
@@ -61,12 +62,15 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   
   private KeyHandler sharedKeyHandler;
   private Workflow workflow;
   private boolean editorSaving = false;
+  
+  OutlinePage outlinePage;
   
   private static PaletteRoot PALETTE_MODEL;
   
@@ -267,6 +271,16 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     }
     
     setPartName(input.getName());
+    
+    if (!editorSaving) {
+      if (getGraphicalViewer() != null) {
+        getGraphicalViewer().setContents(getModel());
+        //loadProperties();
+      }
+      if (outlinePage != null) {
+        outlinePage.setContents(getModel());
+      }
+    }
   }
   
   @Override
@@ -418,6 +432,18 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
       //file.getWorkspace().addResourceChangeListener(resourceListener);
       setPartName(input.getName());
     }
+  }
+  
+  @Override
+  @SuppressWarnings("rawtypes")
+  public Object getAdapter(Class type) {
+    if (type == IContentOutlinePage.class) {
+      outlinePage = new OutlinePage(new TreeViewer(), this,
+          getActionRegistry(), getEditDomain(), getGraphicalViewer(),
+          getSelectionSynchronizer());
+      return outlinePage;
+    }
+    return super.getAdapter(type);
   }
   
 }
