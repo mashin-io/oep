@@ -81,6 +81,10 @@ public class NodeFigure extends Figure {
     nodeBgImage.dispose();
   }
   
+  public static Image getNodeFigureImage(String nodeType) {
+    return nodeImagesMap.get(nodeType);
+  }
+  
   public static final int WIDTH  = 100;
   public static final int HEIGHT = 60;
   
@@ -113,7 +117,7 @@ public class NodeFigure extends Figure {
     bodyBg.setLocation(new Point(WIDTH / 3, 0));
     add(bodyBg);
     
-    image = new ImageFigure(nodeImagesMap.get(nodeType));
+    image = new ImageFigure(getNodeFigureImage(nodeType));
     image.setBounds(body.getBounds());
     add(image);
     
@@ -150,6 +154,10 @@ public class NodeFigure extends Figure {
   
   public String getLabel() {
     return label.getText();
+  }
+  
+  public Image getIcon() {
+    return image.getImage();
   }
   
   public void addConnectionAnchor(TerminalConnectionAnchor terminalConnectionAnchor) {
