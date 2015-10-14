@@ -53,4 +53,15 @@ public class WorkflowConnectionEndPoint extends ModelElement {
         && this.terminal.equals(other.terminal);
   }
   
+  @Override
+  public String toString() {
+    String terminalStr;
+    if (terminal instanceof Terminal) {
+      terminalStr = getTerminal().getLabel();
+    } else {
+      terminalStr = getTerminalAsString();
+    }
+    return node.toString() + ":" + terminalStr;
+  }
+  
 }
