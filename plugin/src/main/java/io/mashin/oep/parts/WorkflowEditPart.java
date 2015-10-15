@@ -7,6 +7,7 @@ import io.mashin.oep.model.node.Node;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ConnectionLayer;
@@ -17,10 +18,15 @@ import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.ShortestPathConnectionRouter;
+import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.SnapToGeometry;
+import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
+import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 
 public class WorkflowEditPart extends AbstractGraphicalEditPart implements
     PropertyChangeListener {
@@ -92,5 +98,28 @@ public class WorkflowEditPart extends AbstractGraphicalEditPart implements
     // handles constraint changes (e.g. moving) of model elements
     // and creation of new model elements
     installEditPolicy(EditPolicy.LAYOUT_ROLE, new WorkflowXYLayoutEditPolicy());
+    installEditPolicy("Snap Feedback", new SnapFeedbackPolicy());
+  }
+  
+  @Override
+  @SuppressWarnings("rawtypes")
+  public Object getAdapter(Class key) {
+    if (key == SnapToHelper.class) {
+      List<SnapToHelper> helpers = new ArrayList<>();
+      if (Boolean.TRUE.equals(getViewer().getProperty(
+          SnapToGeometry.PROPERTY_SNAP_ENABLED))) {
+        helpers.add(new SnapToGeometry(this));
+      }
+      if (Boolean.TRUE.equals(getViewer().getProperty(
+          SnapToGrid.PROPERTY_GRID_ENABLED))) {
+        helpers.add(new SnapToGrid(this));
+      }
+      if (helpers.size() == 0) {
+        return null;
+      } else {
+        return new CompoundSnapToHelper(helpers.toArray(new SnapToHelper[0]));
+      }
+    }
+    return super.getAdapter(key);
   }
 }

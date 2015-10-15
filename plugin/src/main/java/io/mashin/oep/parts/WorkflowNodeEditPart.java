@@ -21,6 +21,7 @@ import io.mashin.oep.ui.editor.XMLEditor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.DocumentHelper;
@@ -31,6 +32,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -38,7 +40,11 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.gef.SnapToGeometry;
+import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.requests.DropRequest;
 import org.eclipse.jface.viewers.TextCellEditor;
 
@@ -67,6 +73,9 @@ public class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     // allow the creation of connections and
     // and the reconnection of connections between Shape instances
     installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new NodeGraphicalNodeEditPolicy());
+    
+    // allow snapping
+    installEditPolicy("Snap Feedback", new SnapFeedbackPolicy());
   }
 
   @Override
@@ -252,6 +261,28 @@ public class WorkflowNodeEditPart extends AbstractGraphicalEditPart implements
     // and will not draw it correctly.
     Rectangle bounds = new Rectangle(nodeModel.getPosition(), nodeFigure.getSize());
     ((GraphicalEditPart) getParent()).setLayoutConstraint(this, nodeFigure, bounds);
+  }
+  
+  @Override
+  @SuppressWarnings("rawtypes")
+  public Object getAdapter(Class key) {
+    if (key == SnapToHelper.class) {
+      List<SnapToHelper> helpers = new ArrayList<>();
+      if (Boolean.TRUE.equals(getViewer().getProperty(
+          SnapToGeometry.PROPERTY_SNAP_ENABLED))) {
+        helpers.add(new SnapToGeometry(this));
+      }
+      if (Boolean.TRUE.equals(getViewer().getProperty(
+          SnapToGrid.PROPERTY_GRID_ENABLED))) {
+        helpers.add(new SnapToGrid(this));
+      }
+      if (helpers.size() == 0) {
+        return null;
+      } else {
+        return new CompoundSnapToHelper(helpers.toArray(new SnapToHelper[0]));
+      }
+    }
+    return super.getAdapter(key);
   }
   
 }
