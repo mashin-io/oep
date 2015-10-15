@@ -29,7 +29,8 @@ public class NodeMoveCommand extends Command {
 		Object type = request.getType();
 		// make sure the Request is of a type we support:
 		return (RequestConstants.REQ_MOVE.equals(type)
-				    || RequestConstants.REQ_MOVE_CHILDREN.equals(type));
+				    || RequestConstants.REQ_MOVE_CHILDREN.equals(type)
+				    || RequestConstants.REQ_ALIGN_CHILDREN.equals(type));
 	}
 
 	public void execute() {
