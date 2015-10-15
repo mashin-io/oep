@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
@@ -43,8 +44,11 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
+import org.eclipse.gef.ui.actions.AlignmentAction;
 import org.eclipse.gef.ui.actions.DirectEditAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
+import org.eclipse.gef.ui.actions.ToggleGridAction;
+import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
 import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.palette.PaletteViewer;
@@ -127,6 +131,12 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     service.activateHandler(zoomIn.getActionDefinitionId(), new ActionHandler(zoomIn));
     service.activateHandler(zoomOut.getActionDefinitionId(), new ActionHandler(zoomOut));
     
+    IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
+    getActionRegistry().registerAction(snapAction);
+
+    IAction showGrid = new ToggleGridAction(getGraphicalViewer());
+    getActionRegistry().registerAction(showGrid);
+    
     //// configure the context menu provider
     //ContextMenuProvider cmProvider = new ShapesEditorContextMenuProvider(
     //    viewer, getActionRegistry());
@@ -186,6 +196,36 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     IAction action;
     
     action = new DirectEditAction((IWorkbenchPart) this);
+    registry.registerAction(action);
+    getSelectionActions().add(action.getId());
+    
+    //action = new AlignmentAction((IWorkbenchPart) this,
+    //    PositionConstants.LEFT);
+    //registry.registerAction(action);
+    //getSelectionActions().add(action.getId());
+
+    //action = new AlignmentAction((IWorkbenchPart) this,
+    //    PositionConstants.RIGHT);
+    //registry.registerAction(action);
+    //getSelectionActions().add(action.getId());
+
+    //action = new AlignmentAction((IWorkbenchPart) this,
+    //    PositionConstants.TOP);
+    //registry.registerAction(action);
+    //getSelectionActions().add(action.getId());
+
+    //action = new AlignmentAction((IWorkbenchPart) this,
+    //    PositionConstants.BOTTOM);
+    //registry.registerAction(action);
+    //getSelectionActions().add(action.getId());
+
+    action = new AlignmentAction((IWorkbenchPart) this,
+        PositionConstants.CENTER);
+    registry.registerAction(action);
+    getSelectionActions().add(action.getId());
+
+    action = new AlignmentAction((IWorkbenchPart) this,
+        PositionConstants.MIDDLE);
     registry.registerAction(action);
     getSelectionActions().add(action.getId());
   }

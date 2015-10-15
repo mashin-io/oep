@@ -10,12 +10,14 @@ import org.eclipse.gef.ui.actions.UndoRetargetAction;
 import org.eclipse.gef.ui.actions.ZoomComboContributionItem;
 import org.eclipse.gef.ui.actions.ZoomInRetargetAction;
 import org.eclipse.gef.ui.actions.ZoomOutRetargetAction;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.RetargetAction;
 
 public class WorkflowActionBarContributor extends ActionBarContributor {
 
@@ -24,15 +26,23 @@ public class WorkflowActionBarContributor extends ActionBarContributor {
     addRetargetAction(new UndoRetargetAction());
     addRetargetAction(new RedoRetargetAction());
     
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT));
+    //addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT));
     addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER));
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT));
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP));
+    //addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT));
+    //addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP));
     addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE));
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM));
+    //addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM));
 
     addRetargetAction(new ZoomInRetargetAction());
     addRetargetAction(new ZoomOutRetargetAction());
+    
+    addRetargetAction(new RetargetAction(
+        GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY,
+        "Snap To Geometry", IAction.AS_CHECK_BOX));
+
+    addRetargetAction(new RetargetAction(
+        GEFActionConstants.TOGGLE_GRID_VISIBILITY,
+        "Grid", IAction.AS_CHECK_BOX));
   }
 
   @Override
@@ -46,14 +56,18 @@ public class WorkflowActionBarContributor extends ActionBarContributor {
     tbm.add(getAction(ActionFactory.REDO.getId()));
 
     tbm.add(new Separator());
-    tbm.add(getAction(GEFActionConstants.ALIGN_LEFT));
-    tbm.add(getAction(GEFActionConstants.ALIGN_CENTER));
-    tbm.add(getAction(GEFActionConstants.ALIGN_RIGHT));
+    tbm.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY));
+    tbm.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY));
     
     tbm.add(new Separator());
-    tbm.add(getAction(GEFActionConstants.ALIGN_TOP));
+    //tbm.add(getAction(GEFActionConstants.ALIGN_LEFT));
+    tbm.add(getAction(GEFActionConstants.ALIGN_CENTER));
+    //tbm.add(getAction(GEFActionConstants.ALIGN_RIGHT));
+    
+    //tbm.add(new Separator());
+    //tbm.add(getAction(GEFActionConstants.ALIGN_TOP));
     tbm.add(getAction(GEFActionConstants.ALIGN_MIDDLE));
-    tbm.add(getAction(GEFActionConstants.ALIGN_BOTTOM));
+    //tbm.add(getAction(GEFActionConstants.ALIGN_BOTTOM));
 
     tbm.add(new Separator());
     String[] zoomStrings = new String[] { ZoomManager.FIT_ALL,
@@ -69,6 +83,9 @@ public class WorkflowActionBarContributor extends ActionBarContributor {
     MenuManager viewMenu = new MenuManager("View");
     viewMenu.add(getAction(GEFActionConstants.ZOOM_IN));
     viewMenu.add(getAction(GEFActionConstants.ZOOM_OUT));
+    viewMenu.add(new Separator());
+    viewMenu.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY));
+    viewMenu.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY));
     menubar.insertAfter(IWorkbenchActionConstants.M_EDIT, viewMenu);
   }
 
