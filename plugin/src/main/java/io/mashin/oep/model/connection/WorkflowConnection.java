@@ -107,4 +107,9 @@ public class WorkflowConnection extends ModelElement {
         && this.target.equals(other.target);
   }
   
+  @Override
+  public String toString() {
+    return source.toString() + " -> " + target.toString();
+  }
+  
 }

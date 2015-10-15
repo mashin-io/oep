@@ -281,4 +281,9 @@ public abstract class Node extends ModelElementWithSchema {
     return null;
   }
   
+  @Override
+  public String toString() {
+    return getNodeType() + ": " + getName();
+  }
+  
 }
