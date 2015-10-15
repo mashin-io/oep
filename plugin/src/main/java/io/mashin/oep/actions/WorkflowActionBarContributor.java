@@ -26,12 +26,12 @@ public class WorkflowActionBarContributor extends ActionBarContributor {
     addRetargetAction(new UndoRetargetAction());
     addRetargetAction(new RedoRetargetAction());
     
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT));
+    //addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT));
     addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER));
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT));
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP));
+    //addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT));
+    //addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP));
     addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE));
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM));
+    //addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM));
 
     addRetargetAction(new ZoomInRetargetAction());
     addRetargetAction(new ZoomOutRetargetAction());
@@ -60,14 +60,14 @@ public class WorkflowActionBarContributor extends ActionBarContributor {
     tbm.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY));
     
     tbm.add(new Separator());
-    tbm.add(getAction(GEFActionConstants.ALIGN_LEFT));
+    //tbm.add(getAction(GEFActionConstants.ALIGN_LEFT));
     tbm.add(getAction(GEFActionConstants.ALIGN_CENTER));
-    tbm.add(getAction(GEFActionConstants.ALIGN_RIGHT));
+    //tbm.add(getAction(GEFActionConstants.ALIGN_RIGHT));
     
-    tbm.add(new Separator());
-    tbm.add(getAction(GEFActionConstants.ALIGN_TOP));
+    //tbm.add(new Separator());
+    //tbm.add(getAction(GEFActionConstants.ALIGN_TOP));
     tbm.add(getAction(GEFActionConstants.ALIGN_MIDDLE));
-    tbm.add(getAction(GEFActionConstants.ALIGN_BOTTOM));
+    //tbm.add(getAction(GEFActionConstants.ALIGN_BOTTOM));
 
     tbm.add(new Separator());
     String[] zoomStrings = new String[] { ZoomManager.FIT_ALL,

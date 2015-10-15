@@ -199,25 +199,25 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     registry.registerAction(action);
     getSelectionActions().add(action.getId());
     
-    action = new AlignmentAction((IWorkbenchPart) this,
-        PositionConstants.LEFT);
-    registry.registerAction(action);
-    getSelectionActions().add(action.getId());
+    //action = new AlignmentAction((IWorkbenchPart) this,
+    //    PositionConstants.LEFT);
+    //registry.registerAction(action);
+    //getSelectionActions().add(action.getId());
 
-    action = new AlignmentAction((IWorkbenchPart) this,
-        PositionConstants.RIGHT);
-    registry.registerAction(action);
-    getSelectionActions().add(action.getId());
+    //action = new AlignmentAction((IWorkbenchPart) this,
+    //    PositionConstants.RIGHT);
+    //registry.registerAction(action);
+    //getSelectionActions().add(action.getId());
 
-    action = new AlignmentAction((IWorkbenchPart) this,
-        PositionConstants.TOP);
-    registry.registerAction(action);
-    getSelectionActions().add(action.getId());
+    //action = new AlignmentAction((IWorkbenchPart) this,
+    //    PositionConstants.TOP);
+    //registry.registerAction(action);
+    //getSelectionActions().add(action.getId());
 
-    action = new AlignmentAction((IWorkbenchPart) this,
-        PositionConstants.BOTTOM);
-    registry.registerAction(action);
-    getSelectionActions().add(action.getId());
+    //action = new AlignmentAction((IWorkbenchPart) this,
+    //    PositionConstants.BOTTOM);
+    //registry.registerAction(action);
+    //getSelectionActions().add(action.getId());
 
     action = new AlignmentAction((IWorkbenchPart) this,
         PositionConstants.CENTER);
