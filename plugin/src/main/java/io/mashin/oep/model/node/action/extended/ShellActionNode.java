@@ -101,7 +101,7 @@ public class ShellActionNode extends ExtendedActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("shell-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("shell"));
   }
   
   @Override

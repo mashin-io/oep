@@ -71,7 +71,7 @@ public class DistcpActionNode extends ExtendedActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("distcp-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("distcp"));
   }
   
   @Override

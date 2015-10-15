@@ -104,7 +104,7 @@ public class Hive2ActionNode extends ExtendedActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("hive2-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("hive2"));
   }
   
   @Override

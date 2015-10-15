@@ -27,7 +27,7 @@ public class EndNode extends ControlNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("end-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("end"));
   }
   
   @Override

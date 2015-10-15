@@ -95,7 +95,7 @@ public class JavaActionNode extends BasicActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("java-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("java"));
   }
   
   @Override

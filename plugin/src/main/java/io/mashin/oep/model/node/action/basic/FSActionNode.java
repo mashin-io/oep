@@ -94,7 +94,7 @@ public class FSActionNode extends BasicActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("fs-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("fs"));
   }
   
   @Override

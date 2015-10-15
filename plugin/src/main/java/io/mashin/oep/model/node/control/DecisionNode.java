@@ -38,7 +38,7 @@ public class DecisionNode extends ControlNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("decision-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("decision"));
   }
   
   @Override

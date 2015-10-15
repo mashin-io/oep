@@ -42,7 +42,7 @@ public class SubWorkflowActionNode extends BasicActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("sub-workflow-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("sub-workflow"));
   }
   
   @Override

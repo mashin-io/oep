@@ -101,7 +101,7 @@ public class SparkActionNode extends ExtendedActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("spark-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("spark"));
   }
   
   @Override

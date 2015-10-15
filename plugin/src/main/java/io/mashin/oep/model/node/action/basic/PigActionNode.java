@@ -84,7 +84,7 @@ public class PigActionNode extends BasicActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("pig-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("pig"));
   }
   
   @Override

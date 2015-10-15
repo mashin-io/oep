@@ -65,7 +65,7 @@ public class EmailActionNode extends ExtendedActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("email-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("email"));
   }
   
   @Override

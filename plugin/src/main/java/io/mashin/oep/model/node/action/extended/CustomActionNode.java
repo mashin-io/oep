@@ -32,7 +32,7 @@ public class CustomActionNode extends ExtendedActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("action-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("action"));
   }
   
   @Override

@@ -110,7 +110,7 @@ public class MapReduceActionNode extends BasicActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("map-reduce-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("map-reduce"));
   }
   
   @Override

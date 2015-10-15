@@ -33,7 +33,7 @@ public class ForkNode extends ControlNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("fork-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("fork"));
   }
   
   @Override

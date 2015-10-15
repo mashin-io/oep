@@ -83,7 +83,7 @@ public class Workflow extends ModelElementWithSchema {
   private StartNode   startNode;
   private EndNode     endNode;
   private List<Node>  nodes;
-  
+
   private NodeSort    nodeSort;
   
   public Workflow() {
@@ -178,6 +178,20 @@ public class Workflow extends ModelElementWithSchema {
     return nodes;
   }
 
+  public boolean hasNode(String nodeName) {
+    return nodes.stream().anyMatch(node -> node.getName().equals(nodeName));
+  }
+  
+  public synchronized String nextId(String nodeNamePrefix) {
+    long id = nodes
+        .stream()
+        .filter(node -> node.getName().matches(nodeNamePrefix + "-[0-9]+"))
+        .mapToLong(node -> Long.parseLong(node.getName().substring(
+              node.getName().lastIndexOf("-") + 1, node.getName().length())))
+        .max().orElse(0) + 1;
+    return nodeNamePrefix + "-" + id;
+  }
+  
   @Override
   public void write(org.dom4j.Element parent) {
     Document document = parent.getDocument();

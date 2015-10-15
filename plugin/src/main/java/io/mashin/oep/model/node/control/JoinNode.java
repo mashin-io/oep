@@ -31,7 +31,7 @@ public class JoinNode extends ControlNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("join-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("join"));
   }
   
   @Override

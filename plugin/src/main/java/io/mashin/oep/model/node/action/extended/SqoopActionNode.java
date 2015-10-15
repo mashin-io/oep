@@ -90,7 +90,7 @@ public class SqoopActionNode extends ExtendedActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("sqoop-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("sqoop"));
   }
   
   @Override

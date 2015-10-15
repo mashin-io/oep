@@ -69,7 +69,7 @@ public class SSHActionNode extends ExtendedActionNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("ssh-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("ssh"));
   }
   
   @Override

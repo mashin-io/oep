@@ -13,15 +13,12 @@ import io.mashin.oep.model.terminal.Terminal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import org.dom4j.Element;
 import org.eclipse.draw2d.geometry.Point;
 
 public abstract class Node extends ModelElementWithSchema {
-  
-  public static final AtomicLong ID_SEQ = new AtomicLong(0);
   
   public static final String TYPE_START         = "start";
   public static final String TYPE_END           = "end";

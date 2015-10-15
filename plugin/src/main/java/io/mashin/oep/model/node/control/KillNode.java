@@ -36,7 +36,7 @@ public class KillNode extends ControlNode {
   @Override
   public void initDefaults() {
     super.initDefaults();
-    setName("kill-" + ID_SEQ.incrementAndGet());
+    setName(workflow.nextId("kill"));
   }
   
   @Override
