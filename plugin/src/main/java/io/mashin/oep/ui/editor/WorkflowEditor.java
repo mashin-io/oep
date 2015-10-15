@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -36,18 +38,22 @@ import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
+import org.eclipse.gef.ui.actions.ZoomInAction;
+import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.util.TransferDropTargetListener;
@@ -60,6 +66,7 @@ import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -94,11 +101,31 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   protected void configureGraphicalViewer() {
     super.configureGraphicalViewer();
 
+    ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
+    
     GraphicalViewer viewer = getGraphicalViewer();
     viewer.setEditPartFactory(new WorkflowEditPartFactory());
-    viewer.setRootEditPart(new ScalableFreeformRootEditPart());
+    viewer.setRootEditPart(root);
     viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer)
                               .setParent(getCommonKeyHandler()));
+    
+    List<String> zoomLevels = new ArrayList<>(3);
+    zoomLevels.add(ZoomManager.FIT_ALL);
+    zoomLevels.add(ZoomManager.FIT_WIDTH);
+    zoomLevels.add(ZoomManager.FIT_HEIGHT);
+    root.getZoomManager().setZoomLevelContributions(zoomLevels);
+    root.getZoomManager().setZoomAnimationStyle(ZoomManager.ANIMATE_ZOOM_IN_OUT);
+
+    IAction zoomIn = new ZoomInAction(root.getZoomManager());
+    IAction zoomOut = new ZoomOutAction(root.getZoomManager());
+    getActionRegistry().registerAction(zoomIn);
+    getActionRegistry().registerAction(zoomOut);
+    //getSite().getKeyBindingService().registerAction(zoomIn);
+    //getSite().getKeyBindingService().registerAction(zoomOut);
+    
+    IHandlerService service = (IHandlerService) getEditorSite().getService(IHandlerService.class);
+    service.activateHandler(zoomIn.getActionDefinitionId(), new ActionHandler(zoomIn));
+    service.activateHandler(zoomOut.getActionDefinitionId(), new ActionHandler(zoomOut));
     
     //// configure the context menu provider
     //ContextMenuProvider cmProvider = new ShapesEditorContextMenuProvider(
@@ -442,6 +469,8 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
           getActionRegistry(), getEditDomain(), getGraphicalViewer(),
           getSelectionSynchronizer());
       return outlinePage;
+    } else if (type == ZoomManager.class) {
+      return getGraphicalViewer().getProperty(ZoomManager.class.toString());
     }
     return super.getAdapter(type);
   }
