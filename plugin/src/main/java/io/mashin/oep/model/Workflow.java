@@ -3,6 +3,7 @@ package io.mashin.oep.model;
 import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLWriteUtils;
 import io.mashin.oep.model.connection.WorkflowConnection;
+import io.mashin.oep.model.connection.WorkflowConnectionDummyEndPoint;
 import io.mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import io.mashin.oep.model.node.Node;
 import io.mashin.oep.model.node.action.basic.FSActionNode;
@@ -351,13 +352,12 @@ public class Workflow extends ModelElementWithSchema {
       node.getSourceConnections().clear();
       
       for (WorkflowConnection sourceConn : sourceConns) {
-        WorkflowConnectionEndPoint target = sourceConn.getTarget();
-        Node targetNode = nodeMap.get(target.getNodeAsString());
-        target.setNode(targetNode);
+        WorkflowConnectionDummyEndPoint dummyTarget = sourceConn.getDummyTarget();
+        Node targetNode = nodeMap.get(dummyTarget.getNode());
         if (targetNode != null) {
-          target.setTerminal(targetNode.getTerminal(target
-              .getTerminalAsString()));
-          sourceConn.reconnect();
+          WorkflowConnectionEndPoint concreteTarget = new WorkflowConnectionEndPoint(
+              targetNode, targetNode.getTerminal(dummyTarget.getTerminal()));
+          new WorkflowConnection(sourceConn.getSource(), concreteTarget).reconnect();
         }
       }
     }

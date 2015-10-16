@@ -4,6 +4,7 @@ import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLWriteUtils;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.connection.WorkflowConnection;
+import io.mashin.oep.model.connection.WorkflowConnectionDummyEndPoint;
 import io.mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import io.mashin.oep.model.node.Node;
 import io.mashin.oep.model.terminal.FanInTerminal;
@@ -59,7 +60,7 @@ public class JoinNode extends ControlNode {
     
     WorkflowConnection conn = new WorkflowConnection(
         new WorkflowConnectionEndPoint(this, singleOutputTerminal),
-        new WorkflowConnectionEndPoint(XMLReadUtils.valueOf("@to", hpdlNode), TERMINAL_FANIN));
+        new WorkflowConnectionDummyEndPoint(XMLReadUtils.valueOf("@to", hpdlNode), TERMINAL_FANIN));
     sourceConnections.add(conn);
   }
 

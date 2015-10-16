@@ -13,11 +13,11 @@ public class WorkflowConnection extends ModelElement {
   
   private boolean isConnected;
 
-  private WorkflowConnectionEndPoint source;
-  private WorkflowConnectionEndPoint target;
+  private AbstractWorkflowConnectionEndPoint<?, ?> source;
+  private AbstractWorkflowConnectionEndPoint<?, ?> target;
   
-  public WorkflowConnection(WorkflowConnectionEndPoint source,
-      WorkflowConnectionEndPoint target) {
+  public WorkflowConnection(AbstractWorkflowConnectionEndPoint<?, ?> source,
+      AbstractWorkflowConnectionEndPoint<?, ?> target) {
     this.source = source;
     this.target = target;
   }
@@ -28,18 +28,27 @@ public class WorkflowConnection extends ModelElement {
     this.target = new WorkflowConnectionEndPoint(target, targetTerminal);
   }
 
+  public boolean isConnected() {
+    return isConnected;
+  }
+  
+  public boolean isConcrete() {
+    return source instanceof WorkflowConnectionEndPoint
+        && target instanceof WorkflowConnectionEndPoint;
+  }
+  
   public void disconnect() {
-    if (isConnected) {
-      source.getNode().removeConnectionInitiate(this);
-      target.getNode().removeConnectionInitiate(this);
+    if (isConnected()) {
+      getSourceNode().removeConnectionInitiate(this);
+      getTargetNode().removeConnectionInitiate(this);
       isConnected = false;
     }
   }
 
   public void reconnect() {
-    if (!isConnected) {
-      source.getNode().addConnectionInitiate(this);
-      target.getNode().addConnectionInitiate(this);
+    if (!isConnected() && isConcrete()) {
+      getSourceNode().addConnectionInitiate(this);
+      getTargetNode().addConnectionInitiate(this);
       isConnected = true;
     }
   }
@@ -68,28 +77,44 @@ public class WorkflowConnection extends ModelElement {
     reconnect();
   }
 
-  public WorkflowConnectionEndPoint getSource() {
+  public AbstractWorkflowConnectionEndPoint<?, ?> getSource() {
     return source;
   }
   
-  public WorkflowConnectionEndPoint getTarget() {
+  public AbstractWorkflowConnectionEndPoint<?, ?> getTarget() {
     return target;
   }
   
+  public WorkflowConnectionEndPoint getConcreteSource() {
+    return (WorkflowConnectionEndPoint) source;
+  }
+  
+  public WorkflowConnectionEndPoint getConcreteTarget() {
+    return (WorkflowConnectionEndPoint) target;
+  }
+  
+  public WorkflowConnectionDummyEndPoint getDummySource() {
+    return (WorkflowConnectionDummyEndPoint) source;
+  }
+  
+  public WorkflowConnectionDummyEndPoint getDummyTarget() {
+    return (WorkflowConnectionDummyEndPoint) target;
+  }
+  
   public Node getSourceNode() {
-    return source.getNode();
+    return (Node) source.getNode();
   }
 
   public Node getTargetNode() {
-    return target.getNode();
+    return (Node) target.getNode();
   }
   
   public Terminal getSourceTerminal() {
-    return source.getTerminal();
+    return (Terminal) source.getTerminal();
   }
   
   public Terminal getTargetTerminal() {
-    return target.getTerminal();
+    return (Terminal) target.getTerminal();
   }
   
   @Override

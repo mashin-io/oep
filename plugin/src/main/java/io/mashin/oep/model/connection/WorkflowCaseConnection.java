@@ -11,7 +11,7 @@ public class WorkflowCaseConnection extends WorkflowConnection {
   protected TextPropertyElement condition;
   
   public WorkflowCaseConnection(WorkflowConnectionEndPoint source,
-      WorkflowConnectionEndPoint target) {
+      AbstractWorkflowConnectionEndPoint<?, ?> target) {
     super(source, target);
     condition = new TextPropertyElement(PROP_CONN_CONDITION, "Condition");
     addPropertyElement(condition);

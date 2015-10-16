@@ -5,6 +5,7 @@ import io.mashin.oep.hpdl.XMLWriteUtils;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.connection.WorkflowCaseConnection;
 import io.mashin.oep.model.connection.WorkflowConnection;
+import io.mashin.oep.model.connection.WorkflowConnectionDummyEndPoint;
 import io.mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import io.mashin.oep.model.node.Node;
 import io.mashin.oep.model.terminal.FanInTerminal;
@@ -74,7 +75,7 @@ public class DecisionNode extends ControlNode {
       for (org.dom4j.Node caseConnNode : caseConnNodes) {
         WorkflowCaseConnection conn = new WorkflowCaseConnection(
             new WorkflowConnectionEndPoint(this, caseFanOutTerminal),
-            new WorkflowConnectionEndPoint(XMLReadUtils.valueOf("@to", caseConnNode), TERMINAL_FANIN));
+            new WorkflowConnectionDummyEndPoint(XMLReadUtils.valueOf("@to", caseConnNode), TERMINAL_FANIN));
         conn.setCondition(caseConnNode.getText().trim());
         sourceConnections.add(conn);
       }
@@ -82,7 +83,7 @@ public class DecisionNode extends ControlNode {
     
     WorkflowConnection conn = new WorkflowConnection(
         new WorkflowConnectionEndPoint(this, defaultSingleOutputTerminal),
-        new WorkflowConnectionEndPoint(XMLReadUtils.valueOf("./switch/default/@to", hpdlNode), TERMINAL_FANIN));
+        new WorkflowConnectionDummyEndPoint(XMLReadUtils.valueOf("./switch/default/@to", hpdlNode), TERMINAL_FANIN));
     sourceConnections.add(conn);
     
     hpdlNode.selectSingleNode("./switch").detach();

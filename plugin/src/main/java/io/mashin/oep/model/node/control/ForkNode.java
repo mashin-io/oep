@@ -4,6 +4,7 @@ import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLWriteUtils;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.connection.WorkflowConnection;
+import io.mashin.oep.model.connection.WorkflowConnectionDummyEndPoint;
 import io.mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import io.mashin.oep.model.node.Node;
 import io.mashin.oep.model.terminal.FanInTerminal;
@@ -65,7 +66,7 @@ public class ForkNode extends ControlNode {
       for (org.dom4j.Node forkConnNode : forkConnNodes) {
         WorkflowConnection conn = new WorkflowConnection(
             new WorkflowConnectionEndPoint(this, fanOutTerminal),
-            new WorkflowConnectionEndPoint(XMLReadUtils.valueOf("@start", forkConnNode), TERMINAL_FANIN));
+            new WorkflowConnectionDummyEndPoint(XMLReadUtils.valueOf("@start", forkConnNode), TERMINAL_FANIN));
         sourceConnections.add(conn);
         forkConnNode.detach();
       }

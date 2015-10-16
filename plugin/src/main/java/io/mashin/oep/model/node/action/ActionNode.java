@@ -5,6 +5,7 @@ import io.mashin.oep.hpdl.XMLWriteUtils;
 import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.model.connection.WorkflowConnection;
+import io.mashin.oep.model.connection.WorkflowConnectionDummyEndPoint;
 import io.mashin.oep.model.connection.WorkflowConnectionEndPoint;
 import io.mashin.oep.model.node.Node;
 import io.mashin.oep.model.property.TextPropertyElement;
@@ -99,7 +100,7 @@ public abstract class ActionNode extends Node {
     if (!okConn.isEmpty()) {
       WorkflowConnection conn = new WorkflowConnection(
           new WorkflowConnectionEndPoint(this, okSingleOutputTerminal),
-          new WorkflowConnectionEndPoint(okConn, TERMINAL_FANIN));
+          new WorkflowConnectionDummyEndPoint(okConn, TERMINAL_FANIN));
       sourceConnections.add(conn);
     }
     
@@ -107,7 +108,7 @@ public abstract class ActionNode extends Node {
     if (!errConn.isEmpty()) {
       WorkflowConnection conn = new WorkflowConnection(
           new WorkflowConnectionEndPoint(this, errSingleOutputTerminal),
-          new WorkflowConnectionEndPoint(errConn, TERMINAL_FANIN));
+          new WorkflowConnectionDummyEndPoint(errConn, TERMINAL_FANIN));
       sourceConnections.add(conn);
     }
   }
