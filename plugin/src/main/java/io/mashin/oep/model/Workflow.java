@@ -206,13 +206,17 @@ public class Workflow extends ModelElementWithSchema {
     XMLWriteUtils.writeGlobalProperty(global, rootElement);
     XMLWriteUtils.writeCredentialsCollection(credentials, rootElement);
     
+    startNode.write(rootElement);
     for (Node node : nodes) {
-      node.write(rootElement);
+      if (!(node.equals(startNode) || node.equals(endNode))) {
+        node.write(rootElement);
+      }
       graphicalInfoElement.addElement("node")
         .addAttribute("name", node.getName())
         .addAttribute("x", node.getPosition().x + "")
         .addAttribute("y", node.getPosition().y + "");
     }
+    endNode.write(rootElement);
     
     Comment graphicalInfoNode = null;
     try {
@@ -246,7 +250,13 @@ public class Workflow extends ModelElementWithSchema {
     // nodes
     List<org.dom4j.Node> hpdlNodes = XMLReadUtils.nodesList(rootElement);
     for (org.dom4j.Node hpdlChildNode : hpdlNodes) {
-      nodes.add(workflowNodeFromHPDLNode(hpdlChildNode, graphicalInfoMap));
+      Node node = workflowNodeFromHPDLNode(hpdlChildNode, graphicalInfoMap);
+      nodes.add(node);
+      if (node instanceof StartNode) {
+        startNode = (StartNode) node;
+      } else if (node instanceof EndNode) {
+        endNode = (EndNode) node;
+      }
     }
     
     // connections
