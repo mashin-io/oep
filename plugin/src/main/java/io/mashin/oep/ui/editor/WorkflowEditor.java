@@ -83,7 +83,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   
   OutlinePage outlinePage;
   
-  private static PaletteRoot PALETTE_MODEL;
+  private PaletteRoot paletteRoot;
   
   /**
    * This is called by the Workspace.
@@ -248,10 +248,10 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   
   @Override
   protected PaletteRoot getPaletteRoot() {
-    if (PALETTE_MODEL == null) {
-      PALETTE_MODEL = WorkflowEditorPalleteFactory.createPalette(this);
+    if (paletteRoot == null) {
+      paletteRoot = WorkflowEditorPalleteFactory.createPalette(this);
     }
-    return PALETTE_MODEL;
+    return paletteRoot;
   }
 
   Workflow getModel() {
