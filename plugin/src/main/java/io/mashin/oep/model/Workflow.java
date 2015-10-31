@@ -28,13 +28,17 @@ import io.mashin.oep.model.node.control.KillNode;
 import io.mashin.oep.model.node.control.StartNode;
 import io.mashin.oep.model.node.sort.NodeSort;
 import io.mashin.oep.model.node.sort.TopologicalNodeSort;
+import io.mashin.oep.model.property.ComboBoxPropertyElement;
 import io.mashin.oep.model.property.CredentialPropertyElement;
 import io.mashin.oep.model.property.GlobalPropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyPropertyElement;
+import io.mashin.oep.model.property.SLAPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
 import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -55,7 +59,8 @@ import org.dom4j.io.XMLWriter;
 import org.dom4j.tree.DefaultElement;
 import org.eclipse.draw2d.geometry.Point;
 
-public class Workflow extends ModelElementWithSchema {
+
+public class Workflow extends ModelElementWithSchema implements HasSLAVersion {
 
   private static final List<SchemaVersion> WORKFLOW_POSSIBLE_SCHEMA_VERSIONS = 
       Arrays.asList(SchemaVersion.V_0_1, SchemaVersion.V_0_2,
@@ -69,6 +74,8 @@ public class Workflow extends ModelElementWithSchema {
   public static final String PROP_PROPERTY       = "prop.workflow.property";
   public static final String PROP_GLOBAL         = "prop.workflow.global";
   public static final String PROP_CREDENTIALS    = "prop.workflow.credentials";
+  public static final String PROP_SLA_VERSION    = "prop.workflow.sla-version";
+  public static final String PROP_SLA            = "prop.workflow.sla";
   
   public static final String PROP_NODE_ADDED     = "prop.workflow.node.added";
   public static final String PROP_NODE_REMOVED   = "prop.workflow.node.removed";
@@ -80,6 +87,8 @@ public class Workflow extends ModelElementWithSchema {
   private PropertyElementCollection parameters;
   private GlobalPropertyElement     global;
   private PropertyElementCollection credentials;
+  private ComboBoxPropertyElement   slaVersion;
+  private SLAPropertyElement        sla;
 
   private StartNode   startNode;
   private EndNode     endNode;
@@ -110,6 +119,27 @@ public class Workflow extends ModelElementWithSchema {
                         new CredentialPropertyElement(PROP_CREDENTIALS, "Credential"),
                         new SchemaVersionRangeFilter(SchemaVersion.V_0_2_5, SchemaVersion.V_ANY, this));
     addPropertyElement(credentials);
+    
+    slaVersion = new ComboBoxPropertyElement(PROP_SLA_VERSION, "SLA Version");
+    setSLAVersion();
+    addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
+      public void propertyChange(PropertyChangeEvent event) {
+        switch (event.getPropertyName()) {
+        case PROP_SCHEMA_VERSION:
+          setSLAVersion();
+          break;
+        }
+      }
+    });
+    addPropertyElement(slaVersion);
+    
+    sla = new SLAPropertyElement(PROP_SLA, "SLA", this,
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_2, SchemaVersion.V_ANY, this)
+        .and(pe -> SchemaVersion.V_0_1.equals(getSLAVersion())),
+        new SchemaVersionRangeFilter(SchemaVersion.V_0_5, SchemaVersion.V_ANY, this)
+        .and(pe -> SchemaVersion.V_0_2.equals(getSLAVersion())));
+    addPropertyElement(sla);
     
     nodes = new ArrayList<Node>();
     
@@ -161,6 +191,18 @@ public class Workflow extends ModelElementWithSchema {
     return WORKFLOW_LATEST_SCHEMA_VERSION;
   }
 
+  @Override
+  public void setSLAVersion(SchemaVersion slaVersion) {
+    int index = Arrays.asList(this.slaVersion.getLabelsArray())
+        .indexOf(slaVersion.toString());
+    setPropertyValue(PROP_SLA_VERSION, index);
+  }
+  
+  @Override
+  public SchemaVersion getSLAVersion() {
+    return (SchemaVersion) slaVersion.getContentValue();
+  }
+  
   public boolean canAddNode(Node node) {
     return true;
   }
@@ -202,6 +244,7 @@ public class Workflow extends ModelElementWithSchema {
     Element graphicalInfoElement = DocumentHelper.createElement("workflow");
     
     XMLWriteUtils.writeWorkflowSchemaVersion(getSchemaVersion(), rootElement);
+    XMLWriteUtils.writeSLAVersion(this, rootElement);
     XMLWriteUtils.writeTextPropertyAsAttribute(name, rootElement, "name");
     XMLWriteUtils.writePropertiesCollection(parameters, rootElement, "parameters", "property");
     XMLWriteUtils.writeGlobalProperty(global, rootElement);
@@ -218,6 +261,8 @@ public class Workflow extends ModelElementWithSchema {
         .addAttribute("y", node.getPosition().y + "");
     }
     endNode.write(rootElement);
+    
+    XMLWriteUtils.writeSLAProperty(this, sla, rootElement);
     
     Comment graphicalInfoNode = null;
     try {
@@ -240,7 +285,9 @@ public class Workflow extends ModelElementWithSchema {
     
     HashMap<String, Point> graphicalInfoMap = XMLReadUtils.graphicalInfoFrom(document);
     
-    XMLReadUtils.initSchemaVersionFrom(rootElement, this, schemaVersion);
+    XMLReadUtils.initSchemaVersionFrom(rootElement, this);
+    XMLReadUtils.initSLAVersionFrom(rootElement, this);
+    XMLReadUtils.initSLAPropertyFrom(sla, rootElement, "./sla:info");
     XMLReadUtils.initTextPropertyFrom(this, PROP_NAME, name, "@name", rootElement);
     XMLReadUtils.initPropertiesCollectionFrom(parameters, rootElement, "./parameters", "./property");
     XMLReadUtils.initGlobalPropertyFrom(global, rootElement, "./global");
@@ -361,6 +408,28 @@ public class Workflow extends ModelElementWithSchema {
         }
       }
     }
+  }
+  
+  private void setSLAVersion() {
+    List<String> labels = new ArrayList<>(Arrays.asList(
+        SchemaVersion.V_ANY.toString(), SchemaVersion.V_0_1.toString()));
+    List<SchemaVersion> values = new ArrayList<>(Arrays.asList(
+        SchemaVersion.V_ANY, SchemaVersion.V_0_1));
+    
+    if (getSchemaVersion().isGreaterThanOrEqual(SchemaVersion.V_0_5)) {
+      labels.add(SchemaVersion.V_0_2.toString());
+      values.add(SchemaVersion.V_0_2);
+    }
+    
+    String[] labelsArray = labels.toArray(new String[0]);
+    SchemaVersion[] valuesArray = values.toArray(new SchemaVersion[0]);
+    
+    if (((Integer) slaVersion.getValue()) >= labelsArray.length) {
+      slaVersion.setValue(new Integer(labelsArray.length - 1));
+    }
+    
+    slaVersion.setLabelsArray(labelsArray);
+    slaVersion.setValuesArray(valuesArray);
   }
   
   @SuppressWarnings({ "rawtypes", "unused" })
