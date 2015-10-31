@@ -1,17 +1,18 @@
 package io.mashin.oep.hpdl;
 
+import io.mashin.oep.model.HasSLAVersion;
 import io.mashin.oep.model.ModelElement;
 import io.mashin.oep.model.ModelElementWithSchema;
 import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.node.action.basic.FSActionNode;
 import io.mashin.oep.model.property.CheckBoxPropertyElement;
-import io.mashin.oep.model.property.ComboBoxPropertyElement;
 import io.mashin.oep.model.property.CredentialPropertyElement;
 import io.mashin.oep.model.property.GlobalPropertyElement;
 import io.mashin.oep.model.property.PipesPropertyElement;
 import io.mashin.oep.model.property.PreparePropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyPropertyElement;
+import io.mashin.oep.model.property.SLAPropertyElement;
 import io.mashin.oep.model.property.StreamingPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
 
@@ -113,21 +114,21 @@ public class XMLReadUtils {
     return graphicalInfoMap.getOrDefault(name, new Point(0, 0));
   }
   
-  public static void initSchemaVersionFrom(Node node, ModelElementWithSchema model, ComboBoxPropertyElement pe) {
+  public static void initSchemaVersionFrom(Node node, ModelElementWithSchema model) {
     model.setSchemaVersion(schemaVersion(node));
   }
   
-  public static void setSchemaVersion(String xpath, Node node, ModelElementWithSchema model, ComboBoxPropertyElement pe) {
-    model.setSchemaVersion(schemaVersion(xpath, node));
-  }
+  //public static void setSchemaVersion(String xpath, Node node, ModelElementWithSchema model) {
+  //  model.setSchemaVersion(schemaVersion(xpath, node));
+  //}
   
-  public static Node schemaVersionNode(Node node) {
-    return schemaVersionNode("", node);
-  }
+  //public static Node schemaVersionNode(Node node) {
+  //  return schemaVersionNode("", node);
+  //}
   
-  public static Node schemaVersionNode(String xpath, Node node) {
-    return node.selectSingleNode(xpath + "@" + XMLUtils.SCHEMA_VERSION_TAG);
-  }
+  //public static Node schemaVersionNode(String xpath, Node node) {
+  //  return node.selectSingleNode(xpath + "@" + XMLUtils.SCHEMA_VERSION_TAG);
+  //}
   
   public static Node schemaVersionParentNode(Node node) {
     Node[] parentNode = new Node[1];
@@ -142,23 +143,32 @@ public class XMLReadUtils {
     return parentNode[0];
   }
   
-  public static String schemaVersion(Node node) {
-    return schemaVersion("", node);
+  public static SchemaVersion schemaVersion(Node node) {
+    return schemaVersion("", node, XMLUtils.SCHEMA_VERSION_TAG);
   }
   
-  public static String schemaVersion(String xpath, Node node) {
-    String xmlns = node.valueOf(xpath + "@" + XMLUtils.SCHEMA_VERSION_TAG);
+  public static void initSLAVersionFrom(Element node, HasSLAVersion model) {
+    model.setSLAVersion(schemaVersion(node.getNamespaceForPrefix("sla").getURI()));
+    //model.setSLAVersion(slaVersion(node));
+  }
+  
+  public static SchemaVersion slaVersion(Element node) {
+    return schemaVersion("", node, XMLUtils.SLA_VERSION_TAG);
+  }
+  
+  public static SchemaVersion schemaVersion(String xpath, Node node, String tag) {
+    String xmlns = node.valueOf(xpath + "@" + tag);
     return schemaVersion(xmlns);
   }
   
-  public static String schemaVersion(String xmlns) {
+  public static SchemaVersion schemaVersion(String xmlns) {
     if (xmlns != null && !xmlns.isEmpty()) {
       int schemaVersionIndex = xmlns.lastIndexOf(":");
       if (schemaVersionIndex > -1) {
-        return xmlns.substring(schemaVersionIndex + 1, xmlns.length());
+        return new SchemaVersion(xmlns.substring(schemaVersionIndex + 1, xmlns.length()));
       }
     }
-    return SchemaVersion.V_ANY.toString();
+    return SchemaVersion.V_ANY;
   }
   
   public static void initTextPropertyFrom(ModelElement model, String prop, TextPropertyElement pe, String xpath, Node node) {
@@ -485,6 +495,28 @@ public class XMLReadUtils {
         initTextPropertyFrom(chgrp.group, subNode, "@group");
         initTextPropertyFrom(chgrp.dirFiles, subNode, "@dir-files");
       }
+    }
+  }
+  
+  public static void initSLAPropertyFrom(SLAPropertyElement sla, Node node, String xpath) {
+    Node slaNode = node.selectSingleNode(xpath);
+    if (slaNode != null) {
+      initTextPropertyFrom(sla.appName, slaNode, "./sla:app-name");
+      initTextPropertyFrom(sla.nominalTime, slaNode, "./sla:nominal-time");
+      initTextPropertyFrom(sla.shouldStart, slaNode, "./sla:should-start");
+      initTextPropertyFrom(sla.shouldEnd, slaNode, "./sla:should-end");
+      initTextPropertyFrom(sla.maxDuration, slaNode, "./sla:max-duration");
+      initTextPropertyFrom(sla.parentClientId, slaNode, "./sla:parent-client-id");
+      initTextPropertyFrom(sla.parentSlaId, slaNode, "./sla:parent-sla-id");
+      initTextPropertyFrom(sla.notificationMsg, slaNode, "./sla:notification-msg");
+      initTextPropertyFrom(sla.alertEvents, slaNode, "./sla:alert-events");
+      initTextPropertyFrom(sla.alertContact, slaNode, "./sla:alert-contact");
+      initTextPropertyFrom(sla.devContact, slaNode, "./sla:dev-contact");
+      initTextPropertyFrom(sla.qaContact, slaNode, "./sla:qa-contact");
+      initTextPropertyFrom(sla.seContact, slaNode, "./sla:se-contact");
+      initTextPropertyFrom(sla.alertFrequency, slaNode, "./sla:alert-frequency");
+      initTextPropertyFrom(sla.alertPercentage, slaNode, "./sla:alert-percentage");
+      initTextPropertyFrom(sla.upstreamApps, slaNode, "./sla:upstream-apps");
     }
   }
   
