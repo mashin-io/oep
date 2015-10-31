@@ -1,7 +1,6 @@
 package io.mashin.oep.ui.editor;
 
 import io.mashin.oep.figures.NodeFigure;
-import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLUtils;
 import io.mashin.oep.model.Workflow;
 import io.mashin.oep.parts.WorkflowEditPartFactory;
@@ -309,6 +308,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
         }
         hpdl = sb.toString().trim();
         hpdl = XMLUtils.xmlnsToSchemaVersion(hpdl);
+        //hpdl = XMLUtils.xmlnsSLAToSLAVersion(hpdl);
         
         br.close();
       }
@@ -327,7 +327,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
         
         SAXReader reader = new SAXReader();
         Document document = reader.read(new StringReader(hpdl));
-        document.accept(new XMLReadUtils.NameSpaceCleaner());
+        //document.accept(new XMLReadUtils.NameSpaceCleaner());
         
         workflow = new Workflow(document);
         
@@ -472,6 +472,7 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
       stringWriter.flush();
       String hpdl = stringWriter.toString();
       hpdl = XMLUtils.schemaVersionToXmlns(hpdl);
+      //hpdl = XMLUtils.slaVersionToXmlnsSLA(hpdl);
       return hpdl;
     } catch (IOException e) {
       e.printStackTrace();
