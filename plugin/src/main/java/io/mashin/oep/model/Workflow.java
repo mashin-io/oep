@@ -2,6 +2,7 @@ package io.mashin.oep.model;
 
 import io.mashin.oep.hpdl.XMLReadUtils;
 import io.mashin.oep.hpdl.XMLWriteUtils;
+import io.mashin.oep.model.connection.WorkflowCaseConnection;
 import io.mashin.oep.model.connection.WorkflowConnection;
 import io.mashin.oep.model.connection.WorkflowConnectionDummyEndPoint;
 import io.mashin.oep.model.connection.WorkflowConnectionEndPoint;
@@ -404,17 +405,28 @@ public class Workflow extends ModelElementWithSchema implements HasSLAVersion {
         if (targetNode != null) {
           WorkflowConnectionEndPoint concreteTarget = new WorkflowConnectionEndPoint(
               targetNode, targetNode.getTerminal(dummyTarget.getTerminal()));
-          new WorkflowConnection(sourceConn.getSource(), concreteTarget).reconnect();
+          if (sourceConn instanceof WorkflowCaseConnection) {
+            WorkflowCaseConnection caseConn = (WorkflowCaseConnection) sourceConn;
+            WorkflowCaseConnection caseConnConcrete = new WorkflowCaseConnection(
+                sourceConn.getSource(), concreteTarget);
+            caseConnConcrete.setCondition(caseConn.getCondition());
+            caseConnConcrete.reconnect();
+          } else {
+            new WorkflowConnection(sourceConn.getSource(), concreteTarget).reconnect();
+          }
         }
       }
     }
   }
   
   private void setSLAVersion() {
-    List<String> labels = new ArrayList<>(Arrays.asList(
-        SchemaVersion.V_ANY.toString(), SchemaVersion.V_0_1.toString()));
-    List<SchemaVersion> values = new ArrayList<>(Arrays.asList(
-        SchemaVersion.V_ANY, SchemaVersion.V_0_1));
+    List<String> labels = new ArrayList<>(Arrays.asList(SchemaVersion.V_ANY.toString()));
+    List<SchemaVersion> values = new ArrayList<>(Arrays.asList(SchemaVersion.V_ANY));
+    
+    if (getSchemaVersion().isGreaterThanOrEqual(SchemaVersion.V_0_2)) {
+      labels.add(SchemaVersion.V_0_1.toString());
+      values.add(SchemaVersion.V_0_1);
+    }
     
     if (getSchemaVersion().isGreaterThanOrEqual(SchemaVersion.V_0_5)) {
       labels.add(SchemaVersion.V_0_2.toString());
