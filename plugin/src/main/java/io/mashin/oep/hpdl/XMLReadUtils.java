@@ -148,7 +148,9 @@ public class XMLReadUtils {
   }
   
   public static void initSLAVersionFrom(Element node, HasSLAVersion model) {
-    model.setSLAVersion(schemaVersion(node.getNamespaceForPrefix("sla").getURI()));
+    Namespace slaNamespace = node.getNamespaceForPrefix("sla");
+    String slaURI = slaNamespace != null ? slaNamespace.getURI() : "";
+    model.setSLAVersion(schemaVersion(slaURI));
     //model.setSLAVersion(slaVersion(node));
   }
   
@@ -499,7 +501,11 @@ public class XMLReadUtils {
   }
   
   public static void initSLAPropertyFrom(SLAPropertyElement sla, Node node, String xpath) {
-    Node slaNode = node.selectSingleNode(xpath);
+    Node slaNode = null;
+    try {
+      slaNode = node.selectSingleNode(xpath);
+    } catch (Throwable t) {}
+    
     if (slaNode != null) {
       initTextPropertyFrom(sla.appName, slaNode, "./sla:app-name");
       initTextPropertyFrom(sla.nominalTime, slaNode, "./sla:nominal-time");
