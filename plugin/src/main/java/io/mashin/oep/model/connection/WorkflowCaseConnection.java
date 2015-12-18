@@ -10,7 +10,7 @@ public class WorkflowCaseConnection extends WorkflowConnection {
   
   protected TextPropertyElement condition;
   
-  public WorkflowCaseConnection(WorkflowConnectionEndPoint source,
+  public WorkflowCaseConnection(AbstractWorkflowConnectionEndPoint<?, ?> source,
       AbstractWorkflowConnectionEndPoint<?, ?> target) {
     super(source, target);
     condition = new TextPropertyElement(PROP_CONN_CONDITION, "Condition");

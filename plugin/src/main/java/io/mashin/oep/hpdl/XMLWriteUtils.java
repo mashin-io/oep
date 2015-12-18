@@ -1,5 +1,6 @@
 package io.mashin.oep.hpdl;
 
+import io.mashin.oep.model.HasSLAVersion;
 import io.mashin.oep.model.SchemaVersion;
 import io.mashin.oep.model.connection.WorkflowCaseConnection;
 import io.mashin.oep.model.connection.WorkflowConnection;
@@ -12,6 +13,7 @@ import io.mashin.oep.model.property.PreparePropertyElement;
 import io.mashin.oep.model.property.PropertyElement;
 import io.mashin.oep.model.property.PropertyElementCollection;
 import io.mashin.oep.model.property.PropertyPropertyElement;
+import io.mashin.oep.model.property.SLAPropertyElement;
 import io.mashin.oep.model.property.StreamingPropertyElement;
 import io.mashin.oep.model.property.TextPropertyElement;
 
@@ -27,6 +29,13 @@ public class XMLWriteUtils {
   
   public static void writeWorkflowSchemaVersion(SchemaVersion schemaVersion, Element element) {
     element.addAttribute(XMLUtils.SCHEMA_VERSION_TAG, "uri:oozie:workflow:" + schemaVersion);
+  }
+  
+  public static void writeSLAVersion(HasSLAVersion model, Element element) {
+    if (!model.getSLAVersion().equals(SchemaVersion.V_ANY)) {
+      element.addNamespace("sla", "uri:oozie:sla:" + model.getSLAVersion());
+      //element.addAttribute(XMLUtils.SLA_VERSION_TAG, "uri:oozie:sla:" + model.getSLAVersion());
+    }
   }
   
   public static void writeConnectionsAsAttribute(
@@ -263,6 +272,37 @@ public class XMLWriteUtils {
           writeTextPropertyAsAttribute(cpe.type, node, "type");
           writePropertiesCollection(cpe.credential, node, "", "property");
         }
+      }
+    }
+  }
+  
+  public static void writeSLAProperty(HasSLAVersion model, SLAPropertyElement sla, Element parent) {
+    if (sla.isSet() && sla.filter()) {
+      Element element = parent.addElement("sla:info");
+      if (model.getSLAVersion().equals(SchemaVersion.V_0_1)) {
+        writeTextPropertyAsElement(sla.appName, element, "sla:app-name");
+        writeTextPropertyAsElement(sla.nominalTime, element, "sla:nominal-time");
+        writeTextPropertyAsElement(sla.shouldStart, element, "sla:should-start");
+        writeTextPropertyAsElement(sla.shouldEnd, element, "sla:should-end");
+        writeTextPropertyAsElement(sla.parentClientId, element, "sla:parent-client-id");
+        writeTextPropertyAsElement(sla.parentSlaId, element, "sla:parent-sla-id");
+        writeTextPropertyAsElement(sla.notificationMsg, element, "sla:notification-msg");
+        writeTextPropertyAsElement(sla.alertContact, element, "sla:alert-contact");
+        writeTextPropertyAsElement(sla.devContact, element, "sla:dev-contact");
+        writeTextPropertyAsElement(sla.qaContact, element, "sla:qa-contact");
+        writeTextPropertyAsElement(sla.seContact, element, "sla:se-contact");
+        writeTextPropertyAsElement(sla.alertFrequency, element, "sla:alert-frequency");
+        writeTextPropertyAsElement(sla.alertPercentage, element, "sla:alert-percentage");
+        writeTextPropertyAsElement(sla.upstreamApps, element, "sla:upstream-apps");
+      } else if (model.getSLAVersion().equals(SchemaVersion.V_0_2)) {
+        writeTextPropertyAsElement(sla.nominalTime, element, "sla:nominal-time");
+        writeTextPropertyAsElement(sla.shouldStart, element, "sla:should-start");
+        writeTextPropertyAsElement(sla.shouldEnd, element, "sla:should-end");
+        writeTextPropertyAsElement(sla.maxDuration, element, "sla:max-duration");
+        writeTextPropertyAsElement(sla.alertEvents, element, "sla:alert-events");
+        writeTextPropertyAsElement(sla.alertContact, element, "sla:alert-contact");
+        writeTextPropertyAsElement(sla.notificationMsg, element, "sla:notification-msg");
+        writeTextPropertyAsElement(sla.upstreamApps, element, "sla:upstream-apps");
       }
     }
   }

@@ -26,6 +26,8 @@ public class ComboBoxPropertyElement extends SingularPropertyElement {
   
   public void setLabelsArray(String[] labelsArray) {
     this.labelsArray = labelsArray;
+    if (valueIndex >= labelsArray.length)
+      resetValue();
   }
   
   public String[] getLabelsArray() {
@@ -34,6 +36,8 @@ public class ComboBoxPropertyElement extends SingularPropertyElement {
   
   public void setValuesArray(Object[] valuesArray) {
     this.valuesArray = valuesArray;
+    if (valueIndex >= valuesArray.length)
+      resetValue();
   }
   
   public Object[] getValuesArray() {
@@ -45,11 +49,9 @@ public class ComboBoxPropertyElement extends SingularPropertyElement {
     if (!isEditable()) {
       return null;
     }
-    if (propertyDescriptor == null) {
-      propertyDescriptor = new ComboBoxPropertyDescriptor(
-          getId(), getName(),
-          getLabelsArray());
-    }
+    propertyDescriptor = new ComboBoxPropertyDescriptor(
+        getId(), getName(),
+        getLabelsArray());
     return propertyDescriptor;
   }
 
