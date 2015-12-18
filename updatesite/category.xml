@@ -4,4 +4,5 @@
       The update site for Oozie Eclipse Plugin
    </description>
    <feature url="features/io.mashin.oep.feature_0.3.0.qualifier.jar" id="io.mashin.oep.feature" version="0.3.0.qualifier"/>
+   <feature url="features/io.mashin.oep.feature_0.3.3.qualifier.jar" id="io.mashin.oep.feature" version="0.3.3.qualifier"/>
 </site>
