@@ -1,3 +1,19 @@
+/**
+ * Copyright (c) 2015 Mashin (http://mashin.io). All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.mashin.oep.model;
 
 import io.mashin.oep.hpdl.XMLReadUtils;
@@ -40,24 +56,18 @@ import io.mashin.oep.model.property.filter.SchemaVersionRangeFilter;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.dom4j.Comment;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.dom4j.tree.DefaultElement;
 import org.eclipse.draw2d.geometry.Point;
 
 
@@ -444,60 +454,4 @@ public class Workflow extends ModelElementWithSchema implements HasSLAVersion {
     slaVersion.setValuesArray(valuesArray);
   }
   
-  @SuppressWarnings({ "rawtypes", "unused" })
-  public static void main(String[] args) {
-    
-    try {
-      
-      String hpdlPath = "test.xml";
-      
-      SAXReader reader = new SAXReader();
-      Document document;
-      Element rootElement;
-      
-      document = reader.read(new File(hpdlPath));
-      document.accept(new XMLReadUtils.NameSpaceCleaner());
-      rootElement = document.getRootElement();
-      
-      rootElement.selectNodes("./prepare/aa/@c");
-      rootElement.selectNodes("./prepare/bb/@c");
-      
-      System.exit(0);
-      
-      hpdlPath = "workflow1.workflow";
-      
-      document = reader.read(new File(hpdlPath));
-      document.accept(new XMLReadUtils.NameSpaceCleaner());
-      rootElement = document.getRootElement();
-      
-      ((DefaultElement) rootElement).getNamespace();
-      ((DefaultElement) rootElement).getNamespaceURI();
-      ((DefaultElement) rootElement).getNamespacePrefix();
-      
-      List nnodes1 = rootElement.selectNodes("./parameters/property");
-      
-      @SuppressWarnings("unchecked")
-      Iterator<org.dom4j.Node> iter = document.nodeIterator();
-      Pattern p = Pattern.compile("\\s*<workflow>.*</workflow>\\s*", Pattern.DOTALL);
-      while (iter.hasNext()) {
-        org.dom4j.Node xmlNode = iter.next();
-        if (xmlNode.getNodeType() == org.dom4j.Node.COMMENT_NODE) {
-          System.out.println(xmlNode.getNodeTypeName());
-          System.out.println(xmlNode.getPath());
-          System.out.println(xmlNode.getText());
-          if (p.matcher(xmlNode.getText()).find()) {
-            System.out.println("Hiiiiiiiiiiiiiiiiiii");
-          }
-          System.out.println("=======================");
-        }
-      }
-      System.out.println(rootElement.getNodeTypeName());
-      System.out.println(rootElement.getPath());
-      
-    } catch (DocumentException e) {
-      e.printStackTrace();
-    }
-    
-  }
-
 }
