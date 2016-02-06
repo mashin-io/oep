@@ -13,3 +13,7 @@ Apache Oozie editor plugins for the famous IDEs like Eclipse and IntelliJ IDEA. 
 Find the plugin on [Eclipse Marketplace](https://marketplace.eclipse.org/content/oozie-eclipse-plugin)
 
 Visit the plugin's [blog](http://blog.oep.mashin.io/)
+
+## Contributing
+
+Adding new features to the Eclipse plugin requires a knowledge about Eclipse Graphical Editing Framework (GEF). [This wiki](https://github.com/mashin-io/oep/wiki/Eclipse-GEF-(Graphical-Editing-Framework)) can help getting started with GEF.
