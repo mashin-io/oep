@@ -198,7 +198,7 @@ public class XMLReadUtils {
   }
   
   public static void initCheckPropertyFrom(CheckBoxPropertyElement pe, Node node, String xpath) {
-    pe.setValue(!valueOf(xpath, node).isEmpty());
+    pe.setValue(node.selectSingleNode(xpath) != null);
   }
   
   public static String valueOf(String xpath, Node node) {
