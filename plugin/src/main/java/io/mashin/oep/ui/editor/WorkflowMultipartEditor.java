@@ -80,10 +80,11 @@ public class WorkflowMultipartEditor extends MultiPageEditorPart {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		getActiveEditor().doSave(monitor);
-		if (textEditor.equals(getActiveEditor())) {
+		if (textEditor.equals(getActiveEditor()))
 			updateTextEditorToWorkflowEditor(false);
-		}
+		else
+			updateWorkflowEditorToTextEditor(false);
+		getActiveEditor().doSave(monitor);
 	}
 	@Override
 	public void doSaveAs() {
