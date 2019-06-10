@@ -32,6 +32,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
@@ -95,7 +96,10 @@ public class WorkflowActionBarContributor extends ActionBarContributor {
     tbm.add(new Separator());
     String[] zoomStrings = new String[] { ZoomManager.FIT_ALL,
         ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH };
-    tbm.add(new ZoomComboContributionItem(getPage(), zoomStrings));
+    tbm.add(new ZoomComboContributionItem(getPage(), zoomStrings) {
+    	@Override
+    	protected int computeWidth(Control control) { return 120; }
+    });
   }
 
   public void contributeToMenu(IMenuManager menubar) {
