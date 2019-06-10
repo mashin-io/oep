@@ -578,9 +578,9 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 	IEditorPart editor = getSite().getPage().getActiveEditor();
 	if (editor instanceof WorkflowMultipartEditor) {
-		if (this.equals(((WorkflowMultipartEditor)editor).getActiveEditor())) {
+		WorkflowMultipartEditor wfMPEditor = (WorkflowMultipartEditor)editor;
+		if (this.equals(wfMPEditor.getActiveEditor()))
 			updateActions(getSelectionActions());
-		}
 	} else {
 		super.selectionChanged(part, selection);
 	}

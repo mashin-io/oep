@@ -6,6 +6,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
@@ -23,23 +24,28 @@ public class WorkflowMultipartEditor extends MultiPageEditorPart {
 	
 	@Override
 	public boolean isDirty() {
-		return getActiveEditor().isDirty();
+		return textEditor.isDirty();
 	}
 	
 	@Override
 	protected void createPages() {
+		textEditor = new StructuredTextEditor();
+		textEditor.setEditorPart(this);
+		workflowEditor = new WorkflowEditor(textEditor);
+		workflowEditor.addPropertyListener(new IPropertyListener() {
+			@Override
+			public void propertyChanged(Object source, int propId) {
+				if (propId == 257 && !textEditor.isDirty()) {
+					updateTextEditorFromWorkflowEditor();
+				}
+			}
+		});
+		
 		try {
-			workflowEditor = new WorkflowEditor(this);	
-			int index = addPage(workflowEditor, getEditorInput());
+			int index;
+			index = addPage(workflowEditor, getEditorInput());
 			setPageText(index, "Design");
-		} catch (PartInitException e) {
-			ErrorDialog.openError(getSite().getShell(),
-					"Error creating nested text editor", null, e.getStatus());
-		}
-		try {
-			textEditor = new StructuredTextEditor();
-			textEditor.setEditorPart(this);
-			int index = addPage(textEditor, getEditorInput());
+			index = addPage(textEditor, getEditorInput());
 			setPageText(index, "Source");
 		} catch (PartInitException e) {
 			ErrorDialog.openError(getSite().getShell(),
@@ -50,49 +56,43 @@ public class WorkflowMultipartEditor extends MultiPageEditorPart {
 	@Override
 	protected void pageChange(int newPageIndex) {
 		super.pageChange(newPageIndex);
-		if (newPageIndex == 0) {
-			updateTextEditorToWorkflowEditor(true);
-		} else {
-			updateWorkflowEditorToTextEditor(true);
+		if (textEditor.isDirty()) {
+			if (newPageIndex == 0)
+				updateWorkflowEditorFromTextEditor();
+			else
+				updateTextEditorFromWorkflowEditor();
 		}
 	}
 	
-	private void updateTextEditorToWorkflowEditor(boolean validate) {
-		if (textEditor.isDirty() || !validate) {
-			workflowEditor.setContent(textEditor.getDocumentProvider()
-					.getDocument(textEditor.getEditorInput()).get());
-		}
+	private void updateWorkflowEditorFromTextEditor() {
+		workflowEditor.setContent(textEditor.getDocumentProvider()
+				.getDocument(textEditor.getEditorInput()).get());
 	}
-	private void updateWorkflowEditorToTextEditor(boolean validate) {
-		//IDocument textDocument = textEditor.getDocumentProvider()
-		//		.getDocument(textEditor.getEditorInput());
-		if (workflowEditor.isDirty() || !validate) {
-			String worflowContent = workflowEditor.writeModel();
-			textEditor.getDocumentProvider()
-				.getDocument(textEditor.getEditorInput()).set(worflowContent);
-		}
+	private void updateTextEditorFromWorkflowEditor() {
+		String worflowContent = workflowEditor.writeModel();
+		textEditor.getDocumentProvider()
+			.getDocument(textEditor.getEditorInput()).set(worflowContent);
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		if (getActivePage() == 0)
+			updateTextEditorFromWorkflowEditor();
+		else
+			updateWorkflowEditorFromTextEditor();
+		textEditor.doSave(monitor);
+	}
+	@Override
+	public void doSaveAs() {
+		textEditor.doSaveAs();
+	}
+	@Override
+	public boolean isSaveAsAllowed() {
+		return true;
 	}
 	
 	@Override
 	public IEditorPart getActiveEditor() {
 		return super.getActiveEditor();
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		if (textEditor.equals(getActiveEditor()))
-			updateTextEditorToWorkflowEditor(false);
-		else
-			updateWorkflowEditorToTextEditor(false);
-		getActiveEditor().doSave(monitor);
-	}
-	@Override
-	public void doSaveAs() {
-		getActiveEditor().doSaveAs();
-	}
-	
-	@Override
-	public boolean isSaveAsAllowed() {
-		return true;
 	}
 }
