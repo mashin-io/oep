@@ -19,7 +19,10 @@ public class WorkflowMultipartEditor extends MultiPageEditorPart {
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
 		String projectName = ((IFileEditorInput)input).getFile().getProject().getName();
-		setPartName(input.getName()+" ["+projectName+"]");
+		if ("workflow.xml".equals(input.getName()))
+			setPartName(input.getName()+" ["+projectName+"]");
+		else
+			setPartName(input.getName());
 	}
 	
 	@Override
