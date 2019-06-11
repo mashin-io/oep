@@ -98,7 +98,9 @@ public class WorkflowActionBarContributor extends ActionBarContributor {
         ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH };
     tbm.add(new ZoomComboContributionItem(getPage(), zoomStrings) {
     	@Override
-    	protected int computeWidth(Control control) { return 120; }
+    	protected int computeWidth(Control control) {
+    		return Math.min(super.computeWidth(control), 130);
+    	}
     });
   }
 
