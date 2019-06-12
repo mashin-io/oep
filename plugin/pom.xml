@@ -1,8 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.mashin.oep</groupId>
+		<artifactId>main</artifactId>
+		<version>0.3.5-SNAPSHOT</version>
+	</parent>
 	<artifactId>io.mashin.oep</artifactId>
+	<packaging>eclipse-plugin</packaging>
 	<name>Oozie Eclipse Plugin Plugin</name>
+
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -31,6 +38,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -51,10 +59,4 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
-	<parent>
-		<groupId>io.mashin.oep</groupId>
-		<artifactId>main</artifactId>
-		<version>0.3.4-SNAPSHOT</version>
-	</parent>
-	<packaging>eclipse-plugin</packaging>
 </project>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Oozie Eclipse Plugin
 Bundle-SymbolicName: io.mashin.oep;singleton:=true
-Bundle-Version: 0.3.4.qualifier
+Bundle-Version: 0.3.5.qualifier
 Bundle-Activator: io.mashin.oep.Activator
 Bundle-Vendor: mashin
 Require-Bundle: org.eclipse.gef;bundle-version="3.10.0",
