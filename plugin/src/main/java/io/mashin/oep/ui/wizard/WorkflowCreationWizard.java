@@ -52,7 +52,7 @@ public class WorkflowCreationWizard extends Wizard implements INewWizard {
    * This WizardPage can create an empty .shapes file for the ShapesEditor.
    */
   private class CreationPage extends WizardNewFileCreationPage {
-    private static final String EXTENSION_XML = ".xml";
+    private static final String EXTENSION_OZW = ".ozw";
     private static final String EXTENSION_WORKFLOW = ".workflow";
     private final IWorkbench workbench;
 
@@ -74,7 +74,7 @@ public class WorkflowCreationWizard extends Wizard implements INewWizard {
 
     public void createControl(Composite parent) {
       super.createControl(parent);
-      setFileName("workflow" + EXTENSION_WORKFLOW);
+      setFileName("workflow" + EXTENSION_OZW);
       setPageComplete(validatePage());
     }
 
@@ -121,12 +121,14 @@ public class WorkflowCreationWizard extends Wizard implements INewWizard {
      */
     private boolean validateFilename() {
       if (getFileName() != null
-          && (getFileName().endsWith(EXTENSION_XML)
-              || getFileName().endsWith(EXTENSION_WORKFLOW))) {
+          && (getFileName().endsWith(EXTENSION_OZW)
+              || getFileName().endsWith(EXTENSION_WORKFLOW)
+              || getFileName().equals("workflow.xml"))) {
         return true;
       }
       setErrorMessage("The 'file' name must end with "
-          + EXTENSION_WORKFLOW + " or " + EXTENSION_XML);
+          + EXTENSION_WORKFLOW + " or " + EXTENSION_OZW
+          + " or file name must workflow.xml");
       return false;
     }
 
