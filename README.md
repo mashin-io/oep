@@ -11,6 +11,10 @@ friendly the design of workflows.
 
 ![Oozie Double View](oozie-dv.jpg)
 
+To install the plugin add this site to Eclipse:
+
+https://raw.githubusercontent.com/danjaredg/oep/master/repository/
+
 ## Contributing
 
 Adding new features to the Eclipse plugin requires a knowledge about
