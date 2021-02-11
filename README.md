@@ -13,7 +13,7 @@ friendly the design of workflows.
 
 To install the plugin add this site to Eclipse:
 
-https://raw.githubusercontent.com/danjaredg/oep/master/repository/
+https://dl.bintray.com/danjaredg/oep/
 
 ## Contributing
 
