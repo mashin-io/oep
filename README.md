@@ -1,19 +1,23 @@
 # Oozie Editor Plugin
 
-Apache Oozie editor plugins for the famous IDEs like Eclipse and IntelliJ IDEA. Currently, only Eclipse is supported.
+Apache Oozie editor plugins for the famous IDEs like Eclipse and IntelliJ IDEA.
+Currently, only Eclipse is supported.
 
 ## Oozie Eclipse Plugin
 
-![](https://github.com/mashin-io/oep/blob/gh-pages/imgs/screenshot01.png "Screenshot")
+This version is a fork of project [mashin-io/oep](https://github.com/mashin-io/oep).
+In this version I include a double view (design and source) of the workflow to be more
+friendly the design of workflows.
 
-![](https://github.com/mashin-io/oep/blob/gh-pages/imgs/screenshot03.png "Screenshot")
+![Oozie Double View](oozie-dv.jpg)
 
-<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2503410" class="drag" title="Drag to your running Eclipse workspace to install Oozie Eclipse Plugin"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install Oozie Eclipse Plugin" /></a>
+To install the plugin add this site to Eclipse:
 
-Find the plugin on [Eclipse Marketplace](https://marketplace.eclipse.org/content/oozie-eclipse-plugin)
-
-Visit the plugin's [blog](http://blog.oep.mashin.io/)
+https://dl.bintray.com/danjaredg/oep/
 
 ## Contributing
 
-Adding new features to the Eclipse plugin requires a knowledge about Eclipse Graphical Editing Framework (GEF). [This wiki](https://github.com/mashin-io/oep/wiki/Eclipse-GEF-(Graphical-Editing-Framework)) can help getting started with GEF.
+Adding new features to the Eclipse plugin requires a knowledge about
+Eclipse Graphical Editing Framework (GEF). 
+[This wiki](https://github.com/mashin-io/oep/wiki/Eclipse-GEF-(Graphical-Editing-Framework)) 
+can help getting started with GEF.

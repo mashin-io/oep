@@ -86,7 +86,7 @@ public class XMLEditor {
       
       IEditorPart editor = page.openEditor(
           input,
-          IDE.getEditorDescriptor(tmpFile.getName()).getId());
+          IDE.getEditorDescriptor(tmpFile.getName(), true, false).getId());
       
       if (shouldOpenNewEditor) {
         page.addPartListener(new IPartListener() {

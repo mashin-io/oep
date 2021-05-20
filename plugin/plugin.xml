@@ -5,8 +5,8 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="io.mashin.oep.ui.editor.WorkflowEditor"
-            contributorClass="io.mashin.oep.actions.WorkflowActionBarContributor"
+            class="io.mashin.oep.ui.editor.WorkflowMultipartEditor"
+            contributorClass="io.mashin.oep.actions.WorkflowMultPartActionBarContributor"
             default="false"
             icon="oozie-o-16.gif"
             id="io.mashin.oep.editor.flow"
@@ -20,7 +20,8 @@
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
             base-type="org.eclipse.core.runtime.xml"
-            file-extensions="xml, workflow"
+            file-extensions="ozw, workflow"
+            file-names="workflow.xml"
             id="io.mashin.oep.oozie.workflow"
             name="Apache Oozie Workflow"
             priority="normal">
@@ -49,5 +50,54 @@
                class="org.eclipse.core.resources.IResource">
          </selection>
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.wst.xml.core.catalogContributions">
+      <catalogContribution>
+         <uri name="uri:oozie:distcp-action:0.1" uri="schema/distcp-action-0.1.xsd"></uri>
+         <uri name="uri:oozie:distcp-action:0.2" uri="schema/distcp-action-0.2.xsd"></uri>
+         <uri name="uri:oozie:email-action:0.1" uri="schema/email-action-0.1.xsd"></uri>
+         <uri name="uri:oozie:email-action:0.2" uri="schema/email-action-0.2.xsd"></uri>
+         <uri name="uri:oozie:sla:0.1" uri="schema/gms-oozie-sla-0.1.xsd"></uri>
+         <uri name="uri:oozie:hive2-action:0.1" uri="schema/hive2-action-0.1.xsd"></uri>
+         <uri name="uri:oozie:hive2-action:0.2" uri="schema/hive2-action-0.2.xsd"></uri>
+         <uri name="uri:oozie:hive2-action:1.0" uri="schema/hive2-action-1.0.xsd"></uri>
+         <uri name="uri:oozie:hive-action:0.2" uri="schema/hive-action-0.2.xsd"></uri>
+         <uri name="uri:oozie:hive-action:0.3" uri="schema/hive-action-0.3.xsd"></uri>
+         <uri name="uri:oozie:hive-action:0.4" uri="schema/hive-action-0.4.xsd"></uri>
+         <uri name="uri:oozie:hive-action:0.5" uri="schema/hive-action-0.5.xsd"></uri>
+         <uri name="uri:oozie:hive-action:0.6" uri="schema/hive-action-0.6.xsd"></uri>
+         <uri name="uri:oozie:hive-action:1.0" uri="schema/hive-action-1.0.xsd"></uri>
+         <uri name="uri:oozie:bundle:0.1" uri="schema/oozie-bundle-0.1.xsd"></uri>
+         <uri name="uri:oozie:bundle:0.2" uri="schema/oozie-bundle-0.2.xsd"></uri>
+         <uri name="uri:oozie:coordinator:0.1" uri="schema/oozie-coordinator-0.1.xsd"></uri>
+         <uri name="uri:oozie:coordinator:0.2" uri="schema/oozie-coordinator-0.2.xsd"></uri>
+         <uri name="uri:oozie:coordinator:0.3" uri="schema/oozie-coordinator-0.3.xsd"></uri>
+         <uri name="uri:oozie:coordinator:0.4" uri="schema/oozie-coordinator-0.4.xsd"></uri>
+         <uri name="uri:oozie:coordinator:0.5" uri="schema/oozie-coordinator-0.5.xsd"></uri>
+         <uri name="uri:oozie:sla:0.1" uri="schema/oozie-sla-0.1.xsd"></uri>
+         <uri name="uri:oozie:sla:0.2" uri="schema/oozie-sla-0.2.xsd"></uri>
+         <uri name="uri:oozie:workflow:0.1" uri="schema/oozie-workflow-0.1.xsd"></uri>
+         <uri name="uri:oozie:workflow:0.2.5" uri="schema/oozie-workflow-0.2.5.xsd"></uri>
+         <uri name="uri:oozie:workflow:0.2" uri="schema/oozie-workflow-0.2.xsd"></uri>
+         <uri name="uri:oozie:workflow:0.3" uri="schema/oozie-workflow-0.3.xsd"></uri>
+         <uri name="uri:oozie:workflow:0.4.5" uri="schema/oozie-workflow-0.4.5.xsd"></uri>
+         <uri name="uri:oozie:workflow:0.4" uri="schema/oozie-workflow-0.4.xsd"></uri>
+         <uri name="uri:oozie:workflow:0.5" uri="schema/oozie-workflow-0.5.xsd"></uri>
+         <uri name="uri:oozie:workflow:1.0" uri="schema/oozie-workflow-1.0.xsd"></uri>
+         <uri name="uri:oozie:shell-action:0.1" uri="schema/shell-action-0.1.xsd"></uri>
+         <uri name="uri:oozie:shell-action:0.2" uri="schema/shell-action-0.2.xsd"></uri>
+         <uri name="uri:oozie:shell-action:0.3" uri="schema/shell-action-0.3.xsd"></uri>
+         <uri name="uri:oozie:shell-action:1.0" uri="schema/shell-action-1.0.xsd"></uri>
+         <uri name="uri:oozie:spark-action:0.1" uri="schema/spark-action-0.1.xsd"></uri>
+         <uri name="uri:oozie:spark-action:0.2" uri="schema/spark-action-0.2.xsd"></uri>
+         <uri name="uri:oozie:spark-action:1.0" uri="schema/spark-action-1.0.xsd"></uri>
+         <uri name="uri:oozie:sqoop-action:0.2" uri="schema/sqoop-action-0.2.xsd"></uri>
+         <uri name="uri:oozie:sqoop-action:0.3" uri="schema/sqoop-action-0.3.xsd"></uri>
+         <uri name="uri:oozie:sqoop-action:0.4" uri="schema/sqoop-action-0.4.xsd"></uri>
+         <uri name="uri:oozie:sqoop-action:1.0" uri="schema/sqoop-action-1.0.xsd"></uri>
+         <uri name="uri:oozie:ssh-action:0.1" uri="schema/ssh-action-0.1.xsd"></uri>
+         <uri name="uri:oozie:ssh-action:0.2" uri="schema/ssh-action-0.2.xsd"></uri>
+      </catalogContribution>
    </extension>
 </plugin>

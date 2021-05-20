@@ -117,6 +117,13 @@ public class WorkflowEditorPalleteFactory {
     PaletteDrawer actionNodesDrawer = new PaletteDrawer("Action Nodes");
 
     CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry(
+		"FS", "Create an FS node",
+		FSActionNode.class, new NodeCreationFactory<FSActionNode>(workflowEditor, FSActionNode.class),
+		ImageDescriptor.createFromFile(Activator.class, "icons/FS-16.png"),
+		ImageDescriptor.createFromFile(Activator.class, "icons/FS-24.png"));
+    actionNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
         "MapReduce", "Create a MapReduce node",
         MapReduceActionNode.class, new NodeCreationFactory<MapReduceActionNode>(workflowEditor, MapReduceActionNode.class),
         ImageDescriptor.createFromFile(Activator.class, "icons/MapReduce-16.png"),
@@ -131,17 +138,17 @@ public class WorkflowEditorPalleteFactory {
     actionNodesDrawer.add(component);
     
     component = new CombinedTemplateCreationEntry(
-        "Sub Workflow", "Create a Sub Workflow node",
-        SubWorkflowActionNode.class, new NodeCreationFactory<SubWorkflowActionNode>(workflowEditor, SubWorkflowActionNode.class),
-        ImageDescriptor.createFromFile(Activator.class, "icons/SubWorkflow-16.png"),
-        ImageDescriptor.createFromFile(Activator.class, "icons/SubWorkflow-24.png"));
+        "Hive2", "Create a Hive2 node",
+        Hive2ActionNode.class, new NodeCreationFactory<Hive2ActionNode>(workflowEditor, Hive2ActionNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/Hive2-16.png"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/Hive2-24.png"));
     actionNodesDrawer.add(component);
     
     component = new CombinedTemplateCreationEntry(
-        "FS", "Create an FS node",
-        FSActionNode.class, new NodeCreationFactory<FSActionNode>(workflowEditor, FSActionNode.class),
-        ImageDescriptor.createFromFile(Activator.class, "icons/FS-16.png"),
-        ImageDescriptor.createFromFile(Activator.class, "icons/FS-24.png"));
+        "Spark", "Create a Spark node",
+        SparkActionNode.class, new NodeCreationFactory<SparkActionNode>(workflowEditor, SparkActionNode.class),
+        ImageDescriptor.createFromFile(Activator.class, "icons/Spark-16.png"),
+        ImageDescriptor.createFromFile(Activator.class, "icons/Spark-24.png"));
     actionNodesDrawer.add(component);
     
     component = new CombinedTemplateCreationEntry(
@@ -149,6 +156,13 @@ public class WorkflowEditorPalleteFactory {
         JavaActionNode.class, new NodeCreationFactory<JavaActionNode>(workflowEditor, JavaActionNode.class),
         ImageDescriptor.createFromFile(Activator.class, "icons/Java-16.png"),
         ImageDescriptor.createFromFile(Activator.class, "icons/Java-24.png"));
+    actionNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
+		"Sub Workflow", "Create a Sub Workflow node",
+		SubWorkflowActionNode.class, new NodeCreationFactory<SubWorkflowActionNode>(workflowEditor, SubWorkflowActionNode.class),
+		ImageDescriptor.createFromFile(Activator.class, "icons/SubWorkflow-16.png"),
+		ImageDescriptor.createFromFile(Activator.class, "icons/SubWorkflow-24.png"));
     actionNodesDrawer.add(component);
 
     return actionNodesDrawer;
@@ -158,38 +172,40 @@ public class WorkflowEditorPalleteFactory {
     PaletteDrawer extendedActionNodesDrawer = new PaletteDrawer("Extended Action Nodes");
 
     CombinedTemplateCreationEntry component = new CombinedTemplateCreationEntry(
+		"Sqoop", "Create a Sqoop node",
+		SqoopActionNode.class, new NodeCreationFactory<SqoopActionNode>(workflowEditor, SqoopActionNode.class),
+		ImageDescriptor.createFromFile(Activator.class, "icons/Sqoop-16.png"),
+		ImageDescriptor.createFromFile(Activator.class, "icons/Sqoop-24.png"));
+    extendedActionNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
+		"Distcp", "Create a Distcp node",
+		DistcpActionNode.class, new NodeCreationFactory<DistcpActionNode>(workflowEditor, DistcpActionNode.class),
+		ImageDescriptor.createFromFile(Activator.class, "icons/Distcp-16.png"),
+		ImageDescriptor.createFromFile(Activator.class, "icons/Distcp-24.png"));
+    extendedActionNodesDrawer.add(component);
+    
+    component = new CombinedTemplateCreationEntry(
         "SSH", "Create an SSH node",
         SSHActionNode.class, new NodeCreationFactory<SSHActionNode>(workflowEditor, SSHActionNode.class),
         ImageDescriptor.createFromFile(Activator.class, "icons/SSH-16.png"),
         ImageDescriptor.createFromFile(Activator.class, "icons/SSH-24.png"));
     extendedActionNodesDrawer.add(component);
 
-    component = new CombinedTemplateCreationEntry(
-        "Sqoop", "Create a Sqoop node",
-        SqoopActionNode.class, new NodeCreationFactory<SqoopActionNode>(workflowEditor, SqoopActionNode.class),
-        ImageDescriptor.createFromFile(Activator.class, "icons/Sqoop-16.png"),
-        ImageDescriptor.createFromFile(Activator.class, "icons/Sqoop-24.png"));
-    extendedActionNodesDrawer.add(component);
-    
+    /*
     component = new CombinedTemplateCreationEntry(
         "Spark", "Create a Spark node",
         SparkActionNode.class, new NodeCreationFactory<SparkActionNode>(workflowEditor, SparkActionNode.class),
         ImageDescriptor.createFromFile(Activator.class, "icons/Spark-16.png"),
         ImageDescriptor.createFromFile(Activator.class, "icons/Spark-24.png"));
     extendedActionNodesDrawer.add(component);
+    */
     
     component = new CombinedTemplateCreationEntry(
         "Shell", "Create a Shell node",
         ShellActionNode.class, new NodeCreationFactory<ShellActionNode>(workflowEditor, ShellActionNode.class),
         ImageDescriptor.createFromFile(Activator.class, "icons/Shell-16.png"),
         ImageDescriptor.createFromFile(Activator.class, "icons/Shell-24.png"));
-    extendedActionNodesDrawer.add(component);
-    
-    component = new CombinedTemplateCreationEntry(
-        "Distcp", "Create a Distcp node",
-        DistcpActionNode.class, new NodeCreationFactory<DistcpActionNode>(workflowEditor, DistcpActionNode.class),
-        ImageDescriptor.createFromFile(Activator.class, "icons/Distcp-16.png"),
-        ImageDescriptor.createFromFile(Activator.class, "icons/Distcp-24.png"));
     extendedActionNodesDrawer.add(component);
 
     component = new CombinedTemplateCreationEntry(
@@ -199,12 +215,14 @@ public class WorkflowEditorPalleteFactory {
         ImageDescriptor.createFromFile(Activator.class, "icons/Hive-24.png"));
     extendedActionNodesDrawer.add(component);
     
+    /*
     component = new CombinedTemplateCreationEntry(
         "Hive2", "Create a Hive2 node",
         Hive2ActionNode.class, new NodeCreationFactory<Hive2ActionNode>(workflowEditor, Hive2ActionNode.class),
         ImageDescriptor.createFromFile(Activator.class, "icons/Hive2-16.png"),
         ImageDescriptor.createFromFile(Activator.class, "icons/Hive2-24.png"));
     extendedActionNodesDrawer.add(component);
+    */
     
     component = new CombinedTemplateCreationEntry(
         "Email", "Create an Email node",

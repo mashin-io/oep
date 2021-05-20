@@ -31,6 +31,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
@@ -52,13 +54,19 @@ public class WorkflowActionBarContributor extends ActionBarContributor {
     addRetargetAction(new ZoomInRetargetAction());
     addRetargetAction(new ZoomOutRetargetAction());
     
-    addRetargetAction(new RetargetAction(
-        GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY,
-        "Snap To Geometry", IAction.AS_CHECK_BOX));
+    RetargetAction snapAction = new RetargetAction(
+            GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY,
+            "Snap To Geometry", IAction.AS_CHECK_BOX);
+    snapAction.setImageDescriptor(ImageDescriptor.createFromURL(
+    		getClass().getResource("/io/mashin/oep/icons/snap-16.png")));
+    addRetargetAction(snapAction);
 
-    addRetargetAction(new RetargetAction(
-        GEFActionConstants.TOGGLE_GRID_VISIBILITY,
-        "Grid", IAction.AS_CHECK_BOX));
+    RetargetAction gridAction = new RetargetAction(
+            GEFActionConstants.TOGGLE_GRID_VISIBILITY,
+            "Grid", IAction.AS_CHECK_BOX);
+    gridAction.setImageDescriptor(ImageDescriptor.createFromURL(
+    		getClass().getResource("/io/mashin/oep/icons/grid-16.png")));
+    addRetargetAction(gridAction);
   }
 
   @Override
@@ -88,7 +96,12 @@ public class WorkflowActionBarContributor extends ActionBarContributor {
     tbm.add(new Separator());
     String[] zoomStrings = new String[] { ZoomManager.FIT_ALL,
         ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH };
-    tbm.add(new ZoomComboContributionItem(getPage(), zoomStrings));
+    tbm.add(new ZoomComboContributionItem(getPage(), zoomStrings) {
+    	@Override
+    	protected int computeWidth(Control control) {
+    		return Math.min(super.computeWidth(control), 130);
+    	}
+    });
   }
 
   public void contributeToMenu(IMenuManager menubar) {

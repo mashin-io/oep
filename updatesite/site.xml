@@ -3,14 +3,6 @@
    <description name="Oozie Eclipse Plugin Update Site" url="http://oep.mashin.io/update-site">
       The update site for Oozie Eclipse Plugin
    </description>
-   <feature url="features/io.mashin.oep.feature_0.3.0.201510190112.jar" id="io.mashin.oep.feature" version="0.3.0.201510190112">
-      <category name="io.mashin.oozie_eclipse_plugin"/>
-   </feature>
-   <feature url="features/io.mashin.oep.feature_0.3.3.201512182231.jar" id="io.mashin.oep.feature" version="0.3.3.201512182231">
-      <category name="io.mashin.oozie_eclipse_plugin"/>
-   </feature>
-   <feature url="features/io.mashin.oep.feature_0.3.4.201602061635.jar" id="io.mashin.oep.feature" version="0.3.4.201602061635">
-      <category name="io.mashin.oozie_eclipse_plugin"/>
-   </feature>
+   <feature url="features/io.mashin.oep.feature_0.3.5.qualifier.jar" id="io.mashin.oep.feature" version="0.3.5.qualifier"/>
    <category-def name="io.mashin.oozie_eclipse_plugin" label="Oozie Eclipse Plugin"/>
 </site>

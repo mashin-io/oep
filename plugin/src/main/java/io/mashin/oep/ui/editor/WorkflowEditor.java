@@ -35,6 +35,7 @@ import java.util.EventObject;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
@@ -45,7 +46,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
@@ -76,6 +79,7 @@ import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -85,9 +89,11 @@ import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.SaveAsDialog;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
@@ -104,7 +110,10 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
    * This is called by the Workspace.
    */
   public WorkflowEditor() {
-    setEditDomain(new DefaultEditDomain(this));
+	  setEditDomain(new DefaultEditDomain(this));
+  }
+  public WorkflowEditor(IEditorPart editorPart) {
+	  setEditDomain(new DefaultEditDomain(editorPart));
   }
   
   /**
@@ -366,6 +375,24 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     }
   }
   
+	public void setContent(String hpdl) {
+		hpdl = XMLUtils.xmlnsToSchemaVersion(hpdl);
+		SAXReader reader = new SAXReader();
+		Document document;
+		try {
+			document = reader.read(new StringReader(hpdl));
+		} catch (DocumentException e) {
+			throw new RuntimeException(e);
+		}
+		workflow = new Workflow(document);
+		if (getGraphicalViewer() != null) {
+			getGraphicalViewer().setContents(getModel());
+		}
+		if (outlinePage != null) {
+			outlinePage.setContents(getModel());
+		}
+	}
+  
   @Override
   public void doSave(IProgressMonitor progressMonitor) {
     editorSaving = true;
@@ -477,11 +504,26 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     }
   }
   
-  private String writeModel() {
+  String writeModel() {
     try {
       Document document = DocumentHelper.createDocument();
       workflow.write(document.addElement("dummy"));
       OutputFormat format = OutputFormat.createPrettyPrint();
+      
+      IPreferencesService ps = Platform.getPreferencesService();
+      boolean useSpaces = ps.getBoolean(EditorsUI.PLUGIN_ID,
+    		  AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS, false, null);
+      int tabWidth = ps.getInt(EditorsUI.PLUGIN_ID,
+    		  AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH, 4, null);
+      if (useSpaces) {
+    	  StringBuilder sb = new StringBuilder();
+    	  for (int i=0;i<tabWidth;i++)
+    		  sb.append(" ");
+    	  format.setIndent(sb.toString());
+      } else {
+    	  format.setIndent("\t");
+      }
+      
       StringWriter stringWriter = new StringWriter();
       XMLWriter writer = new XMLWriter(stringWriter, format);
       writer.write(document);
@@ -532,4 +574,15 @@ public class WorkflowEditor extends GraphicalEditorWithFlyoutPalette {
     return super.getAdapter(type);
   }
   
+  @Override
+  public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+	IEditorPart editor = getSite().getPage().getActiveEditor();
+	if (editor instanceof WorkflowMultipartEditor) {
+		WorkflowMultipartEditor wfMPEditor = (WorkflowMultipartEditor)editor;
+		if (this.equals(wfMPEditor.getActiveEditor()))
+			updateActions(getSelectionActions());
+	} else {
+		super.selectionChanged(part, selection);
+	}
+  }
 }

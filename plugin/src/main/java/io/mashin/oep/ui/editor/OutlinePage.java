@@ -153,7 +153,7 @@ public class OutlinePage extends ContentOutlinePage implements IAdaptable {
     workflowEditor.outlinePage = null;
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public Object getAdapter(Class type) {
     if (type == ZoomManager.class)
       return graphicalViewer.getProperty(ZoomManager.class.toString());
